@@ -1,7 +1,7 @@
 export const homePageContent = {
   hero: {
     chipIconName: 'Bolt',
-    chipLabel: "Revolutionizing Research Access",
+    chipLabel: "From Research to Commercialization Seamlessly through AI",
     titlePart1: "Research Made",
     titleGradientPart: "Accessible",
     description: "Discover cutting-edge research, interact with AI-powered study assistants, and explore knowledge without barriers. Join the future of academic discovery.",
@@ -18,7 +18,7 @@ export const homePageContent = {
     ]
   },
   whyChooseTTO: {
-    title: "Why Choose TTO?",
+    title: "Why Choose R2C?",
     subtitle: "We're transforming how research is shared and consumed in the digital age",
     features: [
       {
@@ -43,7 +43,7 @@ export const homePageContent = {
         description: 'Researchers can share their work anonymously, fostering open science without career concerns.'
       },
       // {
-      //   iconName: 'NewIconName', // Ensure 'NewIconName' is added to iconMap in Home.js
+      //   iconName: 'NewIconName', 
       //   iconColor: '#ff5722',
       //   bgColor: '#ffe0b2',
       //   title: 'New Amazing Feature',

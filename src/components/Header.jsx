@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // Removed useEffect
 import {
   AppBar,
   Toolbar,
@@ -16,21 +16,71 @@ import {
   useMediaQuery,
   Divider,
   Container,
+  Menu,
+  MenuItem,
+  Avatar,
+  CircularProgress, // Added for loading state if needed
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Link as RouterLink, NavLink } from 'react-router-dom';
-import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import DashboardIcon from "@mui/icons-material/DashboardOutlined";
+import LogoutIcon from "@mui/icons-material/LogoutOutlined";
+import LoginIcon from "@mui/icons-material/Login";
+import { Link as RouterLink, NavLink, useNavigate } from "react-router-dom";
+
+// Import useAuth from AuthContext
+import { useAuth } from "../../src/AuthContext"; // Adjust path as per your structure
+
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
+
+const navItemSharedSxConfig = {
+  defaultColor: "#666666",
+  hoverColor: "black",
+  activeColor: "#2563EB",
+  textTransform: "none",
+  fontWeight: "500",
+  padding: "10px 18px",
+  borderRadius: "7px",
+};
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  // Use AuthContext
+  const { currentUser, logout, loadingAuth } = useAuth();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const profileMenuOpen = Boolean(anchorEl);
+  const navigate = useNavigate();
+
+  // Removed useEffect for onAuthStateChanged as it's now handled by AuthContext
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    handleProfileMenuClose();
+    try {
+      await logout(); 
+      if (isMobile && mobileOpen) {
+        handleDrawerToggle();
+      }
+      navigate("/"); 
+    } catch (error) {
+      console.error("Error logging out from Header:", error);
+    }
   };
 
   const navItems = [
@@ -38,91 +88,27 @@ const Header = () => {
       id: "explore",
       label: "Explore Studies",
       path: "/studies",
-      variant: "contained",
-      sx: {
-        backgroundColor: "#2563EB",
-        color: "white",
-        boxShadow: "none",
-        "&:hover": {
-          backgroundColor: "#1D4ED8",
-          boxShadow: "none",
-        },
-        textTransform: "none",
-        padding: "10px 20px",
-        borderRadius: "7px",
-      }
-    },
-    {
-      id: "login",
-      label: "Login / Sign Up",
-      path: "/login",
       variant: "text",
-      // Base styles for this item, primarily for desktop Button state reference
-      // The sx prop in the component will dynamically build the final style
-      sxConfig: { // Renamed to sxConfig to avoid confusion if item.sx was directly used
-        defaultColor: "#666666",
-        hoverColor: "black",
-        activeColor: "#2563EB",
-        textTransform: "none",
-        fontWeight: "500",
-        padding: "10px 18px", // Desktop button padding
-        borderRadius: "7px",   // Desktop button border radius
-      },
-    },
-    {
-      id: "dashboard",
-      label: "Researcher Dashboard",
-      path: "/dashboard",
-      variant: "text",
-      sxConfig: {
-        defaultColor: "#666666",
-        hoverColor: "black",
-        activeColor: "#2563EB",
-        textTransform: "none",
-        fontWeight: "500",
-        padding: "10px 18px",
-        borderRadius: "7px",
-      },
+      sxConfig: navItemSharedSxConfig,
     },
     {
       id: "about",
       label: "About",
       path: "/about",
       variant: "text",
-      sxConfig: {
-        defaultColor: "#666666",
-        hoverColor: "black",
-        activeColor: "#2563EB",
-        textTransform: "none",
-        fontWeight: "500",
-        padding: "10px 18px",
-        borderRadius: "7px",
-      },
+      sxConfig: navItemSharedSxConfig,
     },
     {
       id: "contact",
       label: "Contact",
       path: "/contact",
       variant: "text",
-      sxConfig: {
-        defaultColor: "#666666",
-        hoverColor: "black",
-        activeColor: "#2563EB",
-        textTransform: "none",
-        fontWeight: "500",
-        padding: "10px 18px",
-        borderRadius: "7px",
-      },
+      sxConfig: navItemSharedSxConfig,
     },
   ];
 
-  const commonButtonStyles = { // For desktop buttons
+  const commonButtonStyles = {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    fontSize: "0.9rem",
-    backgroundColor: 'transparent',
-    transition: "color 0.2s ease-in-out, background-color 0.2s ease-in-out",
-    textDecoration: 'none',
-    // Note: padding & borderRadius will be taken from item.sxConfig for desktop buttons
   };
 
   const drawer = (
@@ -148,7 +134,11 @@ const Header = () => {
         >
           Menu
         </Typography>
-        <IconButton onClick={handleDrawerToggle} aria-label="close drawer" sx={{ padding: "8px" }}>
+        <IconButton
+          onClick={handleDrawerToggle}
+          aria-label="close drawer"
+          sx={{ padding: "8px" }}
+        >
           <ChevronRightIcon sx={{ fontSize: "22px" }} />
         </IconButton>
       </Box>
@@ -159,88 +149,185 @@ const Header = () => {
             <ListItemButton
               component={item.id === "explore" ? RouterLink : NavLink}
               to={item.path}
-              end={item.path === "/" || item.path === "/studies" || item.id === "explore" ? undefined : true} // More precise `end` for NavLink
+              end={
+                item.path === "/" || item.path === "/studies" ? undefined : true
+              }
               onClick={handleDrawerToggle}
-              disableRipple={item.id !== "explore"}
+              disableRipple={true}
               sx={({ isActive } = { isActive: false }) => {
+                /* Assuming NavLink passes isActive */
                 const baseListItemStyles = {
                   textAlign: "left",
-                  padding: "10px 12px", // Drawer specific padding
-                  borderRadius: "10px",  // Drawer specific borderRadius
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                  textDecoration: 'none',
-                  transition: "color 0.2s ease-in-out, background-color 0.2s ease-in-out",
-                  backgroundColor: 'transparent',
+                  padding: "10px 12px",
+                  borderRadius: "10px",
+                  fontFamily:
+                    '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  textDecoration: "none",
+                  transition:
+                    "color 0.2s ease-in-out, background-color 0.2s ease-in-out",
+                  backgroundColor: "transparent",
                 };
-
-                if (item.id === "explore") {
-                  return {
-                    ...baseListItemStyles,
-                    backgroundColor: item.sx.backgroundColor, // from explore's original sx
-                    color: item.sx.color,
-                    "&:hover": {
-                      backgroundColor: item.sx["&:hover"]?.backgroundColor || item.sx.backgroundColor,
-                    },
-                    "& .MuiListItemText-primary, & .MuiListItemIcon-root": {
-                       color: item.sx.color,
-                    },
-                  };
-                } else { // Non-explore items in drawer
-                  const config = item.sxConfig;
-                  const isItemActive = !!isActive;
-                  let currentTextColor = config.defaultColor;
-                  if (isItemActive) {
-                    currentTextColor = config.activeColor;
-                  }
-
-                  return {
-                    ...baseListItemStyles,
-                    color: currentTextColor,
-                    "& .MuiListItemText-primary": {
-                      color: currentTextColor,
-                      fontWeight: config.fontWeight || "500",
-                    },
-                    "& .MuiListItemIcon-root": {
-                      color: currentTextColor,
-                    },
-                    "&:hover": {
-                      backgroundColor: 'transparent',
-                      color: config.hoverColor,
-                      "& .MuiListItemText-primary": {
-                        color: config.hoverColor,
-                      },
-                      "& .MuiListItemIcon-root": {
-                        color: config.hoverColor,
-                      },
-                    },
-                  };
+                const config = item.sxConfig;
+                const isItemActive = !!isActive;
+                let currentTextColor = config.defaultColor;
+                if (isItemActive) {
+                  currentTextColor = config.activeColor;
                 }
+                return {
+                  ...baseListItemStyles,
+                  color: currentTextColor,
+                  "& .MuiListItemText-primary": {
+                    color: currentTextColor,
+                    fontWeight: config.fontWeight || "500",
+                  },
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                    color: config.hoverColor,
+                    "& .MuiListItemText-primary": {
+                      color: config.hoverColor,
+                    },
+                  },
+                };
               }}
             >
-              {item.icon && ( // item.icon is currently not defined in navItems
-                <ListItemIcon sx={{ minWidth: "32px" }}>
-                  {React.cloneElement(item.icon, { sx: { fontSize: "18px" } })}
-                </ListItemIcon>
-              )}
               <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontFamily:
+                    '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                   fontSize: "0.875rem",
-                  // fontWeight is handled by the sx prop on ListItemButton targeting .MuiListItemText-primary
                 }}
-                sx={{ marginLeft: item.icon ? 0 : "0px" }}
               />
             </ListItemButton>
           </ListItem>
         ))}
+
+        {loadingAuth ? (
+          <ListItem disablePadding sx={{ justifyContent: "center", py: 2 }}>
+            <CircularProgress size={24} />
+          </ListItem>
+        ) : !currentUser ? (
+          <ListItem disablePadding sx={{ marginBottom: "6px" }}>
+            <ListItemButton
+              component={RouterLink}
+              to="/signup" 
+              onClick={handleDrawerToggle}
+              sx={{
+                textAlign: "left",
+                padding: "10px 12px",
+                borderRadius: "10px",
+                fontFamily:
+                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                textDecoration: "none",
+                transition:
+                  "color 0.2s ease-in-out, background-color 0.2s ease-in-out",
+                backgroundColor: "#2563EB",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#1D4ED8",
+                  color: "white",
+                },
+                "& .MuiListItemText-primary": {
+                  color: "white",
+                  fontWeight: "500",
+                  fontSize: "0.875rem",
+                },
+                "& .MuiListItemIcon-root": {
+                  color: "white",
+                  minWidth: "36px",
+                },
+              }}
+            >
+              <ListItemIcon>
+                <LoginIcon fontSize="small" sx={{ color: "white" }} />
+              </ListItemIcon>
+              <ListItemText primary="Login / Sign Up" />
+            </ListItemButton>
+          </ListItem>
+        ) : (
+          <>
+            <Divider sx={{ marginY: "12px" }} />
+            {[
+              {
+                label: "Dashboard",
+                path: "/dashboard",
+                icon: <DashboardIcon fontSize="small" />,
+              },
+            ].map((profileItem) => (
+              <ListItem
+                key={profileItem.label}
+                disablePadding
+                sx={{ marginBottom: "6px" }}
+              >
+                <ListItemButton
+                  component={RouterLink}
+                  to={profileItem.path}
+                  onClick={handleDrawerToggle}
+                  sx={{
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    borderRadius: "10px",
+                    fontFamily:
+                      '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                    color: theme.palette.text.secondary,
+                    "&:hover": {
+                      color: theme.palette.text.primary,
+                      backgroundColor: "rgba(0,0,0,0.04)",
+                    },
+                    "& .MuiListItemText-primary": {
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                    },
+                    "& .MuiListItemIcon-root": {
+                      color: "inherit",
+                      minWidth: "36px",
+                    },
+                  }}
+                >
+                  <ListItemIcon>{profileItem.icon}</ListItemIcon>
+                  <ListItemText primary={profileItem.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+            <ListItem disablePadding sx={{ marginBottom: "6px" }}>
+              <ListItemButton
+                onClick={handleLogout}
+                sx={{
+                  textAlign: "left",
+                  padding: "10px 12px",
+                  borderRadius: "10px",
+                  fontFamily:
+                    '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  color: theme.palette.error.main,
+                  "&:hover": {
+                    color: theme.palette.error.dark,
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                  },
+                  "& .MuiListItemText-primary": {
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                  },
+                  "& .MuiListItemIcon-root": {
+                    color: "inherit",
+                    minWidth: "36px",
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        )}
       </List>
     </Box>
   );
 
   return (
     <>
-      <AppBar /* ... AppBar props ... */ 
+      <AppBar
         position="fixed"
         sx={{
           backgroundColor: "white",
@@ -250,14 +337,14 @@ const Header = () => {
           borderBottom: "0.5px solid rgba(0, 0, 0, 0.08)",
         }}
       >
-        <Container /* ... Container props ... */
+        <Container
           maxWidth="xl"
           sx={{
             paddingLeft: { xs: "26px", sm: "32px", md: "70px" },
             paddingRight: { xs: "26px", sm: "32px", md: "70px" },
           }}
         >
-          <Toolbar /* ... Toolbar props ... */
+          <Toolbar
             disableGutters
             sx={{
               justifyContent: "space-between",
@@ -265,7 +352,7 @@ const Header = () => {
               paddingY: { xs: "4px", sm: "6px" },
             }}
           >
-            <Box /* ... Logo Box props ... */
+            <Box
               component={RouterLink}
               to="/"
               sx={{
@@ -275,33 +362,32 @@ const Header = () => {
                 textDecoration: "none",
               }}
             >
-              <Typography /* ... Logo Typography props ... */
+              <Typography
                 variant="h1"
                 component="div"
                 sx={{
                   color: "#1a1a1a",
                   fontWeight: "900",
-                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontFamily:
+                    '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                   fontSize: { xs: "1.15rem", sm: "1.25rem", md: "1.3rem" },
                   lineHeight: 1.2,
                   letterSpacing: "-0.01em",
                 }}
               >
-                Tech Transfer Office
+                Research to Commercialization
               </Typography>
             </Box>
 
             {isMobile ? (
-              <IconButton /* ... Mobile Menu IconButton ... */
+              <IconButton
                 aria-label="open drawer"
                 edge="end"
                 onClick={handleDrawerToggle}
                 sx={{
                   color: "#2563EB",
                   padding: "12px",
-                  "&:hover": {
-                    backgroundColor: "rgba(37, 99, 235, 0.08)",
-                  }
+                  "&:hover": { backgroundColor: "rgba(37, 99, 235, 0.08)" },
                 }}
               >
                 <MenuIcon sx={{ fontSize: "26px" }} />
@@ -309,64 +395,112 @@ const Header = () => {
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
                 {navItems.map((item) => {
-                  if (item.id === "explore") {
-                    return ( // Explore button for desktop
-                      <Button
-                        key={item.id}
-                        component={RouterLink}
-                        to={item.path}
-                        variant={item.variant}
-                        startIcon={item.icon} // item.icon is currently undefined
-                        sx={{ // sx prop correctly assigned an object
+                  const config = item.sxConfig;
+                  return (
+                    <Button
+                      key={item.id}
+                      component={item.id === "explore" ? RouterLink : NavLink}
+                      to={item.path}
+                      end={
+                        item.path === "/" || item.path === "/studies"
+                          ? undefined
+                          : true
+                      }
+                      variant={item.variant}
+                      disableRipple={true}
+                      sx={({ isActive } = { isActive: false }) => {
+                        /* Assuming NavLink passes isActive */
+                        let currentTextColor = config.defaultColor;
+                        if (isActive) {
+                          currentTextColor = config.activeColor;
+                        }
+                        return {
                           ...commonButtonStyles,
-                          ...item.sx, // Original sx for explore button
-                        }}
-                      >
-                        {item.label} {/* Child is a string */}
-                      </Button>
-                    );
-                  } else { // Non-explore buttons for desktop
-                    const config = item.sxConfig;
+                          padding: config.padding,
+                          borderRadius: config.borderRadius,
+                          textTransform: config.textTransform,
+                          fontWeight: config.fontWeight,
+                          color: currentTextColor,
+                          "&:hover": {
+                            backgroundColor: "transparent",
+                            color: config.hoverColor,
+                          },
+                        };
+                      }}
+                    >
+                      {item.label}
+                    </Button>
+                  );
+                })}
+                {/* Conditional rendering based on auth state from context */}
+                {loadingAuth ? (
+                  <CircularProgress size={24} sx={{ color: "#2563EB" }} />
+                ) : !currentUser ? (
+                  (() => {
+                    const loginItemConfig = {
+                      id: "login",
+                      label: "Login / Sign Up",
+                      path: "/signup",
+                      variant: "contained",
+                      sx: {
+                        backgroundColor: "#2563EB",
+                        color: "white",
+                        boxShadow: "none",
+                        "&:hover": {
+                          backgroundColor: "#1D4ED8",
+                          boxShadow: "none",
+                        },
+                        textTransform: "none",
+                        padding: "10px 20px",
+                        borderRadius: "7px",
+                      },
+                    };
                     return (
                       <Button
-                        key={item.id}
-                        component={NavLink}
-                        to={item.path}
-                        end={item.path === "/"} // `end` prop for NavLink
-                        variant={item.variant}
-                        disableRipple={true}
-                        startIcon={item.icon} // item.icon is currently undefined
-                        sx={({ isActive }) => { // sx prop correctly assigned a function returning an object
-                          let currentTextColor = config.defaultColor;
-                          if (isActive) {
-                            currentTextColor = config.activeColor;
-                          }
-                          return { // This is the style object being returned
-                            ...commonButtonStyles, // Spread common styles
-                            padding: config.padding, // Specific padding from sxConfig
-                            borderRadius: config.borderRadius, // Specific borderRadius from sxConfig
-                            textTransform: config.textTransform,
-                            fontWeight: config.fontWeight,
-                            color: currentTextColor,
-                            "&:hover": {
-                              backgroundColor: 'transparent', // from commonButtonStyles or explicit
-                              color: config.hoverColor,
-                            },
-                          };
+                        key={loginItemConfig.id}
+                        component={RouterLink}
+                        to={loginItemConfig.path}
+                        variant={loginItemConfig.variant}
+                        sx={{
+                          ...commonButtonStyles,
+                          ...loginItemConfig.sx,
                         }}
                       >
-                        {item.label} {/* Child is a string */}
+                        {loginItemConfig.label}
                       </Button>
                     );
-                  }
-                })}
+                  })()
+                ) : (
+                  <IconButton
+                    onClick={handleProfileMenuOpen}
+                    sx={{
+                      color: "#4B5563",
+                      padding: "8px",
+                      "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
+                    }}
+                    aria-controls={profileMenuOpen ? "profile-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={profileMenuOpen ? "true" : undefined}
+                    id="profile-icon-button"
+                  >
+                    {currentUser.photoURL ? (
+                      <Avatar
+                        sx={{ width: 32, height: 32 }}
+                        src={currentUser.photoURL}
+                        alt={currentUser.displayName || "User"}
+                      />
+                    ) : (
+                      <AccountCircleIcon sx={{ fontSize: "28px" }} />
+                    )}
+                  </IconButton>
+                )}
               </Box>
             )}
           </Toolbar>
         </Container>
       </AppBar>
       <nav>
-        <Drawer /* ... Drawer props ... */
+        <Drawer
           variant="temporary"
           anchor="right"
           open={mobileOpen}
@@ -376,15 +510,93 @@ const Header = () => {
             display: { xs: "block", md: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: "10vw",
-              minWidth: "220px",
-              borderRadius: "16px 0 0 16px",
+              width: "max(250px, 70vw)",
+              maxWidth: "320px",
+              borderTopLeftRadius: "16px",
+              borderBottomLeftRadius: "16px",
+              boxShadow: theme.shadows[3],
             },
           }}
         >
-          {drawer} {/* `drawer` variable holds JSX, should be fine */}
+          {drawer}
         </Drawer>
       </nav>
+
+      <Menu
+        id="profile-menu"
+        anchorEl={anchorEl}
+        open={profileMenuOpen}
+        onClose={handleProfileMenuClose}
+        MenuListProps={{ "aria-labelledby": "profile-icon-button" }}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 1px 4px rgba(0,0,0,0.1))",
+            mt: 1.5,
+            minWidth: 200,
+            borderRadius: "8px",
+            border: `1px solid ${theme.palette.divider}`,
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+              borderTop: `1px solid ${theme.palette.divider}`,
+              borderLeft: `1px solid ${theme.palette.divider}`,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        {/* Display user info if available */}
+        {currentUser && (
+          <MenuItem
+            disabled
+            sx={{
+              fontSize: "0.8rem",
+              py: 0.5,
+              color: theme.palette.text.secondary,
+              fontWeight: 500,
+              "&.Mui-disabled": { opacity: 1 },
+            }}
+          >
+            {currentUser?.displayName || currentUser?.email}
+          </MenuItem>
+        )}
+        {currentUser && <Divider sx={{ mb: 0.5 }} />}
+        <MenuItem
+          component={RouterLink}
+          to="/dashboard"
+          onClick={handleProfileMenuClose}
+          sx={{ fontSize: "0.9rem", py: 1.25 }}
+        >
+          <ListItemIcon>
+            <DashboardIcon fontSize="small" />
+          </ListItemIcon>
+          Dashboard
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
+          onClick={handleLogout}
+          sx={{ fontSize: "0.9rem", py: 1.25, color: theme.palette.error.main }}
+        >
+          <ListItemIcon>
+            <LogoutIcon
+              fontSize="small"
+              sx={{ color: theme.palette.error.main }}
+            />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   );
 };

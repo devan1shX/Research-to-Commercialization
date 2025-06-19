@@ -58,7 +58,7 @@ const Footer = () => {
                   fontSize: '1.1rem',
                 }}
               >
-                TTO Tech Transfer Office
+                Research to Commercialization
               </Typography>
             </Box>
             <Typography
@@ -250,7 +250,7 @@ const Footer = () => {
               fontSize: '0.875rem',
             }}
           >
-            © 2025 TTO Tech Transfer Office. All Rights Reserved.
+            © 2025 R2C Research to Commercialization. All Rights Reserved.
           </Typography>
         </Box>
       </Container>

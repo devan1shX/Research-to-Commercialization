@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Container,
@@ -10,8 +10,8 @@ import {
   Grid,
   Stack,
 } from "@mui/material";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   ArrowForward,
   FavoriteBorderOutlined,
@@ -22,7 +22,7 @@ import {
   ShieldOutlined,
   Bolt,
   Chat,
-  Lock
+  Lock,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { homePageContent } from "../Home/homeContent";
@@ -45,7 +45,40 @@ const GradientText = styled(Typography)(({ theme }) => ({
   display: "inline",
 }));
 
+const pageVariants = {
+  initial: { opacity: 0 },
+  in: { opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } },
+  out: { opacity: 0 },
+};
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const fadeInUpVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
 const About = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { makingImpact, hero } = homePageContent;
   const staticFeatures = [
     {
@@ -102,7 +135,13 @@ const About = () => {
   const SecondaryButtonIcon = iconMap[hero.secondaryButtonIconName] || Lock;
 
   return (
-    <>
+    <Box
+      component={motion.div}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+    >
       <Box
         sx={{
           minHeight: "40vh",
@@ -117,6 +156,10 @@ const About = () => {
       >
         <Container maxWidth="md">
           <Box
+            component={motion.div}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
             sx={{
               textAlign: "center",
               maxWidth: "800px",
@@ -124,7 +167,7 @@ const About = () => {
               p: { xs: 2, sm: 3, md: 4 },
             }}
           >
-            <Box sx={{ mb: { xs: 2, sm: 3, md: 3 } }}>
+            <motion.div variants={fadeInUpVariants}>
               <Chip
                 icon={
                   <FavoriteBorderOutlined
@@ -145,54 +188,53 @@ const About = () => {
                   "& .MuiChip-icon": { color: "#1e40af" },
                 }}
               />
-            </Box>
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: {
-                  xs: "2rem",
-                  sm: "2.5rem",
-                  md: "3rem",
-                  lg: "3.5rem",
-                },
-                fontWeight: 700,
-                lineHeight: 1.1,
-                mb: { xs: 2, sm: 3, md: 4 },
-                color: "#1E293B",
-              }}
-            >
-              About{" "}
-              <GradientText component="span" sx={{ fontSize: "inherit" }}>
-                R2C
-              </GradientText>
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{
-                fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
-                fontWeight: 400,
-                color: "#64748B",
-                lineHeight: 1.6,
-                maxWidth: "700px",
-                mx: "auto",
-                px: { xs: "0 10px", sm: "0 20px" },
-              }}
-            >
-              We're democratizing access to research by creating a platform
-              where knowledge flows freely between researchers, industry, and
-              the public.
-            </Typography>
+            </motion.div>
+            <motion.div variants={fadeInUpVariants}>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: {
+                    xs: "2rem",
+                    sm: "2.5rem",
+                    md: "3rem",
+                    lg: "3.5rem",
+                  },
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                  mb: { xs: 2, sm: 3, md: 4 },
+                  color: "#1E293B",
+                }}
+              >
+                About{" "}
+                <GradientText component="span" sx={{ fontSize: "inherit" }}>
+                  R2C
+                </GradientText>
+              </Typography>
+            </motion.div>
+            <motion.div variants={fadeInUpVariants}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                  fontWeight: 400,
+                  color: "#64748B",
+                  lineHeight: 1.6,
+                  maxWidth: "700px",
+                  mx: "auto",
+                  px: { xs: "0 10px", sm: "0 20px" },
+                }}
+              >
+                We're democratizing access to research by creating a platform
+                where knowledge flows freely between researchers, industry, and
+                the public.
+              </Typography>
+            </motion.div>
           </Box>
         </Container>
       </Box>
 
       <Box sx={{ backgroundColor: "white", py: { xs: 6, sm: 8, md: 10 } }}>
-        <Container
-          maxWidth="xl"
-          sx={{
-            px: { xs: 2, sm: 3, md: 4 },
-          }}
-        >
+        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box
             sx={{
               mx: "auto",
@@ -204,6 +246,11 @@ const About = () => {
             }}
           >
             <Box
+              component={motion.div}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={containerVariants}
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
@@ -211,7 +258,17 @@ const About = () => {
                 alignItems: { md: "flex-start" },
               }}
             >
-              <Box sx={{ flex: 1, textAlign: { xs: "center", md: "left" } }}>
+              <Box
+                component={motion.div}
+                variants={fadeInUpVariants}
+                sx={{
+                  flex: 1,
+                  textAlign: { xs: "center", md: "left" },
+                  position: { md: "sticky" },
+                  top: { md: "120px" },
+                  alignSelf: { md: "flex-start" },
+                }}
+              >
                 <Typography
                   variant="h2"
                   sx={{
@@ -261,6 +318,8 @@ const About = () => {
               </Box>
 
               <Box
+                component={motion.div}
+                variants={fadeInUpVariants}
                 sx={{
                   flex: 1,
                   display: "flex",
@@ -327,41 +386,49 @@ const About = () => {
       </Box>
 
       <Box sx={{ backgroundColor: "white", py: { xs: 6, sm: 8, md: 10 } }}>
-        <Container
-          maxWidth="xl"
-          sx={{
-            px: { xs: 2, sm: 3, md: 4 },
-          }}
-        >
-          <Box sx={{ maxWidth: "xl", mx: "auto", width: "100%" }}>
+        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+          <Box
+            component={motion.div}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={containerVariants}
+            sx={{ maxWidth: "xl", mx: "auto", width: "100%" }}
+          >
             <Box textAlign="center" sx={{ mb: { xs: 5, sm: 6, md: 7 } }}>
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
-                  fontWeight: 700,
-                  mb: 2.5,
-                  color: "#1f2937",
-                }}
-              >
-                Why Partner With R2C?
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
-                  color: "#6b7280",
-                  maxWidth: "700px",
-                  mx: "auto",
-                  lineHeight: 1.6,
-                }}
-              >
-                Discover the unique advantages our platform offers to
-                researchers, industry professionals, and curious minds alike.
-              </Typography>
+              <motion.div variants={fadeInUpVariants}>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
+                    fontWeight: 700,
+                    mb: 2.5,
+                    color: "#1f2937",
+                  }}
+                >
+                  Why Partner With R2C?
+                </Typography>
+              </motion.div>
+              <motion.div variants={fadeInUpVariants}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
+                    color: "#6b7280",
+                    maxWidth: "700px",
+                    mx: "auto",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Discover the unique advantages our platform offers to
+                  researchers, industry professionals, and curious minds alike.
+                </Typography>
+              </motion.div>
             </Box>
             <Grid
               container
+              component={motion.div}
+              variants={containerVariants}
               spacing={{ xs: 2.5, sm: 3, md: 4 }}
               justifyContent="center"
             >
@@ -370,6 +437,8 @@ const About = () => {
                 return (
                   <Grid
                     item
+                    component={motion.div}
+                    variants={fadeInUpVariants}
                     xs={12}
                     sm={6}
                     md={4}
@@ -394,9 +463,7 @@ const About = () => {
                             backgroundColor: feature.iconColor,
                             transform: "scale(1.08)",
                           },
-                          "& .feature-icon": {
-                            color: "#ffffff !important",
-                          },
+                          "& .feature-icon": { color: "#ffffff !important" },
                         },
                       }}
                     >
@@ -478,42 +545,70 @@ const About = () => {
 
       <Box sx={{ backgroundColor: "white", py: { xs: 1, sm: 1, md: 1 } }}>
         <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-          <Box sx={{ maxWidth: "lg", mx: "auto", width: "100%" }}>
-            <Box textAlign="center" sx={{ mb: { xs: 4, md: 6 } }}>
+          <Box
+            component={motion.div}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+            sx={{ maxWidth: "lg", mx: "auto", width: "100%" }}
+          >
+            <motion.div variants={fadeInUpVariants}>
+              <Box textAlign="center" sx={{ mb: { xs: 4, md: 6 } }}>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
+                    fontWeight: 700,
+                    mb: 3.5,
+                    color: "#1f2937",
+                  }}
+                >
+                  Our Story
+                </Typography>
+              </Box>
+            </motion.div>
+            <motion.div variants={fadeInUpVariants}>
               <Typography
-                variant="h2"
+                variant="body1"
                 sx={{
-                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
-                  fontWeight: 700,
-                  mb: 3.5,
-                  color: "#1f2937",
+                  fontSize: { xs: "0.95rem", sm: "1rem", md: "1.2rem" },
+                  color: "#4B5563",
+                  lineHeight: 1.7,
+                  maxWidth: "800px",
+                  mx: "auto",
+                  whiteSpace: "pre-line",
+                  textAlign: "center",
+                  mb: { xs: 4, md: 6 },
                 }}
               >
-                Our Story
+                R2C was founded in 2023 by a team of researchers, technologists,
+                and advocates who experienced firsthand the barriers that
+                prevent groundbreaking research from reaching those who need it
+                most. <br /> <br />
+                We noticed that brilliant discoveries were often trapped in
+                academic silos, accessible only to those with institutional
+                subscriptions or specialized knowledge. Meanwhile, curious minds
+                outside academia struggled to engage with cutting-edge research
+                that could inform their decisions, spark innovation, or simply
+                satisfy their intellectual curiosity. <br /> <br />
+                Our platform represents a new paradigm: anonymous publishing
+                that protects researchers while AI-powered tools make complex
+                research accessible to everyone. We're not just sharing papers;
+                we're creating conversations between researchers and the public
+                that have never been possible before. <br /> <br />
               </Typography>
-            </Box>
-            <Typography
-              variant="body1"
-              sx={{
-                fontSize: { xs: "0.95rem", sm: "1rem", md: "1.2rem" },
-                color: "#4B5563",
-                lineHeight: 1.7,
-                maxWidth: "800px",
-                mx: "auto",
-                whiteSpace: "pre-line",
-                textAlign: "center",
-                mb: { xs: 4, md: 6 },
-              }}
-            >
-              R2C was founded in 2023 by a team of researchers, technologists, and advocates who experienced firsthand the barriers that prevent groundbreaking research from reaching those who need it most. <br /> <br />
-              We noticed that brilliant discoveries were often trapped in academic silos, accessible only to those with institutional subscriptions or specialized knowledge. Meanwhile, curious minds outside academia struggled to engage with cutting-edge research that could inform their decisions, spark innovation, or simply satisfy their intellectual curiosity. <br /> <br />
-              Our platform represents a new paradigm: anonymous publishing that protects researchers while AI-powered tools make complex research accessible to everyone. We're not just sharing papers; we're creating conversations between researchers and the public that have never been possible before. <br /> <br />
-            </Typography>
+            </motion.div>
           </Box>
         </Container>
       </Box>
 
       <Box
+        component={motion.div}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={containerVariants}
         sx={{
           background:
             "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
@@ -553,44 +648,53 @@ const About = () => {
         />
         <Container
           maxWidth="lg"
-          sx={{
-            position: "relative",
-            zIndex: 1,
-            textAlign: "center",
-          }}
+          sx={{ position: "relative", zIndex: 1, textAlign: "center" }}
         >
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-              fontWeight: 700,
-              color: "white",
-              mb: 2,
-              lineHeight: 1.2,
-            }}
-          >
-            {makingImpact.title}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
-              color: "rgba(255, 255, 255, 0.9)",
-              mb: { xs: 4, sm: 5, md: 6 },
-              maxWidth: "600px",
-              mx: "auto",
-              lineHeight: 1.6,
-            }}
-          >
-            {makingImpact.subtitle}
-          </Typography>
+          <motion.div variants={fadeInUpVariants}>
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                fontWeight: 700,
+                color: "white",
+                mb: 2,
+                lineHeight: 1.2,
+              }}
+            >
+              {makingImpact.title}
+            </Typography>
+          </motion.div>
+          <motion.div variants={fadeInUpVariants}>
+            <Typography
+              variant="body1"
+              sx={{
+                fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                color: "rgba(255, 255, 255, 0.9)",
+                mb: { xs: 4, sm: 5, md: 6 },
+                maxWidth: "600px",
+                mx: "auto",
+                lineHeight: 1.6,
+              }}
+            >
+              {makingImpact.subtitle}
+            </Typography>
+          </motion.div>
           <Grid
             container
+            component={motion.div}
+            variants={containerVariants}
             spacing={{ xs: 3, sm: 4, md: 6 }}
             justifyContent="center"
           >
             {makingImpact.stats.map((stat, index) => (
-              <Grid item xs={6} sm={3} key={index}>
+              <Grid
+                item
+                xs={6}
+                sm={3}
+                key={index}
+                component={motion.div}
+                variants={fadeInUpVariants}
+              >
                 <Box textAlign="center">
                   <Typography
                     variant="h3"
@@ -624,44 +728,60 @@ const About = () => {
 
       <Box sx={{ backgroundColor: "white", py: { xs: 1, sm: 1, md: 1 } }}>
         <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-          <Box sx={{ maxWidth: "lg", mx: "auto", width: "100%" }}>
-            <Box
-              textAlign="center"
-              sx={{ mt: { xs: 4, sm: 6, md: 8 }, mb: { xs: 4, md: 6 } }}
-            >
+          <Box
+            component={motion.div}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+            sx={{ maxWidth: "lg", mx: "auto", width: "100%" }}
+          >
+            <motion.div variants={fadeInUpVariants}>
+              <Box
+                textAlign="center"
+                sx={{ mt: { xs: 4, sm: 6, md: 8 }, mb: { xs: 4, md: 6 } }}
+              >
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
+                    fontWeight: 700,
+                    mb: 3.5,
+                    color: "#1f2937",
+                  }}
+                >
+                  Join Our Mission
+                </Typography>
+              </Box>
+            </motion.div>
+            <motion.div variants={fadeInUpVariants}>
               <Typography
-                variant="h2"
+                variant="body1"
                 sx={{
-                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
-                  fontWeight: 700,
-                  mb: 3.5,
-                  color: "#1f2937",
+                  fontSize: { xs: "0.95rem", sm: "1rem", md: "1.2rem" },
+                  color: "#4B5563",
+                  lineHeight: 1.7,
+                  maxWidth: "800px",
+                  mx: "auto",
+                  whiteSpace: "pre-line",
+                  textAlign: "center",
+                  mb: { xs: 4, md: 6 },
                 }}
               >
-                Join Our Mission
+                Whether you're a researcher looking to share your work or
+                someone curious about the latest discoveries, there's a place
+                for you in the R2C community.
               </Typography>
-            </Box>
-            <Typography
-              variant="body1"
-              sx={{
-                fontSize: { xs: "0.95rem", sm: "1rem", md: "1.2rem" },
-                color: "#4B5563",
-                lineHeight: 1.7,
-                maxWidth: "800px",
-                mx: "auto",
-                whiteSpace: "pre-line",
-                textAlign: "center",
-                mb: { xs: 4, md: 6 },
-              }}
-            >
-              Whether you're a researcher looking to share your work or someone
-              curious about the latest discoveries, there's a place for you in
-              the R2C community.
-            </Typography>
+            </motion.div>
           </Box>
 
           <Stack
-            direction={{ xs: 'column', sm: 'row' }}
+            component={motion.div}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+            variants={fadeInUpVariants}
+            direction={{ xs: "column", sm: "row" }}
             spacing={2}
             justifyContent="center"
             alignItems="center"
@@ -675,21 +795,21 @@ const About = () => {
               sx={{
                 px: { xs: 2.5, sm: 3.5 },
                 py: { xs: 1.25, sm: 1.5 },
-                fontSize: { xs: '0.9rem', sm: '1rem' },
+                fontSize: { xs: "0.9rem", sm: "1rem" },
                 fontWeight: 600,
-                borderRadius: '12px',
-                bgcolor: '#2563eb',
-                color: 'white',
-                textTransform: 'none',
-                boxShadow: '0 8px 20px rgba(37, 99, 235, 0.25)',
-                '&:hover': {
-                  bgcolor: '#1d4ed8',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 12px 30px rgba(37, 99, 235, 0.35)'
+                borderRadius: "12px",
+                bgcolor: "#2563eb",
+                color: "white",
+                textTransform: "none",
+                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.25)",
+                "&:hover": {
+                  bgcolor: "#1d4ed8",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 12px 30px rgba(37, 99, 235, 0.35)",
                 },
-                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                width: { xs: '100%', sm: 'auto' },
-                maxWidth: { xs: '280px', sm: 'none' }
+                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                width: { xs: "100%", sm: "auto" },
+                maxWidth: { xs: "280px", sm: "none" },
               }}
             >
               {hero.primaryButtonText}
@@ -702,22 +822,22 @@ const About = () => {
               sx={{
                 px: { xs: 2.5, sm: 3.5 },
                 py: { xs: 1.25, sm: 1.5 },
-                fontSize: { xs: '0.9rem', sm: '1rem' },
-                textTransform: 'none',
+                fontSize: { xs: "0.9rem", sm: "1rem" },
+                textTransform: "none",
                 fontWeight: 600,
-                borderRadius: '12px',
-                borderColor: '#d1d5db',
-                color: '#374151',
+                borderRadius: "12px",
+                borderColor: "#d1d5db",
+                color: "#374151",
                 borderWidth: 2,
-                '&:hover': {
-                  borderColor: '#9ca3af',
-                  bgcolor: 'rgba(243, 244, 246, 0.5)',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
+                "&:hover": {
+                  borderColor: "#9ca3af",
+                  bgcolor: "rgba(243, 244, 246, 0.5)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
                 },
-                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                width: { xs: '100%', sm: 'auto' },
-                maxWidth: { xs: '280px', sm: 'none' }
+                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                width: { xs: "100%", sm: "auto" },
+                maxWidth: { xs: "280px", sm: "none" },
               }}
             >
               {hero.secondaryButtonText}
@@ -725,7 +845,7 @@ const About = () => {
           </Stack>
         </Container>
       </Box>
-    </>
+    </Box>
   );
 };
 
