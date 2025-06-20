@@ -6,6 +6,11 @@ import {
   Typography,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -45,6 +50,9 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
   const [selectedGenres, setSelectedGenres] = useState([]);
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [studyToDelete, setStudyToDelete] = useState(null);
 
   const navigate = useNavigate();
   const { currentUser } = useAuth();
@@ -135,6 +143,53 @@ const Dashboard = () => {
     }
   }, [currentPage, currentUser, fetchStudiesForPage]);
 
+  const handleOpenDeleteDialog = (studyId) => {
+    setStudyToDelete(studyId);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setStudyToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!currentUser || !studyToDelete) {
+      setError("User not authenticated or no study selected for deletion.");
+      handleCloseDeleteDialog();
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = await currentUser.getIdToken(true);
+      const response = await fetch(
+        `http://localhost:5000/studies/${studyToDelete}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.message || "Failed to delete study");
+      }
+
+      if (myStudiesResponse.studies.length === 1 && currentPage > 1) {
+        setCurrentPage((prev) => prev - 1);
+      } else {
+        fetchStudiesForPage(currentPage);
+      }
+    } catch (delError) {
+      console.error("Delete error:", delError);
+      setError(delError.message);
+    } finally {
+      setLoading(false);
+      handleCloseDeleteDialog();
+    }
+  };
+
   const handleNextPage = () => {
     if (currentPage < myStudiesResponse.totalPages) {
       setCurrentPage((prev) => prev + 1);
@@ -147,49 +202,9 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddNewStudy = () => {
-    navigate("/create-study");
-  };
-
+  const handleAddNewStudy = () => navigate("/create-study");
   const handleEditStudy = (studyId) => navigate(`/edit-study/${studyId}`);
   const handleNavigateToStudy = (studyId) => navigate(`/study/${studyId}`);
-
-  const handleDeleteStudy = async (studyId) => {
-    if (!currentUser) {
-      setError("User not authenticated to perform this action.");
-      return;
-    }
-    if (
-      window.confirm(
-        "Are you sure you want to delete this study? This action cannot be undone."
-      )
-    ) {
-      setLoading(true);
-      try {
-        const token = await currentUser.getIdToken(true);
-        const response = await fetch(
-          `http://localhost:5000/studies/${studyId}`,
-          {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(errData.message || "Failed to delete study");
-        }
-        if (myStudiesResponse.studies.length === 1 && currentPage > 1) {
-          setCurrentPage((prev) => prev - 1);
-        } else {
-          fetchStudiesForPage(currentPage);
-        }
-      } catch (delError) {
-        console.error("Delete error:", delError);
-        setError(delError.message);
-        setLoading(false);
-      }
-    }
-  };
 
   const handleGenreChange = (event) => {
     const {
@@ -376,7 +391,7 @@ const Dashboard = () => {
                 key={study._id}
                 study={study}
                 onEdit={handleEditStudy}
-                onDelete={handleDeleteStudy}
+                onDelete={handleOpenDeleteDialog}
                 onNavigate={handleNavigateToStudy}
               />
             ))}
@@ -496,6 +511,28 @@ const Dashboard = () => {
             )}
         </Box>
       </Container>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this study? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

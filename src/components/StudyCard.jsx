@@ -43,6 +43,7 @@ const StudyCard = ({ study, onEdit, onDelete, onNavigate }) => {
     >
       <Card
         sx={{
+          height: "100%", 
           display: "flex",
           flexDirection: "column",
           borderRadius: "12px",
@@ -57,7 +58,7 @@ const StudyCard = ({ study, onEdit, onDelete, onNavigate }) => {
             p: 2.5,
             display: "flex",
             flexDirection: "column",
-            flexGrow: 1,
+            flexGrow: 1, 
             cursor: "pointer",
             "&:last-child": {
               paddingBottom: 2.5,
@@ -179,7 +180,6 @@ const StudyCard = ({ study, onEdit, onDelete, onNavigate }) => {
               fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
               fontSize: "0.9rem",
               lineHeight: 1.5,
-              flexGrow: 1,
               display: "-webkit-box",
               WebkitLineClamp: 3,
               WebkitBoxOrient: "vertical",
@@ -203,7 +203,7 @@ const StudyCard = ({ study, onEdit, onDelete, onNavigate }) => {
             gap: 1.5,
             justifyContent: "space-between",
             alignItems: "center",
-            flexShrink: 0,
+            flexShrink: 0, 
           }}
         >
           <Button
@@ -246,7 +246,8 @@ const StudyCard = ({ study, onEdit, onDelete, onNavigate }) => {
                 borderRadius: "6px",
                 color: "#1E40AF",
                 borderColor: "#DBEAFE",
-                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontFamily:
+                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                 "&:hover": {
                   backgroundColor: "rgba(30, 64, 175, 0.05)",
                   borderColor: "#1E40AF",
@@ -272,7 +273,8 @@ const StudyCard = ({ study, onEdit, onDelete, onNavigate }) => {
                 borderRadius: "6px",
                 color: "#DC2626",
                 borderColor: "#FECACA",
-                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontFamily:
+                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                 "&:hover": {
                   backgroundColor: "rgba(220, 38, 38, 0.05)",
                   borderColor: "#DC2626",

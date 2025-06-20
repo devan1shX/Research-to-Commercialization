@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home/Home';
 import ExploreStudies from './pages/ExploreStudies/ExploreStudies';
-import StudyDetailPage from './pages/StudyDetail/StudyDetail';
+import StudyDetailPage from './pages/StudyDetail/StudyDetailPage';
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/Signup';
 import About from './pages/About/About';

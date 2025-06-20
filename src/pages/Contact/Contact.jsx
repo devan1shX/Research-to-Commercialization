@@ -4,7 +4,6 @@ import {
   Container,
   Typography,
   Chip,
-  useTheme,
   TextField,
   Button,
   Select,
@@ -22,6 +21,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { ChatOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
+// --- All your styled components remain unchanged ---
 const ContactIconBox = styled(Box)(({ theme, bgcolor }) => ({
   width: "44px",
   height: "44px",
@@ -191,6 +191,7 @@ const fadeInUpVariants = {
   },
 };
 
+
 const Contact = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -211,33 +212,55 @@ const Contact = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.category ||
+      !formData.subject ||
+      !formData.message
+    ) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
+    const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSewkRtrflqC1x9QFKKpmte4Yk90f8rT6ON07sIAY3Nc6Hz9DQ/formResponse";
+
+    // --- FINAL: Correct Entry IDs from your pre-filled URL ---
+    const GOOGLE_FORM_ENTRIES = {
+        email: "entry.2123290073",
+        fullName: "entry.54957500",
+        category: "entry.705842560",
+        subject: "entry.1279401162",
+        message: "entry.110051072",
+    };
+
+    const googleFormData = new FormData();
+    googleFormData.append(GOOGLE_FORM_ENTRIES.fullName, formData.fullName);
+    googleFormData.append(GOOGLE_FORM_ENTRIES.email, formData.email);
+    googleFormData.append(GOOGLE_FORM_ENTRIES.category, formData.category);
+    googleFormData.append(GOOGLE_FORM_ENTRIES.subject, formData.subject);
+    googleFormData.append(GOOGLE_FORM_ENTRIES.message, formData.message);
+
     try {
-      const response = await fetch("/api/send-email", {
+      await fetch(GOOGLE_FORM_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          recipientEmail: "anishdewat@gmail.com",
-        }),
+        body: googleFormData,
+        mode: "no-cors",
       });
-      if (response.ok) {
-        alert("Message sent successfully!");
-        setFormData({
-          fullName: "",
-          email: "",
-          category: "",
-          subject: "",
-          message: "",
-        });
-      } else {
-        alert(
-          `Failed to send message. Server responded with: ${response.statusText}. Please try again later.`
-        );
-      }
+
+      alert("Message sent successfully!");
+      setFormData({
+        fullName: "",
+        email: "",
+        category: "",
+        subject: "",
+        message: "",
+      });
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error("Error sending message:", error);
       alert(
-        "An error occurred while sending the message. Please try again later."
+        "An error occurred while sending your message. Please try again later."
       );
     }
   };
@@ -250,6 +273,7 @@ const Contact = () => {
       exit="out"
       variants={pageVariants}
     >
+      {/* --- The rest of the page is unchanged --- */}
       <Box
         sx={{
           minHeight: "40vh",
@@ -618,19 +642,19 @@ const Contact = () => {
                         >
                           Select a category
                         </MenuItem>
-                        <MenuItem value="general" sx={{ fontSize: "15px" }}>
+                        <MenuItem value="General Inquiry" sx={{ fontSize: "15px" }}>
                           General Inquiry
                         </MenuItem>
-                        <MenuItem value="support" sx={{ fontSize: "15px" }}>
+                        <MenuItem value="Technical Support" sx={{ fontSize: "15px" }}>
                           Technical Support
                         </MenuItem>
-                        <MenuItem value="partnership" sx={{ fontSize: "15px" }}>
+                        <MenuItem value="Partnership" sx={{ fontSize: "15px" }}>
                           Partnership
                         </MenuItem>
-                        <MenuItem value="research" sx={{ fontSize: "15px" }}>
+                        <MenuItem value="Research Collaboration" sx={{ fontSize: "15px" }}>
                           Research Collaboration
                         </MenuItem>
-                        <MenuItem value="other" sx={{ fontSize: "15px" }}>
+                        <MenuItem value="Other" sx={{ fontSize: "15px" }}>
                           Other
                         </MenuItem>
                       </StyledSelect>
