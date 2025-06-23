@@ -176,7 +176,6 @@ const Signup = () => {
         role: "student",
         phone: "",
       });
-      // navigate('/login');
     } catch (err) {
       setError(err.message || "Failed to sign up. Please try again.");
     } finally {
@@ -218,7 +217,6 @@ const Signup = () => {
         role: "student",
         phone: "",
       });
-      // navigate('/dashboard');
     } catch (err) {
       setError(err.message || "Google sign-in failed. Please try again.");
     } finally {

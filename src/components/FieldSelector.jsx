@@ -1,15 +1,12 @@
 import React from 'react';
 import { FormControl, Select, MenuItem, OutlinedInput, Typography } from '@mui/material';
 
-// Accept an 'sx' prop (aliased as passedSx to avoid conflict if sx was destructured from props)
 const FieldSelector = ({ selectedFields, onFieldChange, fields, sx: passedSx }) => {
   return (
     <FormControl
       variant="outlined"
       sx={{
-        // Default width (will be overridden by passedSx.width if provided)
         width: { xs: '100%', sm: '250px', md: '300px' },
-        // Other existing default styles
         '& .MuiOutlinedInput-root': {
           borderRadius: '12px',
           backgroundColor: 'white',
@@ -27,7 +24,6 @@ const FieldSelector = ({ selectedFields, onFieldChange, fields, sx: passedSx }) 
             },
           },
         },
-        // Merge the passed sx prop. Styles in passedSx will override defaults if keys match.
         ...passedSx,
       }}
     >
@@ -91,7 +87,7 @@ const FieldSelector = ({ selectedFields, onFieldChange, fields, sx: passedSx }) 
           PaperProps: {
             style: {
               maxHeight: 240,
-              width: 250, // This width is for the dropdown menu, not the selector input itself
+              width: 250, 
             },
           },
         }}

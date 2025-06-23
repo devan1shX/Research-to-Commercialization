@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // Removed useEffect
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -19,7 +19,7 @@ import {
   Menu,
   MenuItem,
   Avatar,
-  CircularProgress, // Added for loading state if needed
+  CircularProgress, 
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -28,9 +28,7 @@ import DashboardIcon from "@mui/icons-material/DashboardOutlined";
 import LogoutIcon from "@mui/icons-material/LogoutOutlined";
 import LoginIcon from "@mui/icons-material/Login";
 import { Link as RouterLink, NavLink, useNavigate } from "react-router-dom";
-
-// Import useAuth from AuthContext
-import { useAuth } from "../../src/AuthContext"; // Adjust path as per your structure
+import { useAuth } from "../../src/AuthContext"; 
 
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
@@ -50,13 +48,11 @@ const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  // Use AuthContext
   const { currentUser, logout, loadingAuth } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
   const navigate = useNavigate();
 
-  // Removed useEffect for onAuthStateChanged as it's now handled by AuthContext
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

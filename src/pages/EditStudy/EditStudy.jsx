@@ -293,17 +293,11 @@ const EditStudy = () => {
     if (formData.patent_status)
       submissionFormData.append("patent_status", formData.patent_status);
 
-    // ======================= THE FIX ==========================
-    // Prepare the questions data by filtering out empty ones and removing the temporary client-side 'id'.
     const filteredQuestions = formData.questions
       .filter((qa) => qa.question.trim() && qa.answer.trim())
       .map(({ question, answer }) => ({ question, answer }));
 
-    // ALWAYS append the questions field. If `filteredQuestions` is an empty array,
-    // it will be stringified to '[]' and sent. The backend will then know to
-    // clear the questions in the database.
     submissionFormData.append("questions", JSON.stringify(filteredQuestions));
-    // ==========================================================
 
     const transformedAdditionalInfo = formData.additional_info.reduce(
       (obj, item) => {
