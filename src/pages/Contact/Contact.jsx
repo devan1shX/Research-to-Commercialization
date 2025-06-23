@@ -21,7 +21,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { ChatOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
-// --- All your styled components remain unchanged ---
 const ContactIconBox = styled(Box)(({ theme, bgcolor }) => ({
   width: "44px",
   height: "44px",
@@ -191,7 +190,6 @@ const fadeInUpVariants = {
   },
 };
 
-
 const Contact = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -224,15 +222,15 @@ const Contact = () => {
       return;
     }
 
-    const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSewkRtrflqC1x9QFKKpmte4Yk90f8rT6ON07sIAY3Nc6Hz9DQ/formResponse";
+    const GOOGLE_FORM_URL =
+      "https://docs.google.com/forms/d/e/1FAIpQLSewkRtrflqC1x9QFKKpmte4Yk90f8rT6ON07sIAY3Nc6Hz9DQ/formResponse";
 
-    // --- FINAL: Correct Entry IDs from your pre-filled URL ---
     const GOOGLE_FORM_ENTRIES = {
-        email: "entry.2123290073",
-        fullName: "entry.54957500",
-        category: "entry.705842560",
-        subject: "entry.1279401162",
-        message: "entry.110051072",
+      email: "entry.2123290073",
+      fullName: "entry.54957500",
+      category: "entry.705842560",
+      subject: "entry.1279401162",
+      message: "entry.110051072",
     };
 
     const googleFormData = new FormData();
@@ -642,16 +640,25 @@ const Contact = () => {
                         >
                           Select a category
                         </MenuItem>
-                        <MenuItem value="General Inquiry" sx={{ fontSize: "15px" }}>
+                        <MenuItem
+                          value="General Inquiry"
+                          sx={{ fontSize: "15px" }}
+                        >
                           General Inquiry
                         </MenuItem>
-                        <MenuItem value="Technical Support" sx={{ fontSize: "15px" }}>
+                        <MenuItem
+                          value="Technical Support"
+                          sx={{ fontSize: "15px" }}
+                        >
                           Technical Support
                         </MenuItem>
                         <MenuItem value="Partnership" sx={{ fontSize: "15px" }}>
                           Partnership
                         </MenuItem>
-                        <MenuItem value="Research Collaboration" sx={{ fontSize: "15px" }}>
+                        <MenuItem
+                          value="Research Collaboration"
+                          sx={{ fontSize: "15px" }}
+                        >
                           Research Collaboration
                         </MenuItem>
                         <MenuItem value="Other" sx={{ fontSize: "15px" }}>
