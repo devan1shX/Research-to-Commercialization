@@ -280,9 +280,11 @@ const CreateStudy = () => {
       transition={pageTransition}
       sx={{
         backgroundColor: "#F9FAFB",
-        paddingTop: { xs: "100px", md: "120px" },
+        paddingTop: { xs: "100px", sm: "120px", md: "120px" },
         flexGrow: 1,
-        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "calc(100vh - 120px)",
       }}
     >
       <Backdrop
@@ -302,7 +304,14 @@ const CreateStudy = () => {
 
       <Container
         maxWidth="xl"
-        sx={{ paddingLeft: { md: "70px" }, paddingRight: { md: "70px" } }}
+        sx={{
+          py: 0,
+          paddingLeft: { xs: "26px", sm: "32px", md: "70px" },
+          paddingRight: { xs: "26px", sm: "32px", md: "70px" },
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
         <Box sx={{ mb: 4 }}>
           <Typography
