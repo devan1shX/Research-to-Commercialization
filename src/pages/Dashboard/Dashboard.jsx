@@ -15,6 +15,8 @@ import {
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddIcon from "@mui/icons-material/Add";
+import { Stack } from "@mui/material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 import StudyCard from "../../components/StudyCard";
 import { useAuth } from "../../AuthContext";
@@ -56,6 +58,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const handleNavigateToBulkCreate = () => navigate("/bulk-create-study");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -329,17 +332,34 @@ const Dashboard = () => {
             >
               Manage Your Studies
             </Typography>
-            <Button
-              variant="contained"
-              onClick={handleAddNewStudy}
-              endIcon={<AddIcon />}
-              sx={{
-                ...commonButtonSx,
-                display: { xs: "none", sm: "inline-flex" },
-              }}
-            >
-              Add New Study
-            </Button>
+            <Stack direction="row" spacing={2} sx={{ mt: { xs: 2, sm: 0 }, width: { xs: '100%', sm: 'auto'} }}>
+      <Button
+        variant="contained"
+        onClick={handleAddNewStudy}
+        startIcon={<AddIcon />}
+        sx={{ ...commonButtonSx, flexGrow: 1 }} // flexGrow allows it to fill space on mobile
+      >
+        Add New
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={handleNavigateToBulkCreate}
+        startIcon={<CloudUploadIcon />}
+         sx={{
+          ...commonButtonSx,
+          flexGrow: 1, // flexGrow allows it to fill space on mobile
+          bgcolor: 'white',
+          color: '#2563eb',
+          border: '1px solid #2563eb',
+          '&:hover': {
+            bgcolor: 'rgba(37, 99, 235, 0.04)',
+            border: '1px solid #1d4ed8',
+          }
+        }}
+      >
+        Bulk Upload
+      </Button>
+    </Stack>
           </Box>
           <Typography
             variant="body1"

@@ -10,6 +10,7 @@ import Signup from './pages/SignUp/Signup';
 import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
 import Dashboard from './pages/Dashboard/Dashboard';
+import BulkCreateStudy from './pages/BulkCreateStudy/BulkCreateStudy';
 
 import { AuthProvider, useAuth } from './AuthContext'; 
 import CreateStudy from './pages/CreateStudy/CreateStudy';
@@ -52,6 +53,18 @@ function AppContent() {
                 <p>Loading authentication...</p>
               ) : currentUser ? (
                 <CreateStudy />
+              ) : (
+                <Navigate to="/login" state={{ from: location }} replace />
+              )
+            }
+          />
+          <Route
+            path='/bulk-create-study'
+            element={
+              loadingAuth ? (
+                <p>Loading authentication...</p>
+              ) : currentUser ? (
+                <BulkCreateStudy />
               ) : (
                 <Navigate to="/login" state={{ from: location }} replace />
               )

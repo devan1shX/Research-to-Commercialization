@@ -18,6 +18,7 @@ import ClassificationSection from "./ClassificationSection";
 import DocumentUploadSection from "./DocumentUploadSection";
 import RelatedQuestions from "./RelatedQuestions";
 import SubmissionStatus from "./SubmissionStatus";
+import AdditionalInfoSection from "./AdditionalInfoSection"; // Import the AdditionalInfoSection
 
 const CreateStudy = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const CreateStudy = () => {
     documents: [],
     patent_status: "",
     questions: [],
+    additional_info: [{ key: "", value: "" }], // Initialize additional_info
   });
 
   const [errors, setErrors] = useState({});
@@ -107,6 +109,7 @@ const CreateStudy = () => {
       documents: [],
       patent_status: "",
       questions: [],
+      additional_info: [{ key: "", value: "" }], // Reset additional_info
     });
     setErrors({});
     setApiError("");
@@ -124,6 +127,48 @@ const CreateStudy = () => {
     [errors]
   );
 
+  const handleArrayItemChange = useCallback(
+    (arrayName, index, e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => {
+        const newArray = [...prev[arrayName]];
+        newArray[index] = { ...newArray[index], [name]: value };
+        return { ...prev, [arrayName]: newArray };
+      });
+      // Clear specific array item errors if any
+      const errorKey = `${arrayName}_${name}_${index}`;
+      if (errors[errorKey]) {
+        setErrors((prev) => ({ ...prev, [errorKey]: null }));
+      }
+    },
+    [errors]
+  );
+
+  const addArrayItem = useCallback((arrayName, initialState) => {
+    setFormData((prev) => ({
+      ...prev,
+      [arrayName]: [...prev[arrayName], initialState],
+    }));
+  }, []);
+
+  const removeArrayItem = useCallback((arrayName, index) => {
+    setFormData((prev) => {
+      const newArray = prev[arrayName].filter((_, i) => i !== index);
+      return { ...prev, [arrayName]: newArray };
+    });
+    // Remove errors associated with the removed item
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      Object.keys(newErrors).forEach((key) => {
+        if (key.startsWith(`${arrayName}_`) && key.endsWith(`_${index}`)) {
+          delete newErrors[key];
+        }
+      });
+      return newErrors;
+    });
+  }, []);
+
+
   const handleGenresChange = useCallback((event, newValue) => {
     setFormData((prev) => ({ ...prev, genres: newValue }));
   }, []);
@@ -135,6 +180,16 @@ const CreateStudy = () => {
     if (!formData.brief_description.trim())
       newErrors.brief_description = "Brief description is required.";
     if (!uploadedFile) newErrors.document = "A document must be uploaded.";
+
+    // Validate additional_info
+    formData.additional_info.forEach((info, index) => {
+      if (!info.key.trim()) {
+        newErrors[`additional_info_key_${index}`] = "Key is required.";
+      }
+      if (!info.value.trim()) {
+        newErrors[`additional_info_value_${index}`] = "Value is required.";
+      }
+    });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -168,6 +223,7 @@ const CreateStudy = () => {
       submissionFormData.append("patent_status", formData.patent_status);
 
     submissionFormData.append("questions", JSON.stringify(formData.questions));
+    submissionFormData.append("additional_info", JSON.stringify(formData.additional_info)); // Append additional_info
 
     if (uploadedFile) {
       submissionFormData.append(
@@ -359,7 +415,17 @@ const CreateStudy = () => {
               handleGenresChange={handleGenresChange}
               handleChange={handleChange}
             />
-            <RelatedQuestions questions={formData.questions} />
+            <RelatedQuestions
+              questions={formData.questions}
+              handleArrayItemChange={handleArrayItemChange} // Pass handleArrayItemChange
+            />
+            <AdditionalInfoSection
+              additionalInfo={formData.additional_info}
+              errors={errors}
+              handleArrayItemChange={handleArrayItemChange}
+              addArrayItem={addArrayItem}
+              removeArrayItem={removeArrayItem}
+            />
             <SubmissionStatus
               isSubmitting={isSubmitting}
               loadingAuth={loadingAuth}

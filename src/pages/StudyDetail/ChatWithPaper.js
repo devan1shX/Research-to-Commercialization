@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import ChatIcon from "@mui/icons-material/Chat";
+import { marked } from "marked";
 
 const ChatWithPaper = ({
   chatMessages,
   chatInputValue,
   setChatInputValue,
   handleChatSend,
+  isReplying,
 }) => {
+  const chatBoxRef = useRef(null);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
   return (
     <Box
       sx={{
@@ -48,6 +58,7 @@ const ChatWithPaper = ({
         AI assistant.
       </Typography>
       <Box
+        ref={chatBoxRef}
         sx={{
           flexGrow: 1,
           mb: 2.5,
@@ -77,9 +88,9 @@ const ChatWithPaper = ({
             </Typography>
           </Box>
         ) : (
-          chatMessages.map((msg) => (
+          chatMessages.map((msg, index) => (
             <Box
-              key={msg.id}
+              key={index}
               sx={{
                 mb: 1.5,
                 p: "10px 14px",
@@ -100,11 +111,10 @@ const ChatWithPaper = ({
             >
               <Typography
                 variant="body2"
-                component="p"
+                component="div"
                 sx={{ lineHeight: 1.5 }}
-              >
-                {msg.text}
-              </Typography>
+                dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
+              ></Typography>
               <Typography
                 variant="caption"
                 sx={{
@@ -119,6 +129,20 @@ const ChatWithPaper = ({
               </Typography>
             </Box>
           ))
+        )}
+        {isReplying && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              p: 2,
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "#6B7280" }}>
+              Thinking...
+            </Typography>
+          </Box>
         )}
       </Box>
       <Box
@@ -162,7 +186,7 @@ const ChatWithPaper = ({
         <Button
           variant="contained"
           onClick={handleChatSend}
-          disabled={!chatInputValue.trim()}
+          disabled={!chatInputValue.trim() || isReplying}
           sx={{
             py: "9px",
             px: 2.5,

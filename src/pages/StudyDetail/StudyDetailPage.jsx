@@ -9,14 +9,17 @@ import NotFoundState from "./NotFoundState";
 import StudyDetails from "./StudyDetails";
 import ChatWithPaper from "./ChatWithPaper";
 import RelatedQuestions from "./RelatedQuestions";
+import { useAuth } from "../../AuthContext"; // Correctly import and use the useAuth hook
 
 const StudyDetailPage = () => {
   const { id } = useParams();
+  const { currentUser } = useAuth(); // Use the custom hook to access context
   const [study, setStudy] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chatInputValue, setChatInputValue] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const [isReplying, setIsReplying] = useState(false);
 
   useEffect(() => {
     const fetchStudy = async () => {
@@ -47,8 +50,21 @@ const StudyDetailPage = () => {
     }
   }, [id]);
 
-  const handleChatSend = () => {
-    if (chatInputValue.trim() === "") return;
+  const handleChatSend = async () => {
+    if (chatInputValue.trim() === "" || isReplying) return;
+    if (!currentUser) {
+        // Handle case where user is not logged in
+        const errorMessage = {
+            id: Date.now() + 1,
+            text: "You must be logged in to chat.",
+            sender: "bot",
+            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        setChatMessages((prev) => [...prev, errorMessage]);
+        return;
+    }
+
+
     const newUserMessage = {
       id: Date.now(),
       text: chatInputValue,
@@ -60,11 +76,38 @@ const StudyDetailPage = () => {
     };
     setChatMessages((prev) => [...prev, newUserMessage]);
 
-    setTimeout(() => {
-      const botResponseText = `This is a mock AI response to: "${chatInputValue}". Real functionality will be implemented later.`;
+    const promptForApi = chatInputValue;
+    setChatInputValue("");
+    setIsReplying(true);
+
+    try {
+      const token = await currentUser.getIdToken(); // Get the user's ID token
+
+      const response = await fetch(
+        "http://localhost:5000/studies/chat-with-paper",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+          },
+          body: JSON.stringify({
+            prompt: promptForApi,
+            studyId: id,
+            chatHistory: [...chatMessages, newUserMessage],
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "An error occurred during the request.");
+      }
+      
       const botMessage = {
         id: Date.now() + 1,
-        text: botResponseText,
+        text: data.instant_answer,
         sender: "bot",
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -72,13 +115,24 @@ const StudyDetailPage = () => {
         }),
       };
       setChatMessages((prev) => [...prev, botMessage]);
-    }, 1000 + Math.random() * 500);
-
-    setChatInputValue("");
+    } catch (e) {
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: `Error: ${e.message}`,
+        sender: "bot",
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setChatMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsReplying(false);
+    }
   };
 
   if (loading) return <LoadingState />;
-  if (error) return <ErrorState error={error} />;
+  if (error) return <ErrorState message={error} />;
   if (!study) return <NotFoundState />;
 
   return (
@@ -103,7 +157,7 @@ const StudyDetailPage = () => {
       >
         <Link
           component={RouterLink}
-          to="/studies"
+          to="/explore"
           variant="body2"
           sx={{
             display: "inline-flex",
@@ -141,9 +195,12 @@ const StudyDetailPage = () => {
             chatInputValue={chatInputValue}
             setChatInputValue={setChatInputValue}
             handleChatSend={handleChatSend}
+            isReplying={isReplying}
           />
         </Box>
-        <RelatedQuestions questions={study.questions} />
+        {study.questions && study.questions.length > 0 && (
+          <RelatedQuestions questions={study.questions} />
+        )}
       </Container>
     </Box>
   );
