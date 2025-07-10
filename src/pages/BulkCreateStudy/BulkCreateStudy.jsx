@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
+import { useNotification } from "../../NotificationContext"; 
+import { useBulkAnalysis } from "../../BulkAnalysisContext"; 
 import {
   Container,
   Box,
@@ -23,6 +25,8 @@ const BulkCreateStudy = () => {
   const navigate = useNavigate();
   const { currentUser, loadingAuth } = useAuth();
   const theme = useTheme();
+  const { addNotification } = useNotification();
+  const { startBulkAnalysis, getCompletedJobs, clearJobs } = useBulkAnalysis();
 
   const [studies, setStudies] = useState([]);
   const [selectedStudyId, setSelectedStudyId] = useState(null);
@@ -30,7 +34,7 @@ const BulkCreateStudy = () => {
   const [apiError, setApiError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isStartingAnalysis, setIsStartingAnalysis] = useState(false);
 
   useEffect(() => {
     if (!loadingAuth && !currentUser) {
@@ -38,73 +42,84 @@ const BulkCreateStudy = () => {
     }
   }, [currentUser, loadingAuth, navigate]);
 
-  const handleFileChange = (files) => {
-    const newStudies = files.map((file, index) => ({
-      id: Date.now() + index,
-      file,
-      status: "pending", // pending, analyzing, analyzed, error
-      title: "",
-      abstract: "",
-      brief_description: "",
-      genres: [],
-      documents: [],
-      patent_status: "",
-      questions: [],
-    }));
-    setStudies(newStudies);
-    handleAnalyzeDocuments(newStudies);
-  };
+  useEffect(() => {
+    const completedJobs = getCompletedJobs();
+    if (completedJobs && completedJobs.length > 0) {
+      const studiesFromJobs = completedJobs.map((job) => {
+        if (job.status === "completed") {
+          return {
+            id: job.analysisId,
+            analysisId: job.analysisId,
+            file: { name: job.originalName },
+            status: "analyzed",
+            title: job.data?.title || "",
+            abstract: job.data?.abstract || "",
+            brief_description: job.data?.brief_description || "",
+            genres: job.data?.genres || [],
+            questions: job.data?.questions || [],
+            patent_status: "",
+            documents: [],
+          };
+        } else {
+          return {
+            id: job.analysisId,
+            analysisId: job.analysisId,
+            file: { name: job.originalName },
+            status: "error",
+            title: `Failed: ${job.originalName}`,
+            abstract: `Error: ${job.error || "Unknown analysis failure."}`,
+            brief_description: "",
+            genres: [],
+            questions: [],
+          };
+        }
+      });
+      setStudies(studiesFromJobs);
+    }
+  }, []); 
 
-  const handleAnalyzeDocuments = async (studiesToAnalyze) => {
-    setIsAnalyzing(true);
+  const handleFileChange = async (files) => {
+    if (!files || files.length === 0) return;
+    setIsStartingAnalysis(true);
     setApiError("");
 
-    for (const study of studiesToAnalyze) {
-      setStudies((prev) =>
-        prev.map((s) => (s.id === study.id ? { ...s, status: "analyzing" } : s))
-      );
+    const analysisPromises = files.map(async (file) => {
       const analysisFormData = new FormData();
-      analysisFormData.append("study_document", study.file);
-
+      analysisFormData.append("study_document", file);
       try {
         const token = await currentUser.getIdToken(true);
         const response = await fetch(
-          "http://localhost:5000/studies/analyze-document",
+          "http://localhost:5000/studies/analyze-document-async",
           {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
             body: analysisFormData,
           }
         );
-
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.message || "Failed to analyze document.");
+          throw new Error(data.message || `Failed for ${file.name}.`);
         }
-
-        setStudies((prev) =>
-          prev.map((s) =>
-            s.id === study.id
-              ? {
-                  ...s,
-                  status: "analyzed",
-                  title: data.title || "",
-                  abstract: data.abstract || "",
-                  brief_description: data.brief_description || "",
-                  genres: data.genres || [],
-                  questions: data.questions || [],
-                }
-              : s
-          )
-        );
+        return { analysisId: data.analysisId, originalName: file.name };
       } catch (err) {
-        console.error("Analysis failed:", err);
-        setStudies((prev) =>
-          prev.map((s) => (s.id === study.id ? { ...s, status: "error" } : s))
-        );
+        setApiError((prev) => `${prev}\n${err.message}`);
+        return null;
       }
+    });
+
+    const results = await Promise.all(analysisPromises);
+    const successfulJobs = results.filter((r) => r !== null);
+    
+    setIsStartingAnalysis(false);
+
+    if (successfulJobs.length > 0) {
+      startBulkAnalysis(successfulJobs);
+      addNotification(
+        `Analysis started for ${successfulJobs.length} studies. You will be notified on completion.`,
+        'info'
+      );
+      navigate("/dashboard");
     }
-    setIsAnalyzing(false);
   };
 
   const handleSelectStudy = (studyId) => {
@@ -133,8 +148,7 @@ const BulkCreateStudy = () => {
     },
     [selectedStudyId]
   );
-
-  // NEW: handleArrayItemChange function to update items in arrays
+  
   const handleArrayItemChange = useCallback(
     (arrayName, index, e) => {
       const { name, value } = e.target;
@@ -156,10 +170,11 @@ const BulkCreateStudy = () => {
     setIsSubmitting(true);
     setApiError("");
     setSuccessMessage("");
+    let allSuccessful = true;
+    let successfulCount = 0;
+    const studiesToSubmit = studies.filter(s => s.status === "analyzed");
 
-    for (const study of studies) {
-      if (study.status !== "analyzed") continue; // Only submit analyzed studies
-
+    for (const study of studiesToSubmit) {
       const submissionFormData = new FormData();
       submissionFormData.append("title", study.title.trim());
       submissionFormData.append("abstract", study.abstract.trim());
@@ -172,11 +187,8 @@ const BulkCreateStudy = () => {
         submissionFormData.append("patent_status", study.patent_status);
 
       submissionFormData.append("questions", JSON.stringify(study.questions));
-      submissionFormData.append(
-        "study_document_files",
-        study.file,
-        study.file.name
-      );
+      
+      submissionFormData.append("analysisId", study.analysisId);
       submissionFormData.append(
         "documents_metadata",
         JSON.stringify([{ display_name: study.file.name }])
@@ -192,11 +204,15 @@ const BulkCreateStudy = () => {
         const responseData = await response.json();
 
         if (!response.ok) {
+          allSuccessful = false;
           throw new Error(
             responseData.message || `Error creating study: ${study.title}`
           );
+        } else {
+          successfulCount++;
         }
       } catch (error) {
+        allSuccessful = false;
         setApiError(
           (prev) =>
             `${prev}\nFailed to create study "${study.title}": ${error.message}`
@@ -205,11 +221,16 @@ const BulkCreateStudy = () => {
     }
 
     setIsSubmitting(false);
-    if (!apiError) {
-      setSuccessMessage(
-        "All analyzed studies have been created successfully! Redirecting..."
-      );
-      setTimeout(() => navigate("/dashboard"), 3000);
+
+    if (allSuccessful) {
+      addNotification("All studies were created successfully!", "success");
+      clearJobs();
+      setStudies([]); 
+      navigate("/dashboard"); 
+    } else {
+      if (successfulCount > 0) {
+        setSuccessMessage(`Successfully created ${successfulCount} out of ${studiesToSubmit.length} studies.`);
+      }
     }
   };
 
@@ -272,11 +293,11 @@ const BulkCreateStudy = () => {
           display: "flex",
           flexDirection: "column",
         }}
-        open={isAnalyzing}
+        open={isStartingAnalysis}
       >
         <CircularProgress color="inherit" />
         <Typography sx={{ mt: 2 }}>
-          Analyzing documents... This may take a while.
+          Starting analysis... you will be redirected shortly.
         </Typography>
       </Backdrop>
 
@@ -293,13 +314,13 @@ const BulkCreateStudy = () => {
             Bulk Create Research Studies
           </Typography>
           <Typography variant="body1" sx={{ color: "#666" }}>
-            Upload multiple documents to create several studies at once.
+            Upload multiple documents to create several studies at once. The analysis will run in the background.
           </Typography>
         </Box>
 
         <BulkDocumentUpload
           onFilesChange={handleFileChange}
-          isAnalyzing={isAnalyzing}
+          isAnalyzing={isStartingAnalysis}
         />
 
         {studies.length > 0 && (
@@ -324,7 +345,7 @@ const BulkCreateStudy = () => {
                 <Button
                   variant="contained"
                   onClick={handleSubmitAll}
-                  disabled={isSubmitting || isAnalyzing}
+                  disabled={isSubmitting || isStartingAnalysis}
                   type="submit"
                   color="primary"
                   size="medium"
@@ -348,7 +369,7 @@ const BulkCreateStudy = () => {
                   )}
                 </Button>
                 {apiError && (
-                  <Alert severity="error" sx={{ mt: 2 }}>
+                  <Alert severity="error" sx={{ mt: 2, whiteSpace: 'pre-wrap' }}>
                     {apiError}
                   </Alert>
                 )}

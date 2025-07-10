@@ -12,92 +12,110 @@ import Contact from './pages/Contact/Contact';
 import Dashboard from './pages/Dashboard/Dashboard';
 import BulkCreateStudy from './pages/BulkCreateStudy/BulkCreateStudy';
 
-import { AuthProvider, useAuth } from './AuthContext'; 
+import { AuthProvider, useAuth } from './AuthContext';
+import { NotificationProvider, useNotification } from './NotificationContext';
+import { BulkAnalysisProvider } from './BulkAnalysisContext'; 
 import CreateStudy from './pages/CreateStudy/CreateStudy';
 import EditStudy from './pages/EditStudy/EditStudy';
+import UserStudyDetail from './pages/UserStudyDetail/UserStudyDetail';
 
 function AppContent() {
-  const location = useLocation();
-  const { currentUser, loadingAuth } = useAuth(); 
+    const location = useLocation();
+    const { currentUser, loadingAuth } = useAuth();
 
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+    const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
-  return (
-    <div className="app-container">
-      {!isAuthPage && <Header />}
-      <div className={`page-content-container ${isAuthPage ? 'auth-page' : ''}`}>
-        <Routes>
-          <Route path="/" element={<Home />} /> 
-          <Route path="/studies" element={<ExploreStudies />} />
-          <Route path="/study/:id" element={<StudyDetailPage />} /> 
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} /> 
-          <Route
-            path='/dashboard'
-            element={
-              loadingAuth ? (
-                <p>Loading authentication...</p>
-              ) : currentUser ? (
-                <Dashboard />
-              ) : (
-                <Navigate to="/signup" state={{ from: location }} replace />
-              )
-            }
-          />
-          <Route
-            path='/create-study'
-            element={
-              loadingAuth ? (
-                <p>Loading authentication...</p>
-              ) : currentUser ? (
-                <CreateStudy />
-              ) : (
-                <Navigate to="/login" state={{ from: location }} replace />
-              )
-            }
-          />
-          <Route
-            path='/bulk-create-study'
-            element={
-              loadingAuth ? (
-                <p>Loading authentication...</p>
-              ) : currentUser ? (
-                <BulkCreateStudy />
-              ) : (
-                <Navigate to="/login" state={{ from: location }} replace />
-              )
-            }
-          />
-          <Route
-            path='/edit-study/:id'
-            element={
-              loadingAuth ? (
-                <p>Loading authentication...</p> 
-              ) : currentUser ? (
-                <EditStudy />
-              ) : (
-                <Navigate to="/login" state={{ from: location }} replace />
-              )
-            }
-          />
-        </Routes>
-        
-      </div>
-      {!isAuthPage && <Footer />}
-    </div>
-  );
+    return (
+        <div className="app-container">
+            {!isAuthPage && <Header />}
+            <div className={`page-content-container ${isAuthPage ? 'auth-page' : ''}`}>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/studies" element={<ExploreStudies />} />
+                    <Route path="/study/:id" element={<StudyDetailPage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route
+                        path='/dashboard'
+                        element={
+                            loadingAuth ? (
+                                <p>Loading authentication...</p>
+                            ) : currentUser ? (
+                                <Dashboard />
+                            ) : (
+                                <Navigate to="/signup" state={{ from: location }} replace />
+                            )
+                        }
+                    />
+                    <Route
+                        path='/create-study'
+                        element={
+                            loadingAuth ? (
+                                <p>Loading authentication...</p>
+                            ) : currentUser ? (
+                                <CreateStudy />
+                            ) : (
+                                <Navigate to="/login" state={{ from: location }} replace />
+                            )
+                        }
+                    />
+                    <Route
+                        path='/bulk-create-study'
+                        element={
+                            loadingAuth ? (
+                                <p>Loading authentication...</p>
+                            ) : currentUser ? (
+                                <BulkCreateStudy />
+                            ) : (
+                                <Navigate to="/login" state={{ from: location }} replace />
+                            )
+                        }
+                    />
+                    <Route
+                        path='/edit-study/:id'
+                        element={
+                            loadingAuth ? (
+                                <p>Loading authentication...</p>
+                            ) : currentUser ? (
+                                <EditStudy />
+                            ) : (
+                                <Navigate to="/login" state={{ from: location }} replace />
+                            )
+                        }
+                    />
+                    <Route
+                        path='/my-study/:id'
+                        element={
+                            loadingAuth ? (
+                                <p>Loading authentication...</p>
+                            ) : currentUser ? (
+                                <UserStudyDetail />
+                            ) : (
+                                <Navigate to="/login" state={{ from: location }} replace />
+                            )
+                        }
+                    />
+                </Routes>
+            </div>
+            {!isAuthPage && <Footer />}
+        </div>
+    );
 }
 
 function App() {
-  return (
-    <AuthProvider> 
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
-  );
+    return (
+        <AuthProvider>
+            <NotificationProvider>
+                <Router>
+                    <BulkAnalysisProvider>
+                        <AppContent />
+                    </BulkAnalysisProvider>
+                </Router>
+            </NotificationProvider>
+        </AuthProvider>
+    );
 }
 
 export default App;

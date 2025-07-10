@@ -11,12 +11,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
 } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddIcon from "@mui/icons-material/Add";
-import { Stack } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import StudyCard from "../../components/StudyCard";
 import { useAuth } from "../../AuthContext";
@@ -207,7 +207,8 @@ const Dashboard = () => {
 
   const handleAddNewStudy = () => navigate("/create-study");
   const handleEditStudy = (studyId) => navigate(`/edit-study/${studyId}`);
-  const handleNavigateToStudy = (studyId) => navigate(`/study/${studyId}`);
+
+  const handleNavigateToStudy = (studyId) => navigate(`/my-study/${studyId}`);
 
   const handleGenreChange = (event) => {
     const {
@@ -332,34 +333,38 @@ const Dashboard = () => {
             >
               Manage Your Studies
             </Typography>
-            <Stack direction="row" spacing={2} sx={{ mt: { xs: 2, sm: 0 }, width: { xs: '100%', sm: 'auto'} }}>
-      <Button
-        variant="contained"
-        onClick={handleAddNewStudy}
-        startIcon={<AddIcon />}
-        sx={{ ...commonButtonSx, flexGrow: 1 }} // flexGrow allows it to fill space on mobile
-      >
-        Add New
-      </Button>
-      <Button
-        variant="outlined"
-        onClick={handleNavigateToBulkCreate}
-        startIcon={<CloudUploadIcon />}
-         sx={{
-          ...commonButtonSx,
-          flexGrow: 1, // flexGrow allows it to fill space on mobile
-          bgcolor: 'white',
-          color: '#2563eb',
-          border: '1px solid #2563eb',
-          '&:hover': {
-            bgcolor: 'rgba(37, 99, 235, 0.04)',
-            border: '1px solid #1d4ed8',
-          }
-        }}
-      >
-        Bulk Upload
-      </Button>
-    </Stack>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ mt: { xs: 2, sm: 0 }, width: { xs: "100%", sm: "auto" } }}
+            >
+              <Button
+                variant="contained"
+                onClick={handleAddNewStudy}
+                startIcon={<AddIcon />}
+                sx={{ ...commonButtonSx, flexGrow: 1 }}
+              >
+                Add New
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleNavigateToBulkCreate}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  ...commonButtonSx,
+                  flexGrow: 1,
+                  bgcolor: "white",
+                  color: "#2563eb",
+                  border: "1px solid #2563eb",
+                  "&:hover": {
+                    bgcolor: "rgba(37, 99, 235, 0.04)",
+                    border: "1px solid #1d4ed8",
+                  },
+                }}
+              >
+                Bulk Upload
+              </Button>
+            </Stack>
           </Box>
           <Typography
             variant="body1"
@@ -373,20 +378,6 @@ const Dashboard = () => {
           >
             View, create, edit, and manage your research studies.
           </Typography>
-          <Button
-            variant="contained"
-            onClick={handleAddNewStudy}
-            endIcon={<AddIcon />}
-            sx={{
-              ...commonButtonSx,
-              width: "100%",
-              maxWidth: { xs: "100%", sm: "280px" },
-              mt: 3,
-              display: { xs: "inline-flex", sm: "none" },
-            }}
-          >
-            Add New Study
-          </Button>
         </Box>
 
         <Box

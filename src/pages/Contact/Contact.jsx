@@ -271,7 +271,6 @@ const Contact = () => {
       exit="out"
       variants={pageVariants}
     >
-      {/* --- The rest of the page is unchanged --- */}
       <Box
         sx={{
           minHeight: "40vh",

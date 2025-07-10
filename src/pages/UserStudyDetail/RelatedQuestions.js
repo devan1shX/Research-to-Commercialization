@@ -121,8 +121,8 @@ const RelatedQuestions = ({ questions = [] }) => {
       const parts = [];
       
       const patterns = [
-        { regex: /`([^`]+)`/g, component: 'code' }, 
-        { regex: /\*\*([^*]+)\*\*/g, component: 'strong' }, 
+        { regex: /`([^`]+)`/g, component: 'code' },  
+        { regex: /\*\*([^*]+)\*\*/g, component: 'strong' },  
         { regex: /\*([^*]+)\*/g, component: 'em' },  
       ];
       
