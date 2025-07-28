@@ -76,7 +76,7 @@ const ExploreStudies = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/studies?${params.toString()}`
+        `http://192.168.1.156:5000/studies?${params.toString()}`
       );
       if (!response.ok) {
         const errData = await response
