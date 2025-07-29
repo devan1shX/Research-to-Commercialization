@@ -661,6 +661,14 @@ const Signup = () => {
             <Typography
               variant="h6"
               component="div"
+              sx={{
+                fontWeight: 600,
+                cursor: "pointer",
+                "&:hover": {
+                  textDecoration: "underline",
+                  color: "primary.main",
+                },
+              }}
             >
               Tech Transfer Office
             </Typography>
