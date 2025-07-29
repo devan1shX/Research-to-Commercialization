@@ -55,7 +55,7 @@ const EditStudy = () => {
     setApiError("");
     try {
       const token = await currentUser.getIdToken(true);
-      const response = await fetch(`/api/studies/${studyId}`, {
+      const response = await fetch(`/api/my-studies/${studyId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) {
