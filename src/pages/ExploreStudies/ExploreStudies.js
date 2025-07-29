@@ -76,7 +76,7 @@ const ExploreStudies = () => {
 
     try {
       const response = await fetch(
-        `http://192.168.1.156:5000/studies?${params.toString()}`
+        `http://r2c.iiitd.edu.in/studies?${params.toString()}`
       );
       if (!response.ok) {
         const errData = await response
