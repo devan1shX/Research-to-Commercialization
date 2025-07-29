@@ -13,6 +13,8 @@ const actionButtonSx = {
 };
 
 const StudyDetails = ({ study }) => {
+  if (!study) return null;
+
   return (
     <Box sx={{ width: { xs: "100%", md: "calc(60% - 16px)" }, minWidth: 0 }}>
       <Typography
@@ -34,6 +36,7 @@ const StudyDetails = ({ study }) => {
       >
         {study.title}
       </Typography>
+
       <Box
         sx={{
           display: "flex",
@@ -77,6 +80,7 @@ const StudyDetails = ({ study }) => {
           />
         ) : null}
       </Box>
+
       {study.abstract && (
         <Box
           sx={{
@@ -115,40 +119,43 @@ const StudyDetails = ({ study }) => {
           </Typography>
         </Box>
       )}
-      // <Box
-      //   sx={{
-      //     display: "flex",
-      //     flexWrap: "wrap",
-      //     gap: 2,
-      //     mt: study.abstract ? { xs: 2.5, sm: 3 } : 0,
-      //     mb: { xs: 3, sm: 4 },
-      //   }}
-      // >
-      //   <Button
-      //     variant="outlined"
-      //     startIcon={<DownloadIcon />}
-      //     onClick={() => console.log("Download PDF. Study ID:", study.id)}
-      //     sx={actionButtonSx}
-      //   >
-      //     Download PDF
-      //   </Button>
-      //   <Button
-      //     variant="outlined"
-      //     startIcon={<ShareIcon />}
-      //     onClick={() => console.log("Share. Study ID:", study.id)}
-      //     sx={actionButtonSx}
-      //   >
-      //     Share
-      //   </Button>
-      //   <Button
-      //     variant="outlined"
-      //     startIcon={<MailOutlineIcon />}
-      //     onClick={() => console.log("Contact Researcher. Study ID:", study.id)}
-      //     sx={actionButtonSx}
-      //   >
-      //     Contact Researcher
-      //   </Button>
-      // </Box>
+
+      {/* 
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 2,
+          mt: study.abstract ? { xs: 2.5, sm: 3 } : 0,
+          mb: { xs: 3, sm: 4 },
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<DownloadIcon />}
+          onClick={() => console.log("Download PDF. Study ID:", study.id)}
+          sx={actionButtonSx}
+        >
+          Download PDF
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<ShareIcon />}
+          onClick={() => console.log("Share. Study ID:", study.id)}
+          sx={actionButtonSx}
+        >
+          Share
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<MailOutlineIcon />}
+          onClick={() => console.log("Contact Researcher. Study ID:", study.id)}
+          sx={actionButtonSx}
+        >
+          Contact Researcher
+        </Button>
+      </Box>
+      */}
     </Box>
   );
 };
