@@ -60,7 +60,7 @@ export const BulkAnalysisProvider = ({ children }) => {
 
             allDone = false;
             try {
-                const response = await fetch(`http://localhost:5000/studies/analysis-status/${job.analysisId}`, {
+                const response = await fetch(`http://r2c.iiitd.edu.in/studies/analysis-status/${job.analysisId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!response.ok) {
