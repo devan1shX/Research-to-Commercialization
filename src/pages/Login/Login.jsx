@@ -96,44 +96,50 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const user = userCredential.user;
-      const idToken = await user.getIdToken();
+const handleGoogleLogin = async () => {
+  setError("");
+  setLoading(true);
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    const user = userCredential.user;
+    const idToken = await user.getIdToken();
 
-      const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken: idToken }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          data.message || `Backend error! status: ${response.status}`
-        );
-      }
-      console.log("Google Login & Backend Sync Successful:", data);
-      alert("Successfully logged in with Google!");
-      navigate("/");
-    } catch (err) {
-      console.error("Google Login Error:", err);
-      let errorMessage = "Google login failed. Please try again.";
-      if (err.code === "auth/popup-closed-by-user") {
-        errorMessage = "Google sign-in was cancelled.";
-      } else if (
-        err.message.includes("Backend error") ||
-        err.message.includes("HTTP error")
-      ) {
-        errorMessage = err.message;
-      }
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
+    const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken: idToken }),
+    });
+
+    // 1. First, check if the response status is successful (e.g., 200, 201).
+    if (!response.ok) {
+      // If not successful, get the raw error text (which is the HTML page).
+      const errorText = await response.text();
+      console.error("Backend response (HTML):", errorText); // Log the HTML for debugging.
+      // Throw an error with the server's status code.
+      throw new Error(`Backend error! Status: ${response.status}`);
     }
-  };
+
+    // 2. Only if the response was OK, proceed to parse it as JSON.
+    const data = await response.json();
+
+    console.log("Google Login & Backend Sync Successful:", data);
+    alert("Successfully logged in with Google!");
+    navigate("/");
+    
+  } catch (err) {
+    console.error("Google Login Error:", err);
+    let errorMessage = "Google login failed. Please try again.";
+    if (err.code === "auth/popup-closed-by-user") {
+      errorMessage = "Google sign-in was cancelled.";
+    } else if (err.message.includes("Backend error")) {
+      // This will now catch the error thrown from the !response.ok block.
+      errorMessage = "A server error occurred. Please try again later.";
+    }
+    setError(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleForgotPasswordOpen = () => {
     setOpenForgotPasswordDialog(true);
