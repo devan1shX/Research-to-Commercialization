@@ -158,7 +158,7 @@ const StudyDetailPage = () => {
             >
                 <Link
                     component={RouterLink}
-                    to="/explore"
+                    to="/studies"
                     variant="body2"
                     sx={{
                         display: "inline-flex",
