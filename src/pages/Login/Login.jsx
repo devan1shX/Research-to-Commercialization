@@ -39,8 +39,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
-    useState(false);
+  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [loadingForgotPassword, setLoadingForgotPassword] = useState(false);
@@ -53,10 +52,12 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
+    
     if (!loginData.email || !loginData.password) {
       setError("Please enter both email and password.");
       return;
     }
+    
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -80,8 +81,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             errorMessage = "Please enter a valid email address.";
             break;
           case "auth/too-many-requests":
-            errorMessage =
-              "Too many login attempts. Please try again later or reset your password.";
+            errorMessage = "Too many login attempts. Please try again later or reset your password.";
             break;
           case "auth/user-disabled":
             errorMessage = "This account has been disabled.";
@@ -96,50 +96,72 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
   };
 
-const handleGoogleLogin = async () => {
-  setError("");
-  setLoading(true);
-  try {
-    const userCredential = await signInWithPopup(auth, googleProvider);
-    const user = userCredential.user;
-    const idToken = await user.getIdToken();
-
-    const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idToken: idToken }),
-    });
-
-    // 1. First, check if the response status is successful (e.g., 200, 201).
-    if (!response.ok) {
-      // If not successful, get the raw error text (which is the HTML page).
-      const errorText = await response.text();
-      console.error("Backend response (HTML):", errorText); // Log the HTML for debugging.
-      // Throw an error with the server's status code.
-      throw new Error(`Backend error! Status: ${response.status}`);
-    }
-
-    // 2. Only if the response was OK, proceed to parse it as JSON.
-    const data = await response.json();
-
-    console.log("Google Login & Backend Sync Successful:", data);
-    alert("Successfully logged in with Google!");
-    navigate("/");
+  const handleGoogleLogin = async () => {
+    setError("");
+    setLoading(true);
     
-  } catch (err) {
-    console.error("Google Login Error:", err);
-    let errorMessage = "Google login failed. Please try again.";
-    if (err.code === "auth/popup-closed-by-user") {
-      errorMessage = "Google sign-in was cancelled.";
-    } else if (err.message.includes("Backend error")) {
-      // This will now catch the error thrown from the !response.ok block.
-      errorMessage = "A server error occurred. Please try again later.";
+    try {
+      // First, handle Firebase Google authentication
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const user = userCredential.user;
+      const idToken = await user.getIdToken();
+
+      // Then sync with your backend
+      const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ idToken: idToken }),
+      });
+
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Server returned non-JSON response. Please check if the API endpoint is correct.");
+      }
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || `Backend error! status: ${response.status}`);
+      }
+
+      console.log("Google Login & Backend Sync Successful:", data);
+      alert("Successfully logged in with Google!");
+      navigate("/");
+      
+    } catch (err) {
+      console.error("Google Login Error:", err);
+      let errorMessage = "Google login failed. Please try again.";
+      
+      if (err.code === "auth/popup-closed-by-user") {
+        errorMessage = "Google sign-in was cancelled.";
+      } else if (err.code === "auth/popup-blocked") {
+        errorMessage = "Popup was blocked. Please allow popups for this site and try again.";
+      } else if (err.message.includes("Server returned non-JSON response")) {
+        errorMessage = "Server error. Please try again later or contact support.";
+      } else if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      } else if (err.message.includes("Backend error") || err.message.includes("HTTP error")) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+      
+      // If backend sync fails but Firebase auth succeeded, you might want to sign out
+      if (auth.currentUser && err.message.includes("Server")) {
+        try {
+          await auth.signOut();
+        } catch (signOutError) {
+          console.error("Error signing out after failed backend sync:", signOutError);
+        }
+      }
+    } finally {
+      setLoading(false);
     }
-    setError(errorMessage);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleForgotPasswordOpen = () => {
     setOpenForgotPasswordDialog(true);
@@ -157,6 +179,7 @@ const handleGoogleLogin = async () => {
       setForgotPasswordMessage("Please enter your email address.");
       return;
     }
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(resetEmail)) {
       setForgotPasswordMessage("Please enter a valid email address.");
@@ -165,6 +188,7 @@ const handleGoogleLogin = async () => {
 
     setLoadingForgotPassword(true);
     setForgotPasswordMessage("");
+    
     try {
       await sendPasswordResetEmail(auth, resetEmail);
       setForgotPasswordMessage(
@@ -175,9 +199,7 @@ const handleGoogleLogin = async () => {
       if (err.code === "auth/user-not-found") {
         setForgotPasswordMessage("No user found with this email address.");
       } else {
-        setForgotPasswordMessage(
-          "Failed to send password reset email. Please try again."
-        );
+        setForgotPasswordMessage("Failed to send password reset email. Please try again.");
       }
     } finally {
       setLoadingForgotPassword(false);
@@ -202,10 +224,7 @@ const handleGoogleLogin = async () => {
           >
             Login to Your Account
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: themeColors.text.secondary }}
-          >
+          <Typography variant="body1" sx={{ color: themeColors.text.secondary }}>
             Welcome back! Please enter your details.
           </Typography>
         </Box>
@@ -283,14 +302,7 @@ const handleGoogleLogin = async () => {
             }}
             sx={{ ...inputStyles, mb: 0 }}
           />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              mt: -1.5,
-              mb: 1,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: -1.5, mb: 1 }}>
             <Link
               onClick={handleForgotPasswordOpen}
               sx={{
@@ -397,8 +409,7 @@ const handleGoogleLogin = async () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ color: themeColors.text.secondary, mb: 2 }}>
-            Enter your email address below and we'll send you a link to reset
-            your password.
+            Enter your email address below and we'll send you a link to reset your password.
           </DialogContentText>
           <TextField
             autoFocus
@@ -418,9 +429,7 @@ const handleGoogleLogin = async () => {
           {forgotPasswordMessage && (
             <Typography
               color={
-                forgotPasswordMessage.includes("sent")
-                  ? "success.main"
-                  : "error"
+                forgotPasswordMessage.includes("sent") ? "success.main" : "error"
               }
               variant="body2"
               sx={{ mt: 1, textAlign: "center" }}
