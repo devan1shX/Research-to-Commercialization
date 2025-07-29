@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -39,9 +39,9 @@ import {
   ArrowBack,
   ArrowForward,
 } from "@mui/icons-material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../../firebaseConfig";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithRedirect, getRedirectResult } from "firebase/auth";
 
 import Login from "../Login/Login";
 
@@ -92,6 +92,73 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const steps = ["Personal Info", "Account Security", "Complete Setup"];
+
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      // Check for a redirect result on page load
+      try {
+        setLoading(true);
+        const result = await getRedirectResult(auth);
+
+        if (result) {
+          // User has successfully signed in with Google and has been redirected back.
+          const user = result.user;
+          const idToken = await user.getIdToken();
+
+          // Retrieve the data we stored before the redirect
+          const role = sessionStorage.getItem("signupRole") || "student";
+          const phone = sessionStorage.getItem("signupPhone") || "";
+
+          // Clean up session storage immediately
+          sessionStorage.removeItem("signupRole");
+          sessionStorage.removeItem("signupPhone");
+
+          // Now, call your backend to register the user
+          const response = await fetch(
+            "http://r2c.iiitd.edu.in/auth/google-signin",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                idToken: idToken,
+                role: role,
+                phone: phone,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            let errorMessage = `HTTP error! status: ${response.status}`;
+            try {
+              const errorData = await response.json();
+              errorMessage =
+                errorData.message ||
+                "An unknown error occurred during Google sign-in.";
+            } catch (jsonError) {
+              console.error(
+                "Non-JSON error response from google-signin:",
+                await response.text()
+              );
+              errorMessage =
+                "Server returned an unexpected response after Google sign-in.";
+            }
+            throw new Error(errorMessage);
+          }
+
+          await response.json();
+          alert("Signup with Google successful! Please proceed to login.");
+          setActiveTab(0); // Switch to the login tab
+          setCurrentStep(0);
+        }
+      } catch (err) {
+        setError(err.message || "Google sign-in failed. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleRedirectResult();
+  }, [auth]);
 
   const handleInputChange = (field) => (event) => {
     setFormData((prev) => ({ ...prev, [field]: event.target.value }));
@@ -159,12 +226,24 @@ const Signup = () => {
           phone: formData.phone,
         }),
       });
-      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(
-          data.message || `HTTP error! status: ${response.status}`
-        );
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          // Try to parse error response as JSON
+          const errorData = await response.json();
+          errorMessage = errorData.message || JSON.stringify(errorData);
+        } catch (jsonError) {
+          // If it's not JSON, it might be HTML or plain text
+          const textError = await response.text();
+          console.error("Non-JSON error response from /signup:", textError);
+          errorMessage =
+            "An unexpected server error occurred. Please try again later.";
+        }
+        throw new Error(errorMessage);
       }
+
+      await response.json();
       alert("Signup successful! Please login.");
       setActiveTab(0);
       setCurrentStep(0);
@@ -185,41 +264,22 @@ const Signup = () => {
 
   const handleGoogleSignup = async () => {
     setError("");
+    if (!formData.role) {
+      setError("Please select a role before continuing with Google.");
+      return;
+    }
     setLoading(true);
     try {
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const user = userCredential.user;
-      const idToken = await user.getIdToken();
+      // Store extra data needed after redirect
+      sessionStorage.setItem("signupRole", formData.role);
+      sessionStorage.setItem("signupPhone", formData.phone);
 
-      const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          idToken: idToken,
-          role: formData.role,
-          phone: formData.phone,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          data.message || `HTTP error! status: ${response.status}`
-        );
-      }
-      alert("Successfully signed in with Google!");
-      setActiveTab(0);
-      setCurrentStep(0);
-      setFormData({
-        displayName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        role: "student",
-        phone: "",
-      });
+      await signInWithRedirect(auth, googleProvider);
+      // The page will now redirect. The rest of the logic is in the useEffect hook.
     } catch (err) {
-      setError(err.message || "Google sign-in failed. Please try again.");
-    } finally {
+      setError(
+        err.message || "Could not start Google sign-in. Please try again."
+      );
       setLoading(false);
     }
   };
@@ -406,7 +466,7 @@ const Signup = () => {
                   }}
                 >
                   {" "}
-                  {loading && activeTab === 1 ? (
+                  {loading ? (
                     <CircularProgress
                       size={24}
                       sx={{ color: themeColors.googleButton.color }}
