@@ -657,9 +657,14 @@ const Signup = () => {
         }}
       >
         <Toolbar sx={{ justifyContent: "center" }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-            Tech Transfer Office
-          </Typography>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Typography
+              variant="h6"
+              component="div"
+            >
+              Tech Transfer Office
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
 
