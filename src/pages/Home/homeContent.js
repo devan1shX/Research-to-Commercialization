@@ -9,7 +9,7 @@ export const homePageContent = {
     primaryButtonLink: "/studies",
     primaryButtonIconName: "ArrowForward",
     secondaryButtonText: "Join as Researcher",
-    secondaryButtonLink: "/auth",
+    secondaryButtonLink: "/signup",
     secondaryButtonIconName: "Lock",
     stats: [
       { iconName: 'People', text: '1000+ Researchers' },
