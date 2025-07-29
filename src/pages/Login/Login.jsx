@@ -30,7 +30,13 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   sendPasswordResetEmail,
+  signOut, // Make sure to import signOut
 } from "firebase/auth";
+
+// Best Practice: Store your backend URL in an environment variable.
+// Create a .env file in your project's root and add:
+// REACT_APP_API_URL=http://localhost:5000
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://r2c.iiitd.edu.in";
 
 const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -52,12 +58,10 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
-    
     if (!loginData.email || !loginData.password) {
       setError("Please enter both email and password.");
       return;
     }
-    
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -99,65 +103,58 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const handleGoogleLogin = async () => {
     setError("");
     setLoading(true);
-    
     try {
-      // First, handle Firebase Google authentication
+      // Step 1: Handle Firebase Google authentication on the client
       const userCredential = await signInWithPopup(auth, googleProvider);
       const user = userCredential.user;
       const idToken = await user.getIdToken();
 
-      // Then sync with your backend
-      const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
+      // Step 2: Sync with your backend
+      const response = await fetch(`${API_BASE_URL}/auth/google-signin`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
         },
         body: JSON.stringify({ idToken: idToken }),
       });
 
-      // Check if response is JSON
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Server returned non-JSON response. Please check if the API endpoint is correct.");
-      }
-
       const data = await response.json();
-      
+
+      // This is crucial: check if the HTTP response itself is not OK
       if (!response.ok) {
-        throw new Error(data.message || `Backend error! status: ${response.status}`);
+        // Use the error message from your backend if available, otherwise use a default
+        throw new Error(data.message || `Backend Error: ${response.status}`);
       }
 
+      // Step 3: Success!
       console.log("Google Login & Backend Sync Successful:", data);
       alert("Successfully logged in with Google!");
       navigate("/");
-      
+
     } catch (err) {
       console.error("Google Login Error:", err);
-      let errorMessage = "Google login failed. Please try again.";
+      let errorMessage = "An unexpected error occurred. Please try again.";
       
+      // Handle known error codes from Firebase or the browser
       if (err.code === "auth/popup-closed-by-user") {
         errorMessage = "Google sign-in was cancelled.";
       } else if (err.code === "auth/popup-blocked") {
         errorMessage = "Popup was blocked. Please allow popups for this site and try again.";
-      } else if (err.message.includes("Server returned non-JSON response")) {
-        errorMessage = "Server error. Please try again later or contact support.";
-      } else if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
-        errorMessage = "Network error. Please check your internet connection and try again.";
-      } else if (err.message.includes("Backend error") || err.message.includes("HTTP error")) {
+      } else if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        errorMessage = "Network error. Cannot reach the server. Please check your connection.";
+      } else {
+        // Use the message from the error thrown in the try block (e.g., from the backend)
         errorMessage = err.message;
       }
       
       setError(errorMessage);
       
-      // If backend sync fails but Firebase auth succeeded, you might want to sign out
-      if (auth.currentUser && err.message.includes("Server")) {
-        try {
-          await auth.signOut();
-        } catch (signOutError) {
-          console.error("Error signing out after failed backend sync:", signOutError);
-        }
+      // IMPORTANT: If backend sync fails but Firebase auth succeeded, sign the user out
+      // to prevent an inconsistent state where the user is logged in on Firebase but not your app.
+      if (auth.currentUser) {
+        await signOut(auth);
       }
+
     } finally {
       setLoading(false);
     }
@@ -179,7 +176,6 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
       setForgotPasswordMessage("Please enter your email address.");
       return;
     }
-    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(resetEmail)) {
       setForgotPasswordMessage("Please enter a valid email address.");
@@ -188,7 +184,6 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
 
     setLoadingForgotPassword(true);
     setForgotPasswordMessage("");
-    
     try {
       await sendPasswordResetEmail(auth, resetEmail);
       setForgotPasswordMessage(
