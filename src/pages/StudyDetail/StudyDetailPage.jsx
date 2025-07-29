@@ -33,7 +33,7 @@ const StudyDetailPage = () => {
                     setError(null);
                     setStudy(null);
 
-                    const response = await fetch(`http://localhost:5000/studies/${id}`);
+                    const response = await fetch(`http://r2c.iiitd.edu.in/studies/${id}`);
                     if (!response.ok) {
                         if (response.status === 404) {
                             throw new Error(`Study with ID ${id} not found.`);
@@ -86,7 +86,7 @@ const StudyDetailPage = () => {
             const token = await currentUser.getIdToken();
 
             const response = await fetch(
-                "http://localhost:5000/studies/chat-with-paper", {
+                "http://r2c.iiitd.edu.in/studies/chat-with-paper", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
