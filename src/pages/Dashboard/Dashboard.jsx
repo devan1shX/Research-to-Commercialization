@@ -97,7 +97,7 @@ const Dashboard = () => {
         });
 
         const response = await fetch(
-          `http://localhost:5000/api/my-studies?${params.toString()}`,
+          `http://r2c.iiitd.edu.in/api/my-studies?${params.toString()}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -167,7 +167,7 @@ const Dashboard = () => {
     try {
       const token = await currentUser.getIdToken(true);
       const response = await fetch(
-        `http://localhost:5000/studies/${studyToDelete}`,
+        `http://r2c.iiitd.edu.in/studies/${studyToDelete}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
