@@ -87,7 +87,7 @@ const StudyDetailPage = () => {
         if (mockStudies[id]) {
           setStudy(mockStudies[id]);
         } else {
-          const response = await fetch(`http://localhost:5000/studies/${id}`);
+          const response = await fetch(`/api/studies/${id}`);
           if (!response.ok) {
             if (response.status === 404) {
               // setStudy(null) already called at the beginning of try
