@@ -104,7 +104,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
       const user = userCredential.user;
       const idToken = await user.getIdToken();
 
-      const response = await fetch("http://r2c.iiitd.edu.in/auth/google-signin", {
+      const response = await fetch("/api/auth/google-signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken: idToken }),
