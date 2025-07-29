@@ -146,7 +146,7 @@ const DocumentManager = ({
                               "http"
                             )
                               ? existingDocuments[0].file_location
-                              : `http://localhost:5000/${existingDocuments[0].file_location}`
+                              : `http://r2c.iiitd.edu.in/${existingDocuments[0].file_location}`
                           }
                           target="_blank"
                           rel="noopener noreferrer"
