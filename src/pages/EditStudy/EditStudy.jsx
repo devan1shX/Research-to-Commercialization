@@ -55,7 +55,7 @@ const EditStudy = () => {
     setApiError("");
     try {
       const token = await currentUser.getIdToken(true);
-      const response = await fetch(`http://r2c.iiitd.edu.in/studies/${studyId}`, {
+      const response = await fetch(`/api/studies/${studyId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) {
@@ -358,7 +358,7 @@ const EditStudy = () => {
 
     try {
       const token = await currentUser.getIdToken(true);
-      const response = await fetch(`http://r2c.iiitd.edu.in/studies/${studyId}`, {
+      const response = await fetch(`/api/studies/${studyId}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: submissionFormData,
