@@ -76,7 +76,7 @@ const CreateStudy = () => {
     const pollAnalysisStatus = useCallback(async (analysisId, token) => {
         const interval = setInterval(async () => {
             try {
-                const response = await fetch(`http://localhost:5000/studies/analysis-status/${analysisId}`, {
+                const response = await fetch(`http://r2c.iiitd.edu.in/studies/analysis-status/${analysisId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await response.json();
@@ -122,7 +122,7 @@ const CreateStudy = () => {
         try {
             const token = await currentUser.getIdToken(true);
             const response = await fetch(
-                "http://localhost:5000/studies/analyze-document-async",
+                "http://r2c.iiitd.edu.in/studies/analyze-document-async",
                 {
                     method: "POST",
                     headers: { Authorization: `Bearer ${token}` },
@@ -295,7 +295,7 @@ const CreateStudy = () => {
 
         try {
             const token = await currentUser.getIdToken(true);
-            const response = await fetch("http://localhost:5000/studies", {
+            const response = await fetch("http://r2c.iiitd.edu.in/studies", {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
                 body: submissionFormData,
