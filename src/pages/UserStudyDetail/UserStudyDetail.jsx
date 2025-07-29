@@ -88,7 +88,7 @@ const UserStudyDetail = () => {
     try {
       const token = await currentUser.getIdToken(true);
       const response = await fetch(
-        `http://localhost:5000/api/my-studies/${id}`,
+        `http://r2c.iiitd.edu.in/api/my-studies/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -132,7 +132,7 @@ const UserStudyDetail = () => {
     try {
       const token = await currentUser.getIdToken();
       const response = await fetch(
-        "http://localhost:5000/studies/chat-with-paper",
+        "http://r2c.iiitd.edu.in/studies/chat-with-paper",
         {
           method: "POST",
           headers: {
