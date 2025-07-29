@@ -366,7 +366,7 @@ const StudyDetailPage = () => {
                 </Typography>
               </Box>
             )}
-            <Box
+{/*             <Box
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -374,24 +374,24 @@ const StudyDetailPage = () => {
                 mt: study.abstract ? { xs: 2.5, sm: 3 } : 0,
                 mb: { xs: 3, sm: 4 },
               }}
-            >
-              <Button
+            > */}
+{/*               <Button
                 variant="outlined"
                 startIcon={<DownloadIcon />}
                 onClick={() => console.log("Download PDF. Study ID:", study.id)}
                 sx={actionButtonSx}
               >
                 Download PDF
-              </Button>
-              <Button
+              </Button> */}
+{/*               <Button
                 variant="outlined"
                 startIcon={<ShareIcon />}
                 onClick={() => console.log("Share. Study ID:", study.id)}
                 sx={actionButtonSx}
               >
                 Share
-              </Button>
-              <Button
+              </Button> */}
+{/*               <Button
                 variant="outlined"
                 startIcon={<MailOutlineIcon />}
                 onClick={() =>
@@ -400,8 +400,8 @@ const StudyDetailPage = () => {
                 sx={actionButtonSx}
               >
                 Contact Researcher
-              </Button>
-            </Box>
+              </Button> */}
+{/*             </Box> */}
           </Box>
 
           <Box
