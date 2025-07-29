@@ -153,7 +153,7 @@ const StudyDetails = ({ study }) => {
                     {study.documents.map((doc, index) => (
                       <ListItem key={index} disablePadding sx={{mb: 1}}>
                           <MuiLink 
-                            href={`http://localhost:5000/${doc.file_location}`} 
+                            href={`http://r2c.iiitd.edu.in/${doc.file_location}`} 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             sx={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
