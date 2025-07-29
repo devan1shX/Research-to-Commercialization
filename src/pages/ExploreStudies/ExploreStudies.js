@@ -76,7 +76,7 @@ const ExploreStudies = () => {
 
     try {
       const response = await fetch(
-        `http://r2c.iiitd.edu.in/studies?${params.toString()}`
+        `/api/studies?${params.toString()}`
       );
       if (!response.ok) {
         const errData = await response
