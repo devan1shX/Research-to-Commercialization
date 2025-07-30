@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -32,6 +32,9 @@ const ExploreStudies = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
+  // This ref helps us prevent the page-resetting effect from running on initial mount
+  const isInitialMount = useRef(true);
+
   const allAvailableGenresForSelector = [
     { value: "Machine Learning", label: "Machine Learning" },
     { value: "Data Science", label: "Data Science" },
@@ -49,16 +52,27 @@ const ExploreStudies = () => {
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
 
+  // Effect 1: Debounce the search query. It ONLY sets the debounced value.
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-      setCurrentPage(1);
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
   }, [searchQuery]);
+
+  // Effect 2: Reset to page 1 whenever filters change.
+  // This is the key change to centralize the page reset logic.
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      // Any change to the debounced query or genres will reset the page to 1
+      setCurrentPage(1);
+    }
+  }, [debouncedSearchQuery, selectedGenres]);
 
   const fetchStudies = useCallback(async () => {
     setLoading(true);
@@ -75,9 +89,7 @@ const ExploreStudies = () => {
     params.append("limit", ITEMS_PER_PAGE.toString());
 
     try {
-      const response = await fetch(
-        `/api/studies?${params.toString()}`
-      );
+      const response = await fetch(`/api/studies?${params.toString()}`);
       if (!response.ok) {
         const errData = await response
           .json()
@@ -107,16 +119,17 @@ const ExploreStudies = () => {
     }
   }, [debouncedSearchQuery, selectedGenres, currentPage]);
 
+  // Effect 3: Fetch studies whenever the fetchStudies function changes
   useEffect(() => {
     fetchStudies();
   }, [fetchStudies]);
 
+  // Handlers now ONLY update their specific state, without touching currentPage.
   const handleGenreChange = (event) => {
     const {
       target: { value },
     } = event;
     setSelectedGenres(typeof value === "string" ? value.split(",") : value);
-    setCurrentPage(1);
   };
 
   const handleSearchChange = (event) => {
@@ -127,7 +140,6 @@ const ExploreStudies = () => {
     setSelectedGenres((prev) =>
       prev.filter((genre) => genre !== genreToRemove)
     );
-    setCurrentPage(1);
   };
 
   const handleClearSearch = () => {
@@ -136,7 +148,6 @@ const ExploreStudies = () => {
 
   const handleClearAllGenres = () => {
     setSelectedGenres([]);
-    setCurrentPage(1);
   };
 
   const handleCardClick = (study) => {
@@ -158,6 +169,8 @@ const ExploreStudies = () => {
   const fieldSelectorEffectiveSx = {
     width: { xs: "100%", sm: "calc(50% - 12px)", md: "calc(33.333% - 16px)" },
   };
+  
+  // No changes to the JSX are needed from here down...
 
   if (loading && studiesResponse.studies.length === 0) {
     return (
@@ -305,7 +318,7 @@ const ExploreStudies = () => {
           searchQuery={searchQuery}
           onClearField={handleRemoveSelectedGenre}
           onClearSearch={handleClearSearch}
-          fields={allAvailableGenresForSelector}
+          onClearAll={handleClearAllGenres} // Assuming ActiveFilters has a "Clear All" button
         />
 
         <Box
