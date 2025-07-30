@@ -89,7 +89,7 @@ const BulkCreateStudy = () => {
       try {
         const token = await currentUser.getIdToken(true);
         const response = await fetch(
-          "http://r2c.iiitd.edu.in/studies/analyze-document-async",
+          "/api/studies/analyze-document-async",
           {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
@@ -196,7 +196,7 @@ const BulkCreateStudy = () => {
 
       try {
         const token = await currentUser.getIdToken(true);
-        const response = await fetch("http://r2c.iiitd.edu.in/studies", {
+        const response = await fetch("/api/studies", {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
           body: submissionFormData,
