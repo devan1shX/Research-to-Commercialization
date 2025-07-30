@@ -299,22 +299,24 @@ const About = () => {
                   while empowering curious minds to explore, understand, and
                   engage with cutting-edge science.
                 </Typography>
-                <Button
-                  variant="contained"
-                  size="small"
-                  endIcon={<ArrowForward sx={{ fontSize: "16px" }} />}
-                  sx={{
-                    bgcolor: "black",
-                    "&:hover": { bgcolor: "#2F2F31" },
-                    textTransform: "none",
-                    px: { xs: 2, sm: 3 },
-                    py: { xs: 1, sm: 1 },
-                    fontSize: { xs: "0.9rem", sm: "1rem" },
-                    alignSelf: { xs: "center", md: "flex-start" },
-                  }}
-                >
-                  Explore Research
-                </Button>
+                <Link to="/studies" style={{ textDecoration: "none" }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    endIcon={<ArrowForward sx={{ fontSize: "16px" }} />}
+                    sx={{
+                      bgcolor: "black",
+                      "&:hover": { bgcolor: "#2F2F31" },
+                      textTransform: "none",
+                      px: { xs: 2, sm: 3 },
+                      py: { xs: 1, sm: 1 },
+                      fontSize: { xs: "0.9rem", sm: "1rem" },
+                      alignSelf: { xs: "center", md: "flex-start" },
+                    }}
+                  >
+                    Explore Research
+                  </Button>
+                </Link>
               </Box>
 
               <Box
