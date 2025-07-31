@@ -64,11 +64,10 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         loginData.email,
         loginData.password
       );
-      // console.log("Login Successful (Email/Password):", userCredential.user);
       alert("Login successful!");
       navigate("/");
     } catch (err) {
-      // console.error("Login Error:", err);
+      console.error("Login Error:", err);
       let errorMessage = "Failed to login. Please check your credentials.";
       if (err.code) {
         switch (err.code) {
@@ -115,11 +114,10 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
           data.message || `Backend error! status: ${response.status}`
         );
       }
-      // console.log("Google Login & Backend Sync Successful:", data);
       alert("Successfully logged in with Google!");
       navigate("/");
     } catch (err) {
-      // console.error("Google Login Error:", err);
+      console.error("Google Login Error:", err);
       let errorMessage = "Google login failed. Please try again.";
       if (err.code === "auth/popup-closed-by-user") {
         errorMessage = "Google sign-in was cancelled.";
@@ -165,7 +163,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         `Password reset email sent to ${resetEmail}. Please check your inbox (and spam folder).`
       );
     } catch (err) {
-      // console.error("Error sending password reset email:", err);
+      console.error("Error sending password reset email:", err);
       if (err.code === "auth/user-not-found") {
         setForgotPasswordMessage("No user found with this email address.");
       } else {
@@ -176,6 +174,15 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     } finally {
       setLoadingForgotPassword(false);
     }
+  };
+
+  const gradientTextStyle = {
+    background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+    textFillColor: 'transparent',
+    display: 'inline-block', 
   };
 
   return (
@@ -288,7 +295,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             <Link
               onClick={handleForgotPasswordOpen}
               sx={{
-                color: themeColors.text.link,
+                ...gradientTextStyle,
                 fontSize: "0.875rem",
                 textDecoration: "none",
                 cursor: "pointer",
@@ -304,7 +311,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             variant="contained"
             disabled={loading}
             sx={{
-              backgroundColor: themeColors.primary.main,
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
               color: themeColors.primary.contrastText,
               fontWeight: 500,
               fontSize: "0.9rem",
@@ -312,7 +319,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
               py: 1.5,
               borderRadius: "8px",
               boxShadow: "none",
-              "&:hover": { backgroundColor: themeColors.primary.light },
+              transition: 'filter 0.2s',
+              "&:hover": { 
+                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+                filter: 'brightness(1.1)' 
+              },
             }}
           >
             {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
@@ -368,7 +379,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             <Link
               onClick={switchToSignupTab}
               sx={{
-                color: themeColors.text.link,
+                ...gradientTextStyle, 
                 textDecoration: "none",
                 fontWeight: 500,
                 cursor: "pointer",
@@ -440,11 +451,15 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             variant="contained"
             disabled={loadingForgotPassword}
             sx={{
-              backgroundColor: themeColors.primary.main,
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
               color: themeColors.primary.contrastText,
               textTransform: "none",
               fontWeight: 500,
-              "&:hover": { backgroundColor: themeColors.primary.light },
+              transition: 'filter 0.2s',
+              "&:hover": { 
+                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+                filter: 'brightness(1.1)'
+              },
             }}
           >
             {loadingForgotPassword ? (
