@@ -43,8 +43,7 @@ import {
 } from "@mui/icons-material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../../firebaseConfig";
-// --- CHANGE: Use signInWithRedirect ---
-import { signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 
 import Login from "../Login/Login";
 
@@ -216,15 +215,51 @@ const Signup = () => {
     }
   };
 
-  // --- CHANGE: This now only starts the redirect. AuthContext handles the rest. ---
   const handleGoogleSignup = async () => {
     setError("");
     setLoading(true);
     try {
-        await signInWithRedirect(auth, googleProvider);
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const user = userCredential.user;
+      const idToken = await user.getIdToken();
+
+      const response = await fetch("/api/auth/google-signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          idToken: idToken,
+          role: formData.role,
+          phone: formData.phone,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          data.message || `HTTP error! status: ${response.status}`
+        );
+      }
+      setNotification({
+        open: true,
+        message: "Successfully signed in with Google!",
+        severity: "success",
+      });
+      setTimeout(() => {
+        setActiveTab(0);
+        setCurrentStep(0);
+        setFormData({
+          displayName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "student",
+          phone: "",
+        });
+        navigate("/");
+      }, 1500);
     } catch (err) {
-        setError(err.message || "Google sign-in failed. Please try again.");
-        setLoading(false);
+      setError(err.message || "Google sign-in failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
