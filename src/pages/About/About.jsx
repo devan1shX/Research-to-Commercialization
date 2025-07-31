@@ -289,14 +289,15 @@ const About = () => {
                     fontSize: { xs: "0.95rem", sm: "1.1rem" },
                   }}
                 >
-                  R2C (Research to Commercialization) exists to solve a real gap:
-                  Brilliant research often goes unseen, unused, and unfunded.
-                  Researchers struggle to find collaborators or turn their work into real products.
-                   Industries want new ideas but don’t know where to find them.
-                   And traditional tech transfer is slow, outdated, and messy.
-                  We’re here to fix that.
-                  With AI tools, privacy-first design, and a matchmaking engine,
-                   R2C.ai connects the people who create innovation with those who can use it.
+                  R2C (Research to Commercialization) exists to solve a real
+                  gap: Brilliant research often goes unseen, unused, and
+                  unfunded. Researchers struggle to find collaborators or turn
+                  their work into real products. Industries want new ideas but
+                  don’t know where to find them. And traditional tech transfer
+                  is slow, outdated, and messy. We’re here to fix that. With AI
+                  tools, privacy-first design, and a matchmaking engine, R2C.ai
+                  connects the people who create innovation with those who can
+                  use it.
                 </Typography>
                 <Link to="/studies" style={{ textDecoration: "none" }}>
                   <Button
@@ -374,9 +375,10 @@ const About = () => {
                         lineHeight: 1.7,
                       }}
                     >
-                      We’re building a global network of researchers, institutions, startups, and government agencies.
-No borders. No barriers. Just verified work and focused collaboration.
-
+                      We’re building a global network of researchers,
+                      institutions, startups, and government agencies. No
+                      borders. No barriers. Just verified work and focused
+                      collaboration.
                     </Typography>
                   </CardContent>
                 </Card>
@@ -410,21 +412,6 @@ No borders. No barriers. Just verified work and focused collaboration.
                   Why Partner With R2C?
                 </Typography>
               </motion.div>
-{/*               <motion.div variants={fadeInUpVariants}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
-                    color: "#6b7280",
-                    maxWidth: "700px",
-                    mx: "auto",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Discover the unique advantages our platform offers to
-                  researchers, industry professionals, and curious minds alike.
-                </Typography>
-              </motion.div> */}
             </Box>
             <Grid
               container
@@ -583,14 +570,20 @@ No borders. No barriers. Just verified work and focused collaboration.
                   mb: { xs: 4, md: 6 },
                 }}
               >
-                R2C.ai was started in 2024 by a group of B.Tech students at IIIT Delhi, who were working closely with researchers as part of their academic journey. <br />
-We noticed something frustrating. <br />
-Many research projects—ours included—began with strong problem statements and ended with working solutions. But after the presentations, posters, and papers… that was it. <br />
-The problem we set out to solve still existed. <br />
-                The research just sat there—never reaching the people it was meant for. <br />
-That’s when we realized: <br />
-It’s not the lack of innovation that holds us back—it’s the lack of connection. <br />
-We built R2C.ai to change that.
+                R2C.ai was started in 2024 by a group of B.Tech students at IIIT
+                Delhi, who were working closely with researchers as part of
+                their academic journey. <br />
+                We noticed something frustrating. <br />
+                Many research projects—ours included—began with strong problem
+                statements and ended with working solutions. But after the
+                presentations, posters, and papers… that was it. <br />
+                The problem we set out to solve still existed. <br />
+                The research just sat there—never reaching the people it was
+                meant for. <br />
+                That’s when we realized: <br />
+                It’s not the lack of innovation that holds us back—it’s the lack
+                of connection. <br />
+                We built R2C.ai to change that.
               </Typography>
             </motion.div>
           </Box>
@@ -763,8 +756,8 @@ We built R2C.ai to change that.
                 }}
               >
                 Whether you’re a: <br />
-Researcher wanting to share and scale your work, or <br />
-Client looking for relevant innovation <br />
+                Researcher wanting to share and scale your work, or <br />
+                Client looking for relevant innovation <br />
               </Typography>
             </motion.div>
           </Box>
