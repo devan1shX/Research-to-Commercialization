@@ -19,7 +19,6 @@ import ClassificationSection from "./ClassificationSection";
 import DocumentUploadSection from "./DocumentUploadSection";
 import RelatedQuestions from "./RelatedQuestions";
 import SubmissionStatus from "./SubmissionStatus";
-// import AdditionalInfoSection from "./AdditionalInfoSection"; // Removed import
 
 const CreateStudy = () => {
     const navigate = useNavigate();
@@ -35,7 +34,6 @@ const CreateStudy = () => {
         documents: [],
         patent_status: "",
         questions: [],
-        // additional_info: [{ key: "", value: "" }], // Removed from state
     });
 
     const [errors, setErrors] = useState({});
@@ -240,7 +238,6 @@ const CreateStudy = () => {
 
         submissionFormData.append("questions", JSON.stringify(formData.questions));
         
-        // Removed additional_info from submission data
 
         if (analysisId && !uploadedFile?.size) {
             submissionFormData.append("analysisId", analysisId);
@@ -442,7 +439,6 @@ const CreateStudy = () => {
                             questions={formData.questions}
                             handleArrayItemChange={handleArrayItemChange}
                         />
-                        {/* AdditionalInfoSection has been removed from here */}
                         <SubmissionStatus
                             isSubmitting={isSubmitting}
                             loadingAuth={loadingAuth}
