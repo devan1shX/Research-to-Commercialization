@@ -19,7 +19,7 @@ import ClassificationSection from "./ClassificationSection";
 import DocumentUploadSection from "./DocumentUploadSection";
 import RelatedQuestions from "./RelatedQuestions";
 import SubmissionStatus from "./SubmissionStatus";
-import AdditionalInfoSection from "./AdditionalInfoSection";
+// import AdditionalInfoSection from "./AdditionalInfoSection"; // Removed import
 
 const CreateStudy = () => {
     const navigate = useNavigate();
@@ -35,7 +35,7 @@ const CreateStudy = () => {
         documents: [],
         patent_status: "",
         questions: [],
-        additional_info: [{ key: "", value: "" }],
+        // additional_info: [{ key: "", value: "" }], // Removed from state
     });
 
     const [errors, setErrors] = useState({});
@@ -162,7 +162,6 @@ const CreateStudy = () => {
             documents: [],
             patent_status: "",
             questions: [],
-            additional_info: [{ key: "", value: "" }],
         });
         setErrors({});
         setApiError("");
@@ -196,30 +195,6 @@ const CreateStudy = () => {
         [errors]
     );
 
-    const addArrayItem = useCallback((arrayName, initialState) => {
-        setFormData((prev) => ({
-            ...prev,
-            [arrayName]: [...prev[arrayName], initialState],
-        }));
-    }, []);
-
-    const removeArrayItem = useCallback((arrayName, index) => {
-        setFormData((prev) => {
-            const newArray = prev[arrayName].filter((_, i) => i !== index);
-            return { ...prev, [arrayName]: newArray };
-        });
-        setErrors((prevErrors) => {
-            const newErrors = { ...prevErrors };
-            Object.keys(newErrors).forEach((key) => {
-                if (key.startsWith(`${arrayName}_`) && key.endsWith(`_${index}`)) {
-                    delete newErrors[key];
-                }
-            });
-            return newErrors;
-        });
-    }, []);
-
-
     const handleGenresChange = useCallback((event, newValue) => {
         setFormData((prev) => ({ ...prev, genres: newValue }));
     }, []);
@@ -231,15 +206,6 @@ const CreateStudy = () => {
         if (!formData.brief_description.trim())
             newErrors.brief_description = "Brief description is required.";
         if (!uploadedFile) newErrors.document = "A document must be uploaded.";
-
-        formData.additional_info.forEach((info, index) => {
-            if (!info.key.trim()) {
-                newErrors[`additional_info_key_${index}`] = "Key is required.";
-            }
-            if (!info.value.trim()) {
-                newErrors[`additional_info_value_${index}`] = "Value is required.";
-            }
-        });
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -273,7 +239,8 @@ const CreateStudy = () => {
             submissionFormData.append("patent_status", formData.patent_status);
 
         submissionFormData.append("questions", JSON.stringify(formData.questions));
-        submissionFormData.append("additional_info", JSON.stringify(formData.additional_info));
+        
+        // Removed additional_info from submission data
 
         if (analysisId && !uploadedFile?.size) {
             submissionFormData.append("analysisId", analysisId);
@@ -475,13 +442,7 @@ const CreateStudy = () => {
                             questions={formData.questions}
                             handleArrayItemChange={handleArrayItemChange}
                         />
-{/*                         <AdditionalInfoSection
-                            additionalInfo={formData.additional_info}
-                            errors={errors}
-                            handleArrayItemChange={handleArrayItemChange}
-                            addArrayItem={addArrayItem}
-                            removeArrayItem={removeArrayItem}
-                        /> */}
+                        {/* AdditionalInfoSection has been removed from here */}
                         <SubmissionStatus
                             isSubmitting={isSubmitting}
                             loadingAuth={loadingAuth}
