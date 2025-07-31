@@ -4,7 +4,7 @@ export const homePageContent = {
     chipLabel: "From Research to Commercialization Seamlessly through AI",
     titlePart1: "Research Made",
     titleGradientPart: "Accessible",
-    description: "Discover cutting-edge research, interact with AI-powered study assistants, and explore knowledge without barriers. Join the future of academic discovery.",
+    description: "Upload your research, analyze its commercial potential, and connect with industry—confidentially and intelligently. R2C.ai bridges academia and industry to make innovation impactful.",
     primaryButtonText: "Explore Studies",
     primaryButtonLink: "/studies",
     primaryButtonIconName: "ArrowForward",
@@ -18,29 +18,29 @@ export const homePageContent = {
     ]
   },
   whyChooseTTO: {
-    title: "Why Choose R2C?",
-    subtitle: "We're transforming how research is shared and consumed in the digital age",
+    title: "Why Choose R2C.ai?",
+    subtitle: "We’re reimagining the future of research transfer—faster, safer, and smarter.",
     features: [
       {
         iconName: 'Search',
         iconColor: '#3b82f6',
         bgColor: '#dbeafe',
-        title: 'Smart Discovery',
-        description: 'Advanced search and filtering help you find exactly the research you need across all fields of study.'
+        title: 'AI-Powered Research Analysis',
+        description: 'Our 27-question AI engine assesses the academic, technical, and commercial potential of your research—instantly and privately.'
       },
       {
         iconName: 'Chat',
         iconColor: '#a855f7',
         bgColor: '#f3e8ff',
-        title: 'AI-Powered Chat',
-        description: 'Ask questions and get instant insights about any research paper through our intelligent chatbot system.'
+        title: 'Smart Industry Matchmaking',
+        description: 'We match research with relevant industry partners using filters like domain, TRL, keywords—without exposing your full work.'
       },
       {
         iconName: 'ShieldOutlined',
         iconColor: '#10b981',
         bgColor: '#d1fae5',
-        title: 'Anonymous Publishing',
-        description: 'Researchers can share their work anonymously, fostering open science without career concerns.'
+        title: 'Confidential & Secure',
+        description: 'Abstract-first visibility, IP-safe infrastructure, and optional anonymous publishing ensure your work is protected throughout.'
       },
       // {
       //   iconName: 'NewIconName', 
@@ -63,24 +63,24 @@ export const homePageContent = {
   },
   howItWorks: {
     title: "How It Works",
-    subtitle: "Get started in three simple steps",
+    subtitle: "Get started in simple steps",
     timelineSteps: [
       {
         label: '1',
-        title: 'Sign Up & Create Profile',
-        description: 'Quickly register and set up your personalized profile to join our vibrant research community.',
+        title: 'Upload Your Research',
+        description: 'Add your research report, patent, or prototype. Our system auto-tags and classifies it for TRL, domain, and IP potential.',
         dotColor: '#3b82f6'
       },
       {
         label: '2',
-        title: 'Discover & Analyze',
-        description: 'Leverage our advanced search and AI-powered tools to find relevant studies and extract key insights effortlessly.',
+        title: 'Get AI Analysis & Insights',
+        description: 'Receive automated answers to key commercialization questions. Edit and explore results with our chatbot.',
         dotColor: '#a855f7'
       },
       {
         label: '3',
-        title: 'Publish & Collaborate',
-        description: 'Share your findings, publish your work (anonymously if preferred), and collaborate with peers worldwide.',
+        title: 'Connect with Industry',
+        description: 'Based on your preferences, we match your work with interested industry players—securely and seamlessly.',
         dotColor: '#10b981'
       },
       
