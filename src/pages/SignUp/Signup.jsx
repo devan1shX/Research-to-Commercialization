@@ -46,16 +46,26 @@ import { signInWithPopup } from "firebase/auth";
 import Login from "../Login/Login";
 
 const themeColors = {
-  primary: { main: "#1976D2", light: "#64B5F6", contrastText: "#FFFFFF" },
-  secondary: { main: "#673AB7", contrastText: "#FFFFFF" },
+  primary: {
+    main: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+    light: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #c084fc 100%)",
+    contrastText: "#FFFFFF",
+  },
+  secondary: {
+    main: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+    contrastText: "#FFFFFF",
+  },
   text: {
     primary: "#212529",
     secondary: "#666666",
     disabled: "#AEAEAE",
-    link: "#1976D2",
   },
   background: { page: "#F5F5F5", paper: "#FFFFFF", default: "#FFFFFF" },
-  border: { main: "#E0E0E0", inputFocused: "#1976D2" },
+  border: {
+    main: "#E0E0E0",
+    inputFocused:
+      "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+  },
   googleButton: {
     borderColor: "#E0E0E0",
     color: "#424242",
@@ -64,10 +74,18 @@ const themeColors = {
   },
   tab: {
     background: "#F0F0F0",
-    selectedText: "#1976D2",
     selectedBackground: "#FFFFFF",
     defaultText: "#666666",
   },
+};
+
+const gradientTextStyle = {
+  background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  textFillColor: "transparent",
+  display: "inline-block",
 };
 
 const Signup = () => {
@@ -251,15 +269,20 @@ const Signup = () => {
       backgroundColor: themeColors.background.paper,
       fontSize: "0.9rem",
       "& fieldset": { borderColor: themeColors.border.main },
-      "&:hover fieldset": { borderColor: themeColors.primary.light },
-      "&.Mui-focused fieldset": {
-        borderColor: themeColors.border.inputFocused,
-        borderWidth: "2px",
+      "&:hover fieldset": { borderColor: "#a855f7" },
+      "&.Mui-focused": {
+        "& fieldset": {
+          border: "2px solid",
+          borderImageSlice: 1,
+          borderImageSource: themeColors.border.inputFocused,
+        },
       },
     },
     "& .MuiInputLabel-root": {
       color: themeColors.text.secondary,
-      "&.Mui-focused": { color: themeColors.primary.main },
+      "&.Mui-focused": {
+        ...gradientTextStyle,
+      },
     },
     mb: 2.5,
   };
@@ -302,17 +325,7 @@ const Signup = () => {
                 sx={{ ...inputStyles, mb: 0 }}
                 error={!!(error && !formData.role)}
               >
-                <InputLabel
-                  id="role-label-id-step0"
-                  shrink={formData.role ? true : undefined}
-                  sx={{
-                    ...(formData.role && {
-                      transform: "translate(14px, -9px) scale(0.75)",
-                    }),
-                  }}
-                >
-                  Role
-                </InputLabel>
+                <InputLabel id="role-label-id-step0">Role</InputLabel>
                 <Select
                   labelId="role-label-id-step0"
                   value={formData.role}
@@ -405,7 +418,6 @@ const Signup = () => {
                     },
                   }}
                 >
-                  {" "}
                   {loading && activeTab === 1 ? (
                     <CircularProgress
                       size={24}
@@ -413,7 +425,7 @@ const Signup = () => {
                     />
                   ) : (
                     "Continue with Google"
-                  )}{" "}
+                  )}
                 </Button>
               </Box>
             </Stack>
@@ -609,7 +621,7 @@ const Signup = () => {
                 onClick={handleSubmit}
                 disabled={loading}
                 sx={{
-                  backgroundColor: themeColors.primary.main,
+                  background: themeColors.primary.main,
                   color: themeColors.primary.contrastText,
                   fontWeight: 500,
                   fontSize: "0.9rem",
@@ -618,17 +630,17 @@ const Signup = () => {
                   borderRadius: "8px",
                   boxShadow: "none",
                   "&:hover": {
-                    backgroundColor: themeColors.primary.light,
+                    background: themeColors.primary.light,
                     boxShadow: "none",
+                    filter: "brightness(1.1)",
                   },
                 }}
               >
-                {" "}
                 {loading ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
                   "Create Account"
-                )}{" "}
+                )}
               </Button>
             </Box>
           </Fade>
@@ -644,35 +656,46 @@ const Signup = () => {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        backgroundColor: themeColors.background.page,
+        background:
+          "linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 50%, #e9d5ff 100%)",
       }}
     >
       <AppBar
         position="sticky"
         elevation={0}
         sx={{
-          backgroundColor: themeColors.background.paper,
-          color: themeColors.text.primary,
-          borderBottom: `1px solid ${themeColors.border.main}`,
+          backgroundColor: "#f8fafc",
+          color: "#1e293b",
+          border: "none",
+          boxShadow: "none",
         }}
       >
-        <Toolbar sx={{ justifyContent: "center" }}>
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{
-                fontWeight: 600,
-                cursor: "pointer",
-                "&:hover": {
-                  textDecoration: "underline",
-                  color: "primary.main",
-                },
-              }}
-            >
-              Tech Transfer Office
-            </Typography>
-          </Link>
+        <Toolbar
+          sx={{
+            justifyContent: "center",
+            py: { xs: 1.5, sm: 2 },
+            px: 3,
+          }}
+        >
+          <Typography
+            variant="h4"
+            component={RouterLink}
+            to="/"
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: "1rem", sm: "1.5rem" },
+              textDecoration: "none",
+              color: "#0f172a",
+              letterSpacing: "-0.01em",
+              fontFamily: '"Inter", "system-ui", sans-serif',
+              transition: "opacity 0.2s ease",
+              "&:hover": {
+                opacity: 0.7,
+              },
+            }}
+          >
+            Research To Commercialization
+          </Typography>
         </Toolbar>
       </AppBar>
 
@@ -709,13 +732,13 @@ const Signup = () => {
                   textTransform: "none",
                   color: themeColors.tab.defaultText,
                   "&.Mui-selected": {
-                    color: themeColors.tab.selectedText,
+                    ...gradientTextStyle,
                     backgroundColor: themeColors.tab.selectedBackground,
                     fontWeight: 600,
                   },
                 },
                 "& .MuiTabs-indicator": {
-                  backgroundColor: themeColors.primary.main,
+                  background: themeColors.primary.main,
                   height: "3px",
                 },
               }}
@@ -749,8 +772,19 @@ const Signup = () => {
                     mb: 2.5,
                     "& .MuiStepIcon-root": {
                       color: themeColors.border.main,
-                      "&.Mui-active": { color: themeColors.primary.main },
-                      "&.Mui-completed": { color: themeColors.primary.main },
+                      "&.Mui-active .MuiStepIcon-text": {
+                        fill: themeColors.primary.contrastText,
+                      },
+                      "&.Mui-active": {
+                        color: "transparent",
+                        backgroundImage: themeColors.primary.main,
+                        borderRadius: "50%",
+                      },
+                      "&.Mui-completed": {
+                        color: "transparent",
+                        backgroundImage: themeColors.primary.main,
+                        borderRadius: "50%",
+                      },
                     },
                   }}
                 >
@@ -769,8 +803,7 @@ const Signup = () => {
                           },
                         }}
                       >
-                        {" "}
-                        {!isMobile && label}{" "}
+                        {!isMobile && label}
                       </StepLabel>
                     </Step>
                   ))}
@@ -784,8 +817,7 @@ const Signup = () => {
                     mb: error ? 1.5 : 3,
                   }}
                 >
-                  {" "}
-                  {steps[currentStep]}{" "}
+                  {steps[currentStep]}
                 </Typography>
                 {error && (
                   <Typography
@@ -826,23 +858,17 @@ const Signup = () => {
                       sx={{
                         flex: 1,
                         borderColor: themeColors.border.main,
-                        color: themeColors.primary.main,
+                        color: themeColors.text.secondary,
                         textTransform: "none",
                         py: 1.2,
                         borderRadius: "8px",
                         "&:hover": {
-                          borderColor: themeColors.primary.light,
-                          backgroundColor: `${themeColors.primary.main}1A`,
-                        },
-                        "&:disabled": {
-                          opacity: 0.5,
-                          borderColor: themeColors.text.disabled,
-                          color: themeColors.text.disabled,
+                          borderColor: themeColors.text.secondary,
+                          backgroundColor: `rgba(0,0,0,0.04)`,
                         },
                       }}
                     >
-                      {" "}
-                      Back{" "}
+                      Back
                     </Button>
                     <Button
                       variant="contained"
@@ -852,23 +878,23 @@ const Signup = () => {
                       endIcon={<ArrowForward />}
                       sx={{
                         flex: 1,
-                        backgroundColor: themeColors.primary.main,
+                        background: themeColors.primary.main,
                         color: themeColors.primary.contrastText,
                         textTransform: "none",
                         py: 1.2,
                         borderRadius: "8px",
                         boxShadow: "none",
                         "&:hover": {
-                          backgroundColor: themeColors.primary.light,
+                          background: themeColors.primary.light,
+                          filter: "brightness(1.1)",
                         },
                       }}
                     >
-                      {" "}
                       {loading && currentStep < steps.length - 1 ? (
                         <CircularProgress size={22} color="inherit" />
                       ) : (
                         "Next"
-                      )}{" "}
+                      )}
                     </Button>
                   </Box>
                 )}
@@ -889,7 +915,7 @@ const Signup = () => {
                       setCurrentStep(0);
                     }}
                     sx={{
-                      color: themeColors.text.link,
+                      ...gradientTextStyle,
                       textDecoration: "none",
                       fontWeight: 500,
                       cursor: "pointer",
