@@ -16,7 +16,6 @@ The official frontend for the R2C.ai platform, a web application designed to bri
 * **Interactive Chatbot:** Engage in a conversation with an AI chatbot to ask questions about specific research papers.
 * **Study Management:** Researchers can manage their uploaded studies, view their status, and edit details.
 * **Search and Discovery:** Browse, search, and filter a public repository of approved research studies.
-* **User Profiles:** View and manage your personal profile and saved studies.
 
 ---
 
