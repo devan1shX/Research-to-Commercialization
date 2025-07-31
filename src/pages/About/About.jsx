@@ -85,7 +85,7 @@ const About = () => {
       iconName: "Bolt",
       title: "Rapid Insights",
       description:
-        "Access and understand complex research findings quickly and efficiently through our summarized and curated content.",
+        "We break down technical work into actionable insights—instantly. You get clarity without needing deep domain knowledge.",
       iconColor: "#D97706",
       bgColor: "#FEF3C7",
     },
@@ -93,7 +93,7 @@ const About = () => {
       iconName: "ShieldOutlined",
       title: "Verified & Secure",
       description:
-        "Trust in a platform that prioritizes data integrity and provides a secure environment for anonymous contributions.",
+        "Every submission is private by default. Abstracts are shown, but details are hidden unless the researcher agrees.",
       iconColor: "#059669",
       bgColor: "#D1FAE5",
     },
@@ -101,7 +101,7 @@ const About = () => {
       iconName: "People",
       title: "Community Driven",
       description:
-        "Join a vibrant community of researchers, industry experts, and enthusiasts to foster collaboration and discussion.",
+        "Join a growing ecosystem of innovators, thinkers, and changemakers. Whether you’re in a lab or a boardroom—you belong here.",
       iconColor: "#2563EB",
       bgColor: "#DBEAFE",
     },
@@ -109,7 +109,7 @@ const About = () => {
       iconName: "Book",
       title: "Knowledge Hub",
       description:
-        "Explore a vast repository of research across various domains, all simplified for broader understanding and application.",
+        "Our repository isn’t just papers—it’s searchable, filterable, and commercial-ready research, with domain tags and TRLs.",
       iconColor: "#7C3AED",
       bgColor: "#EDE9FE",
     },
@@ -117,7 +117,7 @@ const About = () => {
       iconName: "Chat",
       title: "Engage & Discuss",
       description:
-        "Participate in meaningful conversations, ask questions, and share perspectives on the latest research trends.",
+        "Get answers. Ask questions. Talk to real researchers through our platform—only when they choose to connect.",
       iconColor: "#DB2777",
       bgColor: "#FCE7F3",
     },
@@ -125,7 +125,7 @@ const About = () => {
       iconName: "Search",
       title: "Easy Discovery",
       description:
-        "Our intuitive search and filtering tools help you find the exact research you need, when you need it.",
+        "Don’t scroll through clutter. Just tell us what you’re looking for—our system does the rest.",
       iconColor: "#4F46E5",
       bgColor: "#E0E7FF",
     },
@@ -289,15 +289,14 @@ const About = () => {
                     fontSize: { xs: "0.95rem", sm: "1.1rem" },
                   }}
                 >
-                  R2C (Research to Commercialization) was born from a simple
-                  belief: groundbreaking research should be accessible to
-                  everyone, not locked behind paywalls or buried in academic
-                  jargon.
-                  <br /> <br />
-                  We're building bridges between the ivory tower and the real
-                  world, enabling researchers to share their work anonymously
-                  while empowering curious minds to explore, understand, and
-                  engage with cutting-edge science.
+                  R2C (Research to Commercialization) exists to solve a real gap:
+                  Brilliant research often goes unseen, unused, and unfunded.
+                  Researchers struggle to find collaborators or turn their work into real products.
+                   Industries want new ideas but don’t know where to find them.
+                   And traditional tech transfer is slow, outdated, and messy.
+                  We’re here to fix that.
+                  With AI tools, privacy-first design, and a matchmaking engine,
+                   R2C.ai connects the people who create innovation with those who can use it.
                 </Typography>
                 <Link to="/studies" style={{ textDecoration: "none" }}>
                   <Button
@@ -375,9 +374,9 @@ const About = () => {
                         lineHeight: 1.7,
                       }}
                     >
-                      Connecting researchers, institutions, and enthusiasts from
-                      every corner of the world, promoting diverse perspectives
-                      and collaborative innovation for a better future.
+                      We’re building a global network of researchers, institutions, startups, and government agencies.
+No borders. No barriers. Just verified work and focused collaboration.
+
                     </Typography>
                   </CardContent>
                 </Card>
@@ -411,7 +410,7 @@ const About = () => {
                   Why Partner With R2C?
                 </Typography>
               </motion.div>
-              <motion.div variants={fadeInUpVariants}>
+{/*               <motion.div variants={fadeInUpVariants}>
                 <Typography
                   variant="body1"
                   sx={{
@@ -425,7 +424,7 @@ const About = () => {
                   Discover the unique advantages our platform offers to
                   researchers, industry professionals, and curious minds alike.
                 </Typography>
-              </motion.div>
+              </motion.div> */}
             </Box>
             <Grid
               container
@@ -584,21 +583,14 @@ const About = () => {
                   mb: { xs: 4, md: 6 },
                 }}
               >
-                R2C was founded in 2023 by a team of researchers, technologists,
-                and advocates who experienced firsthand the barriers that
-                prevent groundbreaking research from reaching those who need it
-                most. <br /> <br />
-                We noticed that brilliant discoveries were often trapped in
-                academic silos, accessible only to those with institutional
-                subscriptions or specialized knowledge. Meanwhile, curious minds
-                outside academia struggled to engage with cutting-edge research
-                that could inform their decisions, spark innovation, or simply
-                satisfy their intellectual curiosity. <br /> <br />
-                Our platform represents a new paradigm: anonymous publishing
-                that protects researchers while AI-powered tools make complex
-                research accessible to everyone. We're not just sharing papers;
-                we're creating conversations between researchers and the public
-                that have never been possible before. <br /> <br />
+                R2C.ai was started in 2024 by a group of B.Tech students at IIIT Delhi, who were working closely with researchers as part of their academic journey. <br />
+We noticed something frustrating. <br />
+Many research projects—ours included—began with strong problem statements and ended with working solutions. But after the presentations, posters, and papers… that was it. <br />
+The problem we set out to solve still existed. <br />
+                The research just sat there—never reaching the people it was meant for. <br />
+That’s when we realized: <br />
+It’s not the lack of innovation that holds us back—it’s the lack of connection. <br />
+We built R2C.ai to change that.
               </Typography>
             </motion.div>
           </Box>
@@ -752,7 +744,7 @@ const About = () => {
                     color: "#1f2937",
                   }}
                 >
-                  Join Our Mission
+                  Join the R2C Community
                 </Typography>
               </Box>
             </motion.div>
@@ -770,9 +762,9 @@ const About = () => {
                   mb: { xs: 4, md: 6 },
                 }}
               >
-                Whether you're a researcher looking to share your work or
-                someone curious about the latest discoveries, there's a place
-                for you in the R2C community.
+                Whether you’re a: <br />
+Researcher wanting to share and scale your work, or <br />
+Client looking for relevant innovation <br />
               </Typography>
             </motion.div>
           </Box>
