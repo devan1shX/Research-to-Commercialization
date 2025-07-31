@@ -25,6 +25,8 @@ import {
   Fade,
   Divider,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import {
@@ -104,6 +106,12 @@ const Signup = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const muiTheme = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("sm"));
@@ -183,17 +191,23 @@ const Signup = () => {
           data.message || `HTTP error! status: ${response.status}`
         );
       }
-      alert("Signup successful! Please login.");
-      setActiveTab(0);
-      setCurrentStep(0);
-      setFormData({
-        displayName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        role: "student",
-        phone: "",
+      setNotification({
+        open: true,
+        message: "Signup successful! Please login.",
+        severity: "success",
       });
+      setTimeout(() => {
+        setActiveTab(0);
+        setCurrentStep(0);
+        setFormData({
+          displayName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "student",
+          phone: "",
+        });
+      }, 1500);
     } catch (err) {
       setError(err.message || "Failed to sign up. Please try again.");
     } finally {
@@ -224,17 +238,24 @@ const Signup = () => {
           data.message || `HTTP error! status: ${response.status}`
         );
       }
-      alert("Successfully signed in with Google!");
-      setActiveTab(0);
-      setCurrentStep(0);
-      setFormData({
-        displayName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        role: "student",
-        phone: "",
+      setNotification({
+        open: true,
+        message: "Successfully signed in with Google!",
+        severity: "success",
       });
+      setTimeout(() => {
+        setActiveTab(0);
+        setCurrentStep(0);
+        setFormData({
+          displayName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "student",
+          phone: "",
+        });
+        navigate("/");
+      }, 1500);
     } catch (err) {
       setError(err.message || "Google sign-in failed. Please try again.");
     } finally {
@@ -254,6 +275,13 @@ const Signup = () => {
       role: "student",
       phone: "",
     });
+  };
+
+  const handleNotificationClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setNotification({ ...notification, open: false });
   };
 
   const roles = [
@@ -660,6 +688,21 @@ const Signup = () => {
           "linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 50%, #e9d5ff 100%)",
       }}
     >
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleNotificationClose}
+          severity={notification.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
       <AppBar
         position="sticky"
         elevation={0}
