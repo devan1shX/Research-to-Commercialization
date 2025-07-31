@@ -151,7 +151,7 @@ const Header = () => {
               onClick={handleDrawerToggle}
               disableRipple={true}
               sx={({ isActive } = { isActive: false }) => {
-                /* Assuming NavLink passes isActive */
+                
                 const baseListItemStyles = {
                   textAlign: "left",
                   padding: "10px 12px",
@@ -405,7 +405,6 @@ const Header = () => {
                       variant={item.variant}
                       disableRipple={true}
                       sx={({ isActive } = { isActive: false }) => {
-                        /* Assuming NavLink passes isActive */
                         let currentTextColor = config.defaultColor;
                         if (isActive) {
                           currentTextColor = config.activeColor;
@@ -428,7 +427,6 @@ const Header = () => {
                     </Button>
                   );
                 })}
-                {/* Conditional rendering based on auth state from context */}
                 {loadingAuth ? (
                   <CircularProgress size={24} sx={{ color: "#2563EB" }} />
                 ) : !currentUser ? (
@@ -552,7 +550,6 @@ const Header = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {/* Display user info if available */}
         {currentUser && (
           <MenuItem
             disabled
