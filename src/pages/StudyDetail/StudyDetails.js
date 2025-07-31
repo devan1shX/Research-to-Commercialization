@@ -119,43 +119,6 @@ const StudyDetails = ({ study }) => {
           </Typography>
         </Box>
       )}
-
-      {/* 
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 2,
-          mt: study.abstract ? { xs: 2.5, sm: 3 } : 0,
-          mb: { xs: 3, sm: 4 },
-        }}
-      >
-        <Button
-          variant="outlined"
-          startIcon={<DownloadIcon />}
-          onClick={() => console.log("Download PDF. Study ID:", study.id)}
-          sx={actionButtonSx}
-        >
-          Download PDF
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<ShareIcon />}
-          onClick={() => console.log("Share. Study ID:", study.id)}
-          sx={actionButtonSx}
-        >
-          Share
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<MailOutlineIcon />}
-          onClick={() => console.log("Contact Researcher. Study ID:", study.id)}
-          sx={actionButtonSx}
-        >
-          Contact Researcher
-        </Button>
-      </Box>
-      */}
     </Box>
   );
 };
