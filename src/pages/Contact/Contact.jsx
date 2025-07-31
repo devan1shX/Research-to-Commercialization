@@ -349,7 +349,7 @@ const Contact = () => {
                   px: { xs: "0 10px", sm: "0 20px" },
                 }}
               >
-                Have questions about R2C? Need support with your research? We'd
+                Have questions about R2C.ai? Need support with your research? We'd
                 love to hear from you.
               </Typography>
             </motion.div>
@@ -497,7 +497,7 @@ const Contact = () => {
                     mb: 0.5,
                   }}
                 >
-                 IIIT-D
+                 Indraprastha Institute of Information Technology Delhi
                 </Typography>
                 
                 <Typography
@@ -506,7 +506,7 @@ const Contact = () => {
                     fontSize: { xs: "0.85rem", md: "0.9rem" },
                   }}
                 >
-                  Delhi, 110001, India
+                  Delhi, 110020, India
                 </Typography>
               </ContactInfoItem>
 
