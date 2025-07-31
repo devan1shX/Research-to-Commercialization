@@ -154,7 +154,7 @@ const Footer = () => {
               Social
             </Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <IconButton
+{/*               <IconButton
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -183,7 +183,7 @@ const Footer = () => {
                 }}
               >
                 <Facebook fontSize="small" />
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 href="https://twitter.com"
                 target="_blank"
