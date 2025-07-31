@@ -16,6 +16,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Visibility,
@@ -45,6 +47,13 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [loadingForgotPassword, setLoadingForgotPassword] = useState(false);
 
+  // State for the new notification snackbar
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
   const handleInputChange = (field) => (event) => {
     setLoginData((prev) => ({ ...prev, [field]: event.target.value }));
     if (error) setError("");
@@ -59,13 +68,19 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         auth,
         loginData.email,
         loginData.password
       );
-      alert("Login successful!");
-      navigate("/");
+      // Set success notification instead of alert
+      setNotification({
+        open: true,
+        message: "Login successful! Redirecting...",
+        severity: "success",
+      });
+      // Delay navigation to allow user to see the message
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
       console.error("Login Error:", err);
       let errorMessage = "Failed to login. Please check your credentials.";
@@ -114,8 +129,14 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
           data.message || `Backend error! status: ${response.status}`
         );
       }
-      alert("Successfully logged in with Google!");
-      navigate("/");
+      // Set success notification instead of alert
+      setNotification({
+        open: true,
+        message: "Successfully logged in with Google! Redirecting...",
+        severity: "success",
+      });
+      // Delay navigation
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
       console.error("Google Login Error:", err);
       let errorMessage = "Google login failed. Please try again.";
@@ -176,6 +197,14 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
   };
 
+  // Handler to close the snackbar
+  const handleNotificationClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setNotification({ ...notification, open: false });
+  };
+
   const gradientTextStyle = {
     background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)',
     WebkitBackgroundClip: 'text',
@@ -187,6 +216,23 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
 
   return (
     <>
+      {/* Snackbar component for notifications */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleNotificationClose}
+          severity={notification.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
+
       <Paper
         elevation={0}
         sx={{
