@@ -44,7 +44,7 @@ You need to have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/
     ```
 2.  **Navigate to the project directory:**
     ```sh
-    cd [Research-to-Commercialization]
+    cd Research-to-Commercialization
     ```
 3.  **Install NPM packages:**
     ```sh
