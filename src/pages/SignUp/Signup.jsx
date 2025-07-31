@@ -737,7 +737,7 @@ const Signup = () => {
               },
             }}
           >
-            Research To Commercialization
+            R2C.ai
           </Typography>
         </Toolbar>
       </AppBar>
