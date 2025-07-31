@@ -1,9 +1,18 @@
 import React from "react";
-import { Box, Typography, Chip, Button, Link as MuiLink, List, ListItem, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Chip,
+  Button,
+  Link as MuiLink,
+  List,
+  ListItem,
+  Divider,
+} from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import ShareIcon from "@mui/icons-material/Share";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import ArticleIcon from '@mui/icons-material/Article';
+import ArticleIcon from "@mui/icons-material/Article";
 import {
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
@@ -18,29 +27,28 @@ const actionButtonSx = {
 };
 
 const sectionSx = {
-    mt: { xs: 3, sm: 4 },
-    mb: { xs: 3, sm: 4 },
-    padding: { xs: 2, sm: 3 },
-    backgroundColor: "#FFFFFF",
-    borderRadius: "8px",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  mt: { xs: 3, sm: 4 },
+  mb: { xs: 3, sm: 4 },
+  padding: { xs: 2, sm: 3 },
+  backgroundColor: "#FFFFFF",
+  borderRadius: "8px",
+  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
 };
 
 const sectionTitleSx = {
-    fontWeight: "bold",
-    color: "#111827",
-    mb: 1.5,
-    fontSize: { xs: "1.25rem", sm: "1.375rem", md: "1.5rem" },
+  fontWeight: "bold",
+  color: "#111827",
+  mb: 1.5,
+  fontSize: { xs: "1.25rem", sm: "1.375rem", md: "1.5rem" },
 };
 
 const sectionBodySx = {
-    lineHeight: { xs: 1.6, sm: 1.7 },
-    fontSize: { xs: "0.9375rem", sm: "1rem" },
-    color: "#374151",
-    whiteSpace: "pre-line",
-    wordBreak: "break-word",
+  lineHeight: { xs: 1.6, sm: 1.7 },
+  fontSize: { xs: "0.9375rem", sm: "1rem" },
+  color: "#374151",
+  whiteSpace: "pre-line",
+  wordBreak: "break-word",
 };
-
 
 const StudyDetails = ({ study }) => {
   return (
@@ -96,7 +104,7 @@ const StudyDetails = ({ study }) => {
             },
           }}
         />
-        
+
         {Array.isArray(study.genres) &&
           study.genres.length > 0 &&
           study.genres.map((genre, index) => (
@@ -119,58 +127,69 @@ const StudyDetails = ({ study }) => {
 
       <Box sx={sectionSx}>
         {study.abstract && (
-            <Box>
-                <Typography variant="h5" component="h2" sx={sectionTitleSx}>
-                    Abstract
-                </Typography>
-                <Typography variant="body1" component="p" sx={sectionBodySx}>
-                    {study.abstract}
-                </Typography>
-            </Box>
+          <Box>
+            <Typography variant="h5" component="h2" sx={sectionTitleSx}>
+              Abstract
+            </Typography>
+            <Typography variant="body1" component="p" sx={sectionBodySx}>
+              {study.abstract}
+            </Typography>
+          </Box>
         )}
 
-        {study.abstract && study.brief_description && <Divider sx={{my: 3}} />}
+        {study.abstract && study.brief_description && (
+          <Divider sx={{ my: 3 }} />
+        )}
 
         {study.brief_description && (
-            <Box sx={{ mt: study.abstract ? 0 : 0 }}>
-                <Typography variant="h5" component="h2" sx={sectionTitleSx}>
-                    Brief Description
-                </Typography>
-                <Typography variant="body1" component="p" sx={sectionBodySx}>
-                    {study.brief_description}
-                </Typography>
-            </Box>
+          <Box sx={{ mt: study.abstract ? 0 : 0 }}>
+            <Typography variant="h5" component="h2" sx={sectionTitleSx}>
+              Brief Description
+            </Typography>
+            <Typography variant="body1" component="p" sx={sectionBodySx}>
+              {study.brief_description}
+            </Typography>
+          </Box>
         )}
 
-        {(study.abstract || study.brief_description) && study.documents && study.documents.length > 0 && <Divider sx={{my: 3}} />}
+        {(study.abstract || study.brief_description) &&
+          study.documents &&
+          study.documents.length > 0 && <Divider sx={{ my: 3 }} />}
 
         {study.documents && study.documents.length > 0 && (
-            <Box sx={{ mt: (study.abstract || study.brief_description) ? 0 : 0 }}>
-                <Typography variant="h5" component="h2" sx={sectionTitleSx}>
-                    Associated Documents
-                </Typography>
-                <List sx={{p: 0}}>
-                    {study.documents.map((doc, index) => (
-                      <ListItem key={index} disablePadding sx={{mb: 1}}>
-                          <MuiLink 
-                            href={`/api/${doc.file_location}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            sx={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
-                          >
-                              <Button
-                                  variant="outlined"
-                                  startIcon={<ArticleIcon />}
-                                  fullWidth
-                                  sx={{ justifyContent: 'flex-start', textTransform: 'none'}}
-                              >
-                                  {doc.display_name}
-                              </Button>
-                          </MuiLink>
-                      </ListItem>
-                    ))}
-                </List>
-            </Box>
+          <Box sx={{ mt: study.abstract || study.brief_description ? 0 : 0 }}>
+            <Typography variant="h5" component="h2" sx={sectionTitleSx}>
+              Associated Documents
+            </Typography>
+            <List sx={{ p: 0 }}>
+              {study.documents.map((doc, index) => (
+                <ListItem key={index} disablePadding sx={{ mb: 1 }}>
+                  <MuiLink
+                    href={`/api/${doc.file_location}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      width: "100%",
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      startIcon={<ArticleIcon />}
+                      fullWidth
+                      sx={{
+                        justifyContent: "flex-start",
+                        textTransform: "none",
+                      }}
+                    >
+                      {doc.display_name}
+                    </Button>
+                  </MuiLink>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         )}
       </Box>
     </Box>
