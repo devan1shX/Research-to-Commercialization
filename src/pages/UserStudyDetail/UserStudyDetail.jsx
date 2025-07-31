@@ -27,7 +27,6 @@ import StudyDetails from "./StudyDetails";
 import ChatWithPaper from "./ChatWithPaper";
 import RelatedQuestions from "./RelatedQuestions";
 
-
 const LoadingState = () => (
   <Box
     sx={{
@@ -63,7 +62,6 @@ const NotFoundState = () => (
   </Container>
 );
 
-
 const UserStudyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -87,12 +85,9 @@ const UserStudyDetail = () => {
     setError(null);
     try {
       const token = await currentUser.getIdToken(true);
-      const response = await fetch(
-        `/api/my-studies/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await fetch(`/api/my-studies/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || `Error: ${response.status}`);
@@ -131,21 +126,18 @@ const UserStudyDetail = () => {
 
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch(
-        "/api/studies/chat-with-paper",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            prompt: promptForApi,
-            studyId: id,
-            chatHistory: [...chatMessages, newUserMessage],
-          }),
-        }
-      );
+      const response = await fetch("/api/studies/chat-with-paper", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          prompt: promptForApi,
+          studyId: id,
+          chatHistory: [...chatMessages, newUserMessage],
+        }),
+      });
 
       const data = await response.json();
       if (!response.ok) {
