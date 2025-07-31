@@ -40,7 +40,7 @@ const Footer = () => {
             },
           }}
         >
-          {/* Brand Section - Start */}
+        
           <Box sx={{ flex: '1', maxWidth: '400px' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <BookIcon 
@@ -72,7 +72,7 @@ const Footer = () => {
             </Typography>
           </Box>
 
-          {/* Platform Section - Center */}
+          
           <Box sx={{ 
             flex: '0 0 auto', 
             display: 'flex', 
@@ -132,7 +132,7 @@ const Footer = () => {
             </Box>
           </Box>
 
-          {/* Social Section - End */}
+          
           <Box sx={{ 
             flex: '0 0 auto',
             display: 'flex',
@@ -154,36 +154,6 @@ const Footer = () => {
               Social
             </Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
-{/*               <IconButton
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: '#9ca3af',
-                  p: 1,
-                  '&:hover': {
-                    color: '#e1306c',
-                    backgroundColor: 'rgba(225, 48, 108, 0.1)',
-                  },
-                }}
-              >
-                <Instagram fontSize="small" />
-              </IconButton>
-              <IconButton
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: '#9ca3af',
-                  p: 1,
-                  '&:hover': {
-                    color: '#1877f2',
-                    backgroundColor: 'rgba(24, 119, 242, 0.1)',
-                  },
-                }}
-              >
-                <Facebook fontSize="small" />
-              </IconButton> */}
               <IconButton
                 href="https://twitter.com"
                 target="_blank"
@@ -233,7 +203,7 @@ const Footer = () => {
           </Box>
         </Box>
 
-        {/* Copyright Section */}
+        
         <Box
           sx={{
             borderTop: '1px solid #374151',
