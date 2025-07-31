@@ -1,70 +1,144 @@
-# Getting Started with Create React App
+# Research to Commercialization (R2C.ai) - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
 
-## Available Scripts
+The official frontend for the R2C.ai platform, a web application designed to bridge the gap between academic research and commercial viability. This interface allows students, researchers, and industry professionals to upload, analyze, and discuss research papers.
 
-In the project directory, you can run:
+**Live Demo:** **[https://r2c.iiitd.edu.in](https://r2c.iiitd.edu.in)**
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* **User Authentication:** Secure sign-up and login using email/password and Google Sign-In.
+* **Document Upload & Analysis:** Upload research papers (PDFs) and receive an automated analysis, including extracted metadata and Q&A pairs.
+* **Interactive Chatbot:** Engage in a conversation with an AI chatbot to ask questions about specific research papers.
+* **Study Management:** Researchers can manage their uploaded studies, view their status, and edit details.
+* **Search and Discovery:** Browse, search, and filter a public repository of approved research studies.
+* **User Profiles:** View and manage your personal profile and saved studies.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ Tech Stack
 
-### `npm run build`
+* **[React.js](https://reactjs.org/):** A JavaScript library for building user interfaces.
+* **[React Router](https://reactrouter.com/):** For declarative routing in the application.
+* **[Axios](https://axios-http.com/):** For making promise-based HTTP requests to the backend API.
+* **CSS / UI Framework:** (e.g., Material-UI, Tailwind CSS - *you can specify which one you used*)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🏁 Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To get a local copy up and running, follow these simple steps.
 
-### `npm run eject`
+### **Prerequisites**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+You need to have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your machine.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### **Installation**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1.  **Clone the repository:**
+    ```sh
+    git clone [URL_to_your_frontend_repository]
+    ```
+2.  **Navigate to the project directory:**
+    ```sh
+    cd [frontend-repository-name]
+    ```
+3.  **Install NPM packages:**
+    ```sh
+    npm install
+    ```
+4.  **Start the development server:**
+    ```sh
+    npm start
+    ```
+    Your application should now be running on [http://localhost:3000](http://localhost:3000).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 📂 Project Structure
+No, I have everything I need. Thank you.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Here are the professional README.md files for your frontend and backend projects.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Frontend: README.md
+Markdown
 
-### Code Splitting
+# Research to Commercialization (R2C.ai) - Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
 
-### Analyzing the Bundle Size
+The official frontend for the R2C.ai platform, a web application designed to bridge the gap between academic research and commercial viability. This interface allows students, researchers, and industry professionals to upload, analyze, and discuss research papers.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Live Demo:** **[https://r2c.iiitd.edu.in](https://r2c.iiitd.edu.in)**
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🚀 Features
 
-### Advanced Configuration
+* **User Authentication:** Secure sign-up and login using email/password and Google Sign-In.
+* **Document Upload & Analysis:** Upload research papers (PDFs) and receive an automated analysis, including extracted metadata and Q&A pairs.
+* **Interactive Chatbot:** Engage in a conversation with an AI chatbot to ask questions about specific research papers.
+* **Study Management:** Researchers can manage their uploaded studies, view their status, and edit details.
+* **Search and Discovery:** Browse, search, and filter a public repository of approved research studies.
+* **User Profiles:** View and manage your personal profile and saved studies.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 🛠️ Tech Stack
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* **[React.js](https://reactjs.org/):** A JavaScript library for building user interfaces.
+* **[React Router](https://reactrouter.com/):** For declarative routing in the application.
+* **[Axios](https://axios-http.com/):** For making promise-based HTTP requests to the backend API.
+* **CSS / UI Framework:** (e.g., Material-UI, Tailwind CSS - *you can specify which one you used*)
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🏁 Getting Started
+
+To get a local copy up and running, follow these simple steps.
+
+### **Prerequisites**
+
+You need to have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your machine.
+
+### **Installation**
+
+1.  **Clone the repository:**
+    ```sh
+    git clone [URL_to_your_frontend_repository]
+    ```
+2.  **Navigate to the project directory:**
+    ```sh
+    cd [frontend-repository-name]
+    ```
+3.  **Install NPM packages:**
+    ```sh
+    npm install
+    ```
+4.  **Start the development server:**
+    ```sh
+    npm start
+    ```
+    Your application should now be running on [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 📂 Project Structure
+
+/
+├── public/
+│   └── index.html      # Main HTML file
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── pages/          # Page components (Home, Login, Profile, etc.)
+│   ├── App.js          # Main application component
+│   └── index.js        # Entry point of the application
+├── package.json        # Project dependencies and scripts
+└── README.md           # This file
+
