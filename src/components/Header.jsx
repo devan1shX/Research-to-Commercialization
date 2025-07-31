@@ -371,7 +371,7 @@ const Header = () => {
                   letterSpacing: "-0.01em",
                 }}
               >
-                Research to Commercialization
+                R2C.ai
               </Typography>
             </Box>
 
