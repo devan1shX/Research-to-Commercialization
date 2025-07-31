@@ -64,11 +64,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         loginData.email,
         loginData.password
       );
-      console.log("Login Successful (Email/Password):", userCredential.user);
+      // console.log("Login Successful (Email/Password):", userCredential.user);
       alert("Login successful!");
       navigate("/");
     } catch (err) {
-      console.error("Login Error:", err);
+      // console.error("Login Error:", err);
       let errorMessage = "Failed to login. Please check your credentials.";
       if (err.code) {
         switch (err.code) {
@@ -115,11 +115,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
           data.message || `Backend error! status: ${response.status}`
         );
       }
-      console.log("Google Login & Backend Sync Successful:", data);
+      // console.log("Google Login & Backend Sync Successful:", data);
       alert("Successfully logged in with Google!");
       navigate("/");
     } catch (err) {
-      console.error("Google Login Error:", err);
+      // console.error("Google Login Error:", err);
       let errorMessage = "Google login failed. Please try again.";
       if (err.code === "auth/popup-closed-by-user") {
         errorMessage = "Google sign-in was cancelled.";
@@ -165,7 +165,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         `Password reset email sent to ${resetEmail}. Please check your inbox (and spam folder).`
       );
     } catch (err) {
-      console.error("Error sending password reset email:", err);
+      // console.error("Error sending password reset email:", err);
       if (err.code === "auth/user-not-found") {
         setForgotPasswordMessage("No user found with this email address.");
       } else {
