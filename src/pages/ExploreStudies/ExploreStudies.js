@@ -159,7 +159,7 @@ const ExploreStudies = () => {
     width: { xs: "100%", sm: "calc(50% - 12px)", md: "calc(33.333% - 16px)" },
   };
 
-  if (loading && studiesResponse.studies.length === 0) {
+  if (loading && studiesResponse.studies.length === 0 && !error) {
     return (
       <Box
         sx={{
@@ -318,12 +318,19 @@ const ExploreStudies = () => {
             flexDirection: "column",
           }}
         >
-          {loading && studiesResponse.studies.length > 0 && (
-            <CircularProgress sx={{ alignSelf: "center", mb: 2 }} />
-          )}
+          {/* The jarring inline spinner that caused layout shift has been removed. */}
 
           <Box
-            sx={{ display: "flex", flexWrap: "wrap", gap: 3, width: "100%" }}
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 3,
+              width: "100%",
+              // These new styles create a smooth transition when content is loading
+              transition: "opacity 0.3s ease-in-out",
+              opacity: loading && studiesResponse.studies.length > 0 ? 0.6 : 1,
+              pointerEvents: loading && studiesResponse.studies.length > 0 ? "none" : "auto",
+            }}
           >
             {studiesResponse.studies.map((study) => (
               <ResearchCard
