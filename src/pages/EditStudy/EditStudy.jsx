@@ -502,30 +502,6 @@ const EditStudy = () => {
               patentStatuses={patentStatuses}
             />
 
-            {/* <DocumentManager
-              existingDocuments={existingDocuments}
-              newDocuments={newDocuments}
-              errors={errors}
-              apiError={apiError}
-              setApiError={setApiError}
-              toggleDeleteExistingDocument={toggleDeleteExistingDocument}
-              handleExistingDocDisplayNameChange={
-                handleExistingDocDisplayNameChange
-              }
-              handleNewDocumentFileChange={handleNewDocumentFileChange}
-              handleNewDocumentDisplayNameChange={
-                handleNewDocumentDisplayNameChange
-              }
-              addNewDocumentSlot={addNewDocumentSlot}
-              removeSelectedNewFile={removeSelectedNewFile}
-            /> */}
-
-            {/* <AdditionalInfoFields
-              additionalInfo={formData.additional_info}
-              handleAdditionalInfoChange={handleAdditionalInfoChange}
-              addAdditionalInfoField={addAdditionalInfoField}
-              removeAdditionalInfoField={removeAdditionalInfoField}
-            /> */}
 
             <RelatedQuestions
               questions={formData.questions}
