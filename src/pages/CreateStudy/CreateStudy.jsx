@@ -475,13 +475,13 @@ const CreateStudy = () => {
                             questions={formData.questions}
                             handleArrayItemChange={handleArrayItemChange}
                         />
-                        <AdditionalInfoSection
+{/*                         <AdditionalInfoSection
                             additionalInfo={formData.additional_info}
                             errors={errors}
                             handleArrayItemChange={handleArrayItemChange}
                             addArrayItem={addArrayItem}
                             removeArrayItem={removeArrayItem}
-                        />
+                        /> */}
                         <SubmissionStatus
                             isSubmitting={isSubmitting}
                             loadingAuth={loadingAuth}
