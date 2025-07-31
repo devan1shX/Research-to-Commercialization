@@ -47,7 +47,6 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [loadingForgotPassword, setLoadingForgotPassword] = useState(false);
 
-  // State for the new notification snackbar
   const [notification, setNotification] = useState({
     open: false,
     message: "",
@@ -73,13 +72,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         loginData.email,
         loginData.password
       );
-      // Set success notification instead of alert
       setNotification({
         open: true,
         message: "Login successful! Redirecting...",
         severity: "success",
       });
-      // Delay navigation to allow user to see the message
       setTimeout(() => navigate("/"), 1500);
     } catch (err) {
       console.error("Login Error:", err);
@@ -129,13 +126,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
           data.message || `Backend error! status: ${response.status}`
         );
       }
-      // Set success notification instead of alert
       setNotification({
         open: true,
         message: "Successfully logged in with Google! Redirecting...",
         severity: "success",
       });
-      // Delay navigation
       setTimeout(() => navigate("/"), 1500);
     } catch (err) {
       console.error("Google Login Error:", err);
@@ -197,7 +192,6 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
   };
 
-  // Handler to close the snackbar
   const handleNotificationClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -206,28 +200,28 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
   };
 
   const gradientTextStyle = {
-    background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
-    textFillColor: 'transparent',
-    display: 'inline-block', 
+    background:
+      "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+    textFillColor: "transparent",
+    display: "inline-block",
   };
 
   return (
     <>
-      {/* Snackbar component for notifications */}
       <Snackbar
         open={notification.open}
         autoHideDuration={6000}
         onClose={handleNotificationClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleNotificationClose}
           severity={notification.severity}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {notification.message}
         </Alert>
@@ -357,7 +351,8 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             variant="contained"
             disabled={loading}
             sx={{
-              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+              background:
+                "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
               color: themeColors.primary.contrastText,
               fontWeight: 500,
               fontSize: "0.9rem",
@@ -365,10 +360,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
               py: 1.5,
               borderRadius: "8px",
               boxShadow: "none",
-              transition: 'filter 0.2s',
-              "&:hover": { 
-                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
-                filter: 'brightness(1.1)' 
+              transition: "filter 0.2s",
+              "&:hover": {
+                background:
+                  "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+                filter: "brightness(1.1)",
               },
             }}
           >
@@ -425,7 +421,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             <Link
               onClick={switchToSignupTab}
               sx={{
-                ...gradientTextStyle, 
+                ...gradientTextStyle,
                 textDecoration: "none",
                 fontWeight: 500,
                 cursor: "pointer",
@@ -497,14 +493,16 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
             variant="contained"
             disabled={loadingForgotPassword}
             sx={{
-              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+              background:
+                "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
               color: themeColors.primary.contrastText,
               textTransform: "none",
               fontWeight: 500,
-              transition: 'filter 0.2s',
-              "&:hover": { 
-                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
-                filter: 'brightness(1.1)'
+              transition: "filter 0.2s",
+              "&:hover": {
+                background:
+                  "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)",
+                filter: "brightness(1.1)",
               },
             }}
           >
