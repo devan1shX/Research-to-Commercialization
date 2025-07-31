@@ -427,7 +427,17 @@ const Contact = () => {
                     mb: 0.5,
                   }}
                 >
-                  support@r2c-platform.com
+                  sidhant21495@iiitd.ac.in
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "#1976D2",
+                    fontWeight: 500,
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  mohit21542@iiitd.ac.in
                 </Typography>
                 <Typography
                   sx={{
@@ -452,7 +462,17 @@ const Contact = () => {
                     mb: 0.5,
                   }}
                 >
-                  +91 98765 43210
+                  +91 97112 32008
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "#1E293B",
+                    fontWeight: 500,
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  +91 88512 28350
                 </Typography>
                 <Typography
                   sx={{
@@ -477,17 +497,9 @@ const Contact = () => {
                     mb: 0.5,
                   }}
                 >
-                  123 Innovation Street
+                 IIIT-D
                 </Typography>
-                <Typography
-                  sx={{
-                    color: "#64748B",
-                    fontSize: { xs: "0.85rem", md: "0.9rem" },
-                    mb: 0.5,
-                  }}
-                >
-                  Tech Park One
-                </Typography>
+                
                 <Typography
                   sx={{
                     color: "#64748B",
