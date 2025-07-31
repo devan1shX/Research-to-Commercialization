@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -30,8 +30,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   sendPasswordResetEmail,
 } from "firebase/auth";
 
@@ -53,46 +52,6 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     message: "",
     severity: "success",
   });
-
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          const user = result.user;
-          const idToken = await user.getIdToken();
-
-          const response = await fetch("/api/auth/google-signin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idToken: idToken }),
-          });
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(
-              data.message || `Backend error! status: ${response.status}`
-            );
-          }
-          setNotification({
-            open: true,
-            message: "Successfully logged in! Redirecting...",
-            severity: "success",
-          });
-          setTimeout(() => navigate("/"), 1500);
-        } else {
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Google Redirect Login Error:", err);
-        setError("Google login failed. Please try again.");
-        setLoading(false);
-      }
-    };
-
-    handleRedirectResult();
-  }, [navigate]);
 
   const handleInputChange = (field) => (event) => {
     setLoginData((prev) => ({ ...prev, [field]: event.target.value }));
@@ -152,10 +111,40 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     setError("");
     setLoading(true);
     try {
-      await signInWithRedirect(auth, googleProvider);
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const user = userCredential.user;
+      const idToken = await user.getIdToken();
+
+      const response = await fetch("/api/auth/google-signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: idToken }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          data.message || `Backend error! status: ${response.status}`
+        );
+      }
+      setNotification({
+        open: true,
+        message: "Successfully logged in with Google! Redirecting...",
+        severity: "success",
+      });
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
-      console.error("Google Redirect Start Error:", err);
-      setError("Could not start Google sign-in. Please try again.");
+      console.error("Google Login Error:", err);
+      let errorMessage = "Google login failed. Please try again.";
+      if (err.code === "auth/popup-closed-by-user") {
+        errorMessage = "Google sign-in was cancelled.";
+      } else if (
+        err.message.includes("Backend error") ||
+        err.message.includes("HTTP error")
+      ) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
+    } finally {
       setLoading(false);
     }
   };
