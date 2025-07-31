@@ -52,13 +52,15 @@ const ExploreStudies = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-      setCurrentPage(1);
+      if (currentPage !== 1) {
+        setCurrentPage(1);
+      }
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [searchQuery]);
+  }, [searchQuery, currentPage]);
 
   const fetchStudies = useCallback(async () => {
     setLoading(true);
@@ -96,12 +98,7 @@ const ExploreStudies = () => {
     } catch (e) {
       console.error("Failed to fetch studies:", e);
       setError(e.message);
-      setStudiesResponse({
-        studies: [],
-        totalStudies: 0,
-        totalPages: 1,
-        currentPage: 1,
-      });
+      // Do not clear studies on error to avoid layout shifts
     } finally {
       setLoading(false);
     }
@@ -134,11 +131,6 @@ const ExploreStudies = () => {
     setSearchQuery("");
   };
 
-  const handleClearAllGenres = () => {
-    setSelectedGenres([]);
-    setCurrentPage(1);
-  };
-
   const handleCardClick = (study) => {
     navigate(`/study/${study._id}`);
   };
@@ -159,63 +151,185 @@ const ExploreStudies = () => {
     width: { xs: "100%", sm: "calc(50% - 12px)", md: "calc(33.333% - 16px)" },
   };
 
-  if (loading && studiesResponse.studies.length === 0) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexGrow: 1,
-          paddingTop: { xs: "100px", sm: "120px", md: "120px" },
-          pb: { xs: 4, sm: 5, md: 6 },
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box
-        sx={{
-          paddingTop: { xs: "100px", sm: "120px", md: "120px" },
-          textAlign: "center",
-          flexGrow: 1,
-          pb: { xs: 4, sm: 5, md: 6 },
-        }}
-      >
-        <Typography color="error" variant="h6">
-          Failed to load studies
-        </Typography>
-        <Typography sx={{ mt: 1 }}>{error}</Typography>
-        <Typography sx={{ mt: 2 }}>
-          Please ensure the backend server is running and accessible.
-        </Typography>
-      </Box>
-    );
-  }
-
   const pageVariants = {
-    initial: {
-      opacity: 0,
-      y: 10,
-    },
-    in: {
-      opacity: 1,
-      y: 0,
-    },
-    out: {
-      opacity: 0,
-      y: -10,
-    },
+    initial: { opacity: 0, y: 10 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -10 },
   };
 
   const pageTransition = {
     type: "tween",
     ease: "easeInOut",
     duration: 0.8,
+  };
+
+  const renderContent = () => {
+    // Case 1: Initial load (spinner covers whole content area)
+    if (loading && studiesResponse.studies.length === 0 && !error) {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexGrow: 1,
+            minHeight: "40vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    // Case 2: Error occurred
+    if (error) {
+      return (
+        <Box sx={{ textAlign: "center", py: 8, flexGrow: 1 }}>
+          <Typography color="error" variant="h6">
+            Failed to load studies
+          </Typography>
+          <Typography sx={{ mt: 1 }}>{error}</Typography>
+          <Typography sx={{ mt: 2 }}>
+            Please ensure the backend server is running and accessible.
+          </Typography>
+        </Box>
+      );
+    }
+
+    // Case 3: No results found
+    if (!loading && studiesResponse.studies.length === 0) {
+      return (
+        <Box
+          sx={{
+            textAlign: "center",
+            py: 8,
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "#9CA3AF",
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            No studies found
+          </Typography>
+          <Typography variant="body2">
+            Try adjusting your search criteria or filters.
+          </Typography>
+        </Box>
+      );
+    }
+
+    // Case 4: Display studies (and handle subsequent loading state)
+    return (
+      <>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 3,
+            width: "100%",
+            flexGrow: 1,
+            transition: "opacity 0.2s ease-in-out",
+            opacity: loading ? 0.6 : 1, // Dim content on subsequent loads
+            pointerEvents: loading ? "none" : "auto",
+          }}
+        >
+          {studiesResponse.studies.map((study) => (
+            <ResearchCard
+              key={study._id}
+              study={study}
+              onClick={() => handleCardClick(study)}
+            />
+          ))}
+        </Box>
+
+        {/* Pagination */}
+        {studiesResponse.totalPages > 1 && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: { xs: 3, sm: 4 },
+              gap: { xs: 1, sm: 1.5 },
+              // Hide pagination while re-fetching
+              visibility: loading ? "hidden" : "visible",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              sx={{
+                minWidth: { xs: "38px", sm: "40px" },
+                height: { xs: "38px", sm: "40px" },
+                padding: "0",
+                borderRadius: "8px",
+                borderColor: "rgba(0, 0, 0, 0.23)",
+                color: currentPage === 1 ? "rgba(0, 0, 0, 0.26)" : "black",
+                backgroundColor: "white",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                "&:hover": { backgroundColor: "#F4F4F5" },
+                "&.Mui-disabled": {
+                  borderColor: "rgba(0, 0, 0, 0.12)",
+                  backgroundColor: "rgba(0, 0, 0, 0.02)",
+                  boxShadow: "none",
+                },
+              }}
+              aria-label="Previous page"
+            >
+              <ArrowBackIosNewIcon
+                sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}
+              />
+            </Button>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#374151",
+                fontFamily:
+                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: { xs: "0.85rem", sm: "0.95rem" },
+                fontWeight: 500,
+                mx: 1,
+              }}
+            >
+              Page {currentPage} of {studiesResponse.totalPages}
+            </Typography>
+            <Button
+              variant="outlined"
+              onClick={handleNextPage}
+              disabled={currentPage === studiesResponse.totalPages}
+              sx={{
+                minWidth: { xs: "38px", sm: "40px" },
+                height: { xs: "38px", sm: "40px" },
+                padding: "0",
+                borderRadius: "8px",
+                borderColor: "rgba(0, 0, 0, 0.23)",
+                color:
+                  currentPage === studiesResponse.totalPages
+                    ? "rgba(0, 0, 0, 0.26)"
+                    : "black",
+                backgroundColor: "white",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                "&:hover": { backgroundColor: "#F4F4F5" },
+                "&.Mui-disabled": {
+                  borderColor: "rgba(0, 0, 0, 0.12)",
+                  backgroundColor: "rgba(0, 0, 0, 0.02)",
+                  boxShadow: "none",
+                },
+              }}
+              aria-label="Next page"
+            >
+              <ArrowForwardIosIcon
+                sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}
+              />
+            </Button>
+          </Box>
+        )}
+      </>
+    );
   };
 
   return (
@@ -318,132 +432,7 @@ const ExploreStudies = () => {
             flexDirection: "column",
           }}
         >
-          {loading && studiesResponse.studies.length > 0 && (
-            <CircularProgress sx={{ alignSelf: "center", mb: 2 }} />
-          )}
-
-          <Box
-            sx={{ display: "flex", flexWrap: "wrap", gap: 3, width: "100%" }}
-          >
-            {studiesResponse.studies.map((study) => (
-              <ResearchCard
-                key={study._id}
-                study={study}
-                onClick={() => handleCardClick(study)}
-              />
-            ))}
-          </Box>
-
-          {!loading && studiesResponse.studies.length === 0 && (
-            <Box
-              sx={{
-                textAlign: "center",
-                py: 8,
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "#9CA3AF",
-                fontFamily:
-                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              }}
-            >
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                No studies found
-              </Typography>
-              <Typography variant="body2">
-                Try adjusting your search criteria or filters.
-              </Typography>
-            </Box>
-          )}
-
-          {!loading &&
-            studiesResponse.studies.length > 0 &&
-            studiesResponse.totalPages > 1 && <Box sx={{ flexGrow: 1 }} />}
-
-          {!loading &&
-            studiesResponse.studies.length > 0 &&
-            studiesResponse.totalPages > 1 && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  mt: { xs: 3, sm: 4 },
-                  gap: { xs: 1, sm: 1.5 },
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  onClick={handlePrevPage}
-                  disabled={currentPage === 1}
-                  sx={{
-                    minWidth: { xs: "38px", sm: "40px" },
-                    height: { xs: "38px", sm: "40px" },
-                    padding: "0",
-                    borderRadius: "8px",
-                    borderColor: "rgba(0, 0, 0, 0.23)",
-                    color: currentPage === 1 ? "rgba(0, 0, 0, 0.26)" : "black",
-                    backgroundColor: "white",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                    "&:hover": { backgroundColor: "#F4F4F5" },
-                    "&.Mui-disabled": {
-                      borderColor: "rgba(0, 0, 0, 0.12)",
-                      backgroundColor: "rgba(0, 0, 0, 0.02)",
-                      boxShadow: "none",
-                    },
-                  }}
-                  aria-label="Previous page"
-                >
-                  <ArrowBackIosNewIcon
-                    sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}
-                  />
-                </Button>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#374151",
-                    fontFamily:
-                      '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                    fontSize: { xs: "0.85rem", sm: "0.95rem" },
-                    fontWeight: 500,
-                    mx: 1,
-                  }}
-                >
-                  Page {currentPage} of {studiesResponse.totalPages}
-                </Typography>
-                <Button
-                  variant="outlined"
-                  onClick={handleNextPage}
-                  disabled={currentPage === studiesResponse.totalPages}
-                  sx={{
-                    minWidth: { xs: "38px", sm: "40px" },
-                    height: { xs: "38px", sm: "40px" },
-                    padding: "0",
-                    borderRadius: "8px",
-                    borderColor: "rgba(0, 0, 0, 0.23)",
-                    color:
-                      currentPage === studiesResponse.totalPages
-                        ? "rgba(0, 0, 0, 0.26)"
-                        : "black",
-                    backgroundColor: "white",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                    "&:hover": { backgroundColor: "#F4F4F5" },
-                    "&.Mui-disabled": {
-                      borderColor: "rgba(0, 0, 0, 0.12)",
-                      backgroundColor: "rgba(0, 0, 0, 0.02)",
-                      boxShadow: "none",
-                    },
-                  }}
-                  aria-label="Next page"
-                >
-                  <ArrowForwardIosIcon
-                    sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}
-                  />
-                </Button>
-              </Box>
-            )}
+          {renderContent()}
         </Box>
       </Container>
     </Box>
