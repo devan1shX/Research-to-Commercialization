@@ -30,7 +30,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
-  signInWithPopup,
+  // --- CHANGE: We now import signInWithRedirect ---
+  signInWithRedirect, 
   sendPasswordResetEmail,
 } from "firebase/auth";
 
@@ -72,12 +73,13 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         loginData.email,
         loginData.password
       );
+      // Your AuthContext will handle navigation, but we can still show a notification
       setNotification({
         open: true,
         message: "Login successful! Redirecting...",
         severity: "success",
       });
-      setTimeout(() => navigate("/"), 1500);
+      // The router in App.js will handle the redirect automatically
     } catch (err) {
       console.error("Login Error:", err);
       let errorMessage = "Failed to login. Please check your credentials.";
@@ -107,44 +109,16 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
   };
 
+  // --- CHANGE: This function is now much simpler. ---
+  // It only starts the redirect. App.js will handle the result.
   const handleGoogleLogin = async () => {
     setError("");
     setLoading(true);
     try {
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const user = userCredential.user;
-      const idToken = await user.getIdToken();
-
-      const response = await fetch("/api/auth/google-signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken: idToken }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          data.message || `Backend error! status: ${response.status}`
-        );
-      }
-      setNotification({
-        open: true,
-        message: "Successfully logged in with Google! Redirecting...",
-        severity: "success",
-      });
-      setTimeout(() => navigate("/"), 1500);
+      await signInWithRedirect(auth, googleProvider);
     } catch (err) {
-      console.error("Google Login Error:", err);
-      let errorMessage = "Google login failed. Please try again.";
-      if (err.code === "auth/popup-closed-by-user") {
-        errorMessage = "Google sign-in was cancelled.";
-      } else if (
-        err.message.includes("Backend error") ||
-        err.message.includes("HTTP error")
-      ) {
-        errorMessage = err.message;
-      }
-      setError(errorMessage);
-    } finally {
+      console.error("Google Login Start Error:", err);
+      setError("Could not start Google sign-in. Please try again.");
       setLoading(false);
     }
   };
