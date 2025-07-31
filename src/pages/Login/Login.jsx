@@ -30,8 +30,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
-  // --- CHANGE: We now import signInWithRedirect ---
-  signInWithRedirect, 
+  // --- CHANGE: Use signInWithRedirect ---
+  signInWithRedirect,
   sendPasswordResetEmail,
 } from "firebase/auth";
 
@@ -73,13 +73,11 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
         loginData.email,
         loginData.password
       );
-      // Your AuthContext will handle navigation, but we can still show a notification
       setNotification({
         open: true,
         message: "Login successful! Redirecting...",
         severity: "success",
       });
-      // The router in App.js will handle the redirect automatically
     } catch (err) {
       console.error("Login Error:", err);
       let errorMessage = "Failed to login. Please check your credentials.";
@@ -109,8 +107,7 @@ const Login = ({ switchToSignupTab, themeColors, inputStyles }) => {
     }
   };
 
-  // --- CHANGE: This function is now much simpler. ---
-  // It only starts the redirect. App.js will handle the result.
+  // --- CHANGE: This now only starts the redirect. AuthContext handles the rest. ---
   const handleGoogleLogin = async () => {
     setError("");
     setLoading(true);
