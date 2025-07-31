@@ -36,7 +36,7 @@ const StudyDetailPage = () => {
       try {
         setLoading(true);
         setError(null);
-        setStudy(null); // Reset study state before fetching new data
+        setStudy(null); 
         await new Promise((resolve) => setTimeout(resolve, 500));
         const mockStudies = {
           123: {
@@ -90,7 +90,6 @@ const StudyDetailPage = () => {
           const response = await fetch(`/api/studies/${id}`);
           if (!response.ok) {
             if (response.status === 404) {
-              // setStudy(null) already called at the beginning of try
               throw new Error(`Study with ID ${id} not found.`);
             }
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -101,8 +100,6 @@ const StudyDetailPage = () => {
       } catch (e) {
         console.error("Fetch error:", e);
         setError(e.message);
-        // setStudy(null) was already called at the start of the try block,
-        // so study state should be correctly null if an error occurs before successful setStudy.
       } finally {
         setLoading(false);
       }
@@ -111,7 +108,6 @@ const StudyDetailPage = () => {
     if (id) {
       fetchStudy();
     }
-    // Only re-run the effect if 'id' changes
   }, [id]);
 
   const handleChatSend = () => {
@@ -159,7 +155,6 @@ const StudyDetailPage = () => {
   }
 
   if (error && !study) {
-    // Show error primarily if study is not loaded
     return (
       <Container sx={{ mt: { xs: 12, sm: 15 }, textAlign: "center", py: 3 }}>
         <Typography variant="h5" color="error">
@@ -180,7 +175,6 @@ const StudyDetailPage = () => {
   }
 
   if (!study) {
-    // Handles case where loading is false, no error, but study is still null (e.g. initial state or explicit not found without throwing an error that sets 'error' state)
     return (
       <Container sx={{ mt: { xs: 12, sm: 15 }, textAlign: "center", py: 3 }}>
         <Typography variant="h5">Study Not Found</Typography>
@@ -366,42 +360,6 @@ const StudyDetailPage = () => {
                 </Typography>
               </Box>
             )}
-{/*             <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 2,
-                mt: study.abstract ? { xs: 2.5, sm: 3 } : 0,
-                mb: { xs: 3, sm: 4 },
-              }}
-            > */}
-{/*               <Button
-                variant="outlined"
-                startIcon={<DownloadIcon />}
-                onClick={() => console.log("Download PDF. Study ID:", study.id)}
-                sx={actionButtonSx}
-              >
-                Download PDF
-              </Button> */}
-{/*               <Button
-                variant="outlined"
-                startIcon={<ShareIcon />}
-                onClick={() => console.log("Share. Study ID:", study.id)}
-                sx={actionButtonSx}
-              >
-                Share
-              </Button> */}
-{/*               <Button
-                variant="outlined"
-                startIcon={<MailOutlineIcon />}
-                onClick={() =>
-                  console.log("Contact Researcher. Study ID:", study.id)
-                }
-                sx={actionButtonSx}
-              >
-                Contact Researcher
-              </Button> */}
-{/*             </Box> */}
           </Box>
 
           <Box
