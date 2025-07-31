@@ -57,16 +57,4 @@ You need to have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/
     Your application should now be running on [http://localhost:3000](http://localhost:3000).
 
 
-## 📂 Project Structure
-
-/
-├── public/
-│   └── index.html      # Main HTML file
-├── src/
-│   ├── components/     # Reusable UI components
-│   ├── pages/          # Page components (Home, Login, Profile, etc.)
-│   ├── App.js          # Main application component
-│   └── index.js        # Entry point of the application
-├── package.json        # Project dependencies and scripts
-└── README.md           # This file
 
