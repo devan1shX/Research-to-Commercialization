@@ -68,8 +68,7 @@ const Footer = () => {
                 lineHeight: 1.6,
               }}
             >
-              Bridging the gap between research and the public through
-              anonymous publishing and interactive exploration.
+              R2C.ai bridges the gap between academic innovation and industry needs—through AI-driven classification, matchmaking, and secure collaboration.
             </Typography>
           </Box>
 
