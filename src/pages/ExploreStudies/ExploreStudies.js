@@ -49,18 +49,19 @@ const ExploreStudies = () => {
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
 
+  // #################### THIS BLOCK IS FIXED ####################
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-      if (currentPage !== 1) {
-        setCurrentPage(1);
-      }
+      setCurrentPage(1); // Reset to page 1 ONLY when search query changes
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [searchQuery, currentPage]);
+    // The dependency array is now correct, only watching for search query changes.
+  }, [searchQuery]);
+  // ###########################################################
 
   const fetchStudies = useCallback(async () => {
     setLoading(true);
@@ -98,7 +99,6 @@ const ExploreStudies = () => {
     } catch (e) {
       console.error("Failed to fetch studies:", e);
       setError(e.message);
-      // Do not clear studies on error to avoid layout shifts
     } finally {
       setLoading(false);
     }
@@ -162,9 +162,8 @@ const ExploreStudies = () => {
     ease: "easeInOut",
     duration: 0.8,
   };
-
+  
   const renderContent = () => {
-    // Case 1: Initial load (spinner covers whole content area)
     if (loading && studiesResponse.studies.length === 0 && !error) {
       return (
         <Box
@@ -181,7 +180,6 @@ const ExploreStudies = () => {
       );
     }
 
-    // Case 2: Error occurred
     if (error) {
       return (
         <Box sx={{ textAlign: "center", py: 8, flexGrow: 1 }}>
@@ -195,8 +193,7 @@ const ExploreStudies = () => {
         </Box>
       );
     }
-
-    // Case 3: No results found
+    
     if (!loading && studiesResponse.studies.length === 0) {
       return (
         <Box
@@ -221,7 +218,6 @@ const ExploreStudies = () => {
       );
     }
 
-    // Case 4: Display studies (and handle subsequent loading state)
     return (
       <>
         <Box
@@ -232,7 +228,7 @@ const ExploreStudies = () => {
             width: "100%",
             flexGrow: 1,
             transition: "opacity 0.2s ease-in-out",
-            opacity: loading ? 0.6 : 1, // Dim content on subsequent loads
+            opacity: loading ? 0.6 : 1, 
             pointerEvents: loading ? "none" : "auto",
           }}
         >
@@ -244,8 +240,7 @@ const ExploreStudies = () => {
             />
           ))}
         </Box>
-
-        {/* Pagination */}
+        
         {studiesResponse.totalPages > 1 && (
           <Box
             sx={{
@@ -254,7 +249,6 @@ const ExploreStudies = () => {
               alignItems: "center",
               mt: { xs: 3, sm: 4 },
               gap: { xs: 1, sm: 1.5 },
-              // Hide pagination while re-fetching
               visibility: loading ? "hidden" : "visible",
             }}
           >
@@ -262,38 +256,14 @@ const ExploreStudies = () => {
               variant="outlined"
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              sx={{
-                minWidth: { xs: "38px", sm: "40px" },
-                height: { xs: "38px", sm: "40px" },
-                padding: "0",
-                borderRadius: "8px",
-                borderColor: "rgba(0, 0, 0, 0.23)",
-                color: currentPage === 1 ? "rgba(0, 0, 0, 0.26)" : "black",
-                backgroundColor: "white",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                "&:hover": { backgroundColor: "#F4F4F5" },
-                "&.Mui-disabled": {
-                  borderColor: "rgba(0, 0, 0, 0.12)",
-                  backgroundColor: "rgba(0, 0, 0, 0.02)",
-                  boxShadow: "none",
-                },
-              }}
+              sx={{ minWidth: { xs: "38px", sm: "40px" }, height: { xs: "38px", sm: "40px" }, padding: "0", borderRadius: "8px", borderColor: "rgba(0, 0, 0, 0.23)", color: currentPage === 1 ? "rgba(0, 0, 0, 0.26)" : "black", backgroundColor: "white", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", "&:hover": { backgroundColor: "#F4F4F5" }, "&.Mui-disabled": { borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 0, 0, 0.02)", boxShadow: "none" } }}
               aria-label="Previous page"
             >
-              <ArrowBackIosNewIcon
-                sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}
-              />
+              <ArrowBackIosNewIcon sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }} />
             </Button>
             <Typography
               variant="body2"
-              sx={{
-                color: "#374151",
-                fontFamily:
-                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                fontSize: { xs: "0.85rem", sm: "0.95rem" },
-                fontWeight: 500,
-                mx: 1,
-              }}
+              sx={{ color: "#374151", fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif', fontSize: { xs: "0.85rem", sm: "0.95rem" }, fontWeight: 500, mx: 1 }}
             >
               Page {currentPage} of {studiesResponse.totalPages}
             </Typography>
@@ -301,37 +271,17 @@ const ExploreStudies = () => {
               variant="outlined"
               onClick={handleNextPage}
               disabled={currentPage === studiesResponse.totalPages}
-              sx={{
-                minWidth: { xs: "38px", sm: "40px" },
-                height: { xs: "38px", sm: "40px" },
-                padding: "0",
-                borderRadius: "8px",
-                borderColor: "rgba(0, 0, 0, 0.23)",
-                color:
-                  currentPage === studiesResponse.totalPages
-                    ? "rgba(0, 0, 0, 0.26)"
-                    : "black",
-                backgroundColor: "white",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                "&:hover": { backgroundColor: "#F4F4F5" },
-                "&.Mui-disabled": {
-                  borderColor: "rgba(0, 0, 0, 0.12)",
-                  backgroundColor: "rgba(0, 0, 0, 0.02)",
-                  boxShadow: "none",
-                },
-              }}
+              sx={{ minWidth: { xs: "38px", sm: "40px" }, height: { xs: "38px", sm: "40px" }, padding: "0", borderRadius: "8px", borderColor: "rgba(0, 0, 0, 0.23)", color: currentPage === studiesResponse.totalPages ? "rgba(0, 0, 0, 0.26)" : "black", backgroundColor: "white", boxShadow: "0 1px 2px rgba(0,0,0,0.05)", "&:hover": { backgroundColor: "#F4F4F5" }, "&.Mui-disabled": { borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 0, 0, 0.02)", boxShadow: "none" } }}
               aria-label="Next page"
             >
-              <ArrowForwardIosIcon
-                sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }}
-              />
+              <ArrowForwardIosIcon sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" } }} />
             </Button>
           </Box>
         )}
       </>
     );
   };
-
+  
   return (
     <Box
       component={motion.div}
@@ -361,78 +311,25 @@ const ExploreStudies = () => {
         }}
       >
         <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h6"
-            component="h1"
-            sx={{
-              fontWeight: "600",
-              color: "#1a1a1a",
-              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
-              mb: 1,
-              letterSpacing: "-0.02em",
-            }}
-          >
+          <Typography variant="h6" component="h1" sx={{ fontWeight: "600", color: "#1a1a1a", fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif', fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" }, mb: 1, letterSpacing: "-0.02em" }}>
             Explore Research Studies
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: "#666",
-              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              fontSize: "1.1rem",
-              maxWidth: "1200px",
-            }}
-          >
-            Discover cutting-edge research opportunities across various fields
-            of technology and innovation.
+          <Typography variant="body1" sx={{ color: "#666", fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif', fontSize: "1.1rem", maxWidth: "1200px" }}>
+            Discover cutting-edge research opportunities across various fields of technology and innovation.
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            alignItems: "flex-start",
-            flexDirection: { xs: "column", sm: "row" },
-            width: "100%",
-            mb: 2,
-          }}
-        >
-          <FieldSelector
-            selectedFields={selectedGenres}
-            onFieldChange={handleGenreChange}
-            fields={allAvailableGenresForSelector}
-            sx={fieldSelectorEffectiveSx}
-          />
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start", flexDirection: { xs: "column", sm: "row" }, width: "100%", mb: 2 }}>
+          <FieldSelector selectedFields={selectedGenres} onFieldChange={handleGenreChange} fields={allAvailableGenresForSelector} sx={fieldSelectorEffectiveSx} />
           <Box sx={{ flex: 1, width: "100%", minWidth: 0 }}>
-            <SearchBar
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-              placeholder="Search studies by title..."
-            />
+            <SearchBar searchQuery={searchQuery} onSearchChange={handleSearchChange} placeholder="Search studies by title..." />
           </Box>
         </Box>
 
-        <ActiveFilters
-          selectedFields={selectedGenres}
-          searchQuery={searchQuery}
-          onClearField={handleRemoveSelectedGenre}
-          onClearSearch={handleClearSearch}
-          fields={allAvailableGenresForSelector}
-        />
+        <ActiveFilters selectedFields={selectedGenres} searchQuery={searchQuery} onClearField={handleRemoveSelectedGenre} onClearSearch={handleClearSearch} fields={allAvailableGenresForSelector} />
 
-        <Box
-          sx={{
-            mt: 4,
-            pb: { xs: 4, sm: 5, md: 6 },
-            width: "100%",
-            flexGrow: 1,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {renderContent()}
+        <Box sx={{ mt: 4, pb: { xs: 4, sm: 5, md: 6 }, width: "100%", flexGrow: 1, display: "flex", flexDirection: "column" }}>
+            {renderContent()}
         </Box>
       </Container>
     </Box>
