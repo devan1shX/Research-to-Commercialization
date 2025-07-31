@@ -106,7 +106,7 @@ const Signup = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+
   const [notification, setNotification] = useState({
     open: false,
     message: "",
