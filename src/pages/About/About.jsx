@@ -224,9 +224,15 @@ const About = () => {
                   px: { xs: "0 10px", sm: "0 20px" },
                 }}
               >
-                We're democratizing access to research by creating a platform
-                where knowledge flows freely between researchers, industry, and
-                the public.
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  R2C.ai
+                </Box>{" "}
+                is an AI-powered platform that helps researchers analyze,
+                refine, and commercialize their work by connecting them with
+                relevant industry{" "}
+                <Box component="span" sx={{ whiteSpace: "nowrap" }}>
+                  partners—securely and efficiently.
+                </Box>
               </Typography>
             </motion.div>
           </Box>
@@ -281,24 +287,59 @@ const About = () => {
                   Our Mission
                 </Typography>
                 <Typography
+                  component="div" /* FIX: Changed from <p> to <div> to allow block children */
                   variant="body1"
                   sx={{
                     color: "#4B5563",
                     mb: 4,
-                    lineHeight: 1.7,
+                    lineHeight: 1.8,
                     fontSize: { xs: "0.95rem", sm: "1.1rem" },
                   }}
                 >
                   R2C (Research to Commercialization) exists to solve a real
-                  gap: Brilliant research often goes unseen, unused, and
-                  unfunded. Researchers struggle to find collaborators or turn
-                  their work into real products. Industries want new ideas but
-                  don’t know where to find them. And traditional tech transfer
-                  is slow, outdated, and messy. We’re here to fix that. With AI
-                  tools, privacy-first design, and a matchmaking engine, R2C.ai
-                  connects the people who create innovation with those who can
-                  use it.
+                  gap:
+                  <Typography
+                    component="div"
+                    sx={{
+                      fontWeight: 600,
+                      textAlign: "center",
+                      mt: 2,
+                      mb: 2,
+                    }}
+                  >
+                    Brilliant research often goes unseen, unused, and unfunded.
+                  </Typography>
+                  <Typography component="div" sx={{ mb: 1 }}>
+                    Researchers struggle to find collaborators or turn their
+                    work into real products.
+                  </Typography>
+                  <Typography component="div" sx={{ mb: 1 }}>
+                    Industries want new ideas but don’t know where to find them.
+                  </Typography>
+                  <Typography component="div" sx={{ mb: 2 }}>
+                    And traditional tech transfer is slow, outdated, and messy.
+                  </Typography>
+                  <Typography component="div" sx={{ mb: 2 }}>
+                    We’re here to fix that.
+                  </Typography>
+                  <Typography component="div">
+                    With{" "}
+                    <Box component="span" sx={{ fontWeight: 600 }}>
+                      AI tools
+                    </Box>
+                    ,{" "}
+                    <Box component="span" sx={{ fontWeight: 600 }}>
+                      privacy-first design
+                    </Box>
+                    , and{" "}
+                    <Box component="span" sx={{ fontWeight: 600 }}>
+                      a matchmaking engine
+                    </Box>
+                    , R2C.ai connects the people who create innovation with
+                    those who can use it.
+                  </Typography>
                 </Typography>
+
                 <Link to="/studies" style={{ textDecoration: "none" }}>
                   <Button
                     variant="contained"
@@ -372,13 +413,19 @@ const About = () => {
                       sx={{
                         color: "rgba(72, 72, 72, 0.9)",
                         fontSize: { xs: "0.9rem", sm: "1rem" },
-                        lineHeight: 1.7,
+                        lineHeight: 1.8,
+                        mb: 2,
                       }}
                     >
-                      We’re building a global network of researchers,
-                      institutions, startups, and government agencies. No
-                      borders. No barriers. Just verified work and focused
-                      collaboration.
+                      We’re building a global network of{" "}
+                      <Box component="span" sx={{ fontWeight: 500 }}>
+                        researchers, institutions, startups, and government
+                        agencies.
+                      </Box>{" "}
+                      No borders. No barriers.{" "}
+                      <Box component="span" sx={{ fontWeight: 500 }}>
+                        Just verified work and focused collaboration.
+                      </Box>
                     </Typography>
                   </CardContent>
                 </Card>
@@ -562,7 +609,7 @@ const About = () => {
                 sx={{
                   fontSize: { xs: "0.95rem", sm: "1rem", md: "1.2rem" },
                   color: "#4B5563",
-                  lineHeight: 1.7,
+                  lineHeight: 1.8,
                   maxWidth: "800px",
                   mx: "auto",
                   whiteSpace: "pre-line",
@@ -570,20 +617,34 @@ const About = () => {
                   mb: { xs: 4, md: 6 },
                 }}
               >
-                R2C.ai was started in 2024 by a group of B.Tech students at IIIT
-                Delhi, who were working closely with researchers as part of
-                their academic journey. <br />
-                We noticed something frustrating. <br />
-                Many research projects—ours included—began with strong problem
-                statements and ended with working solutions. But after the
-                presentations, posters, and papers… that was it. <br />
-                The problem we set out to solve still existed. <br />
-                The research just sat there—never reaching the people it was
-                meant for. <br />
-                That’s when we realized: <br />
-                It’s not the lack of innovation that holds us back—it’s the lack
-                of connection. <br />
-                We built R2C.ai to change that.
+                R2C.ai was started in 2024 by a group of B.Tech students at{" "}
+                <Box component="span" fontWeight="bold">
+                  IIIT Delhi
+                </Box>
+                , who were working closely with researchers as part of their
+                academic journey.
+                {"\n"}We noticed something frustrating.
+                {"\n"}Many research projects—ours included—began with strong{" "}
+                <Box component="span" fontWeight="bold">
+                  problem statements
+                </Box>{" "}
+                and ended with working{" "}
+                <Box component="span" fontWeight="bold">
+                  solutions
+                </Box>
+                . But after the presentations, posters, and papers… that was it.
+                {"\n"}
+                &nbsp;&nbsp;&nbsp;&nbsp;The problem we set out to solve still
+                existed.{"\n"}
+                &nbsp;&nbsp;&nbsp;&nbsp;The research just sat there—never
+                reaching the people it was meant for.
+                {"\n"}That’s when we realized:{"\n"}
+                &nbsp;&nbsp;&nbsp;&nbsp;It’s not the lack of innovation that
+                holds us back—
+                <Box component="span" fontWeight="bold">
+                  it’s the lack of connection
+                </Box>
+                .{"\n"}We built R2C.ai to change that.
               </Typography>
             </motion.div>
           </Box>
