@@ -484,31 +484,31 @@ const Contact = () => {
                 // </Typography>
               </ContactInfoItem>
 
-              <ContactInfoItem
-                icon={<LocationOnIcon />}
-                bgColor="#E8F5E8"
-                title="Office"
-              >
-                <Typography
-                  sx={{
-                    color: "#1E293B",
-                    fontWeight: 500,
-                    fontSize: { xs: "0.9rem", md: "1rem" },
-                    mb: 0.5,
-                  }}
-                >
-                 Indraprastha Institute of Information Technology Delhi
-                </Typography>
+              // <ContactInfoItem
+              //   icon={<LocationOnIcon />}
+              //   bgColor="#E8F5E8"
+              //   title="Office"
+              // >
+              //   <Typography
+              //     sx={{
+              //       color: "#1E293B",
+              //       fontWeight: 500,
+              //       fontSize: { xs: "0.9rem", md: "1rem" },
+              //       mb: 0.5,
+              //     }}
+              //   >
+              //    Indraprastha Institute of Information Technology Delhi
+              //   </Typography>
                 
-                <Typography
-                  sx={{
-                    color: "#64748B",
-                    fontSize: { xs: "0.85rem", md: "0.9rem" },
-                  }}
-                >
-                  Delhi, 110020, India
-                </Typography>
-              </ContactInfoItem>
+              //   <Typography
+              //     sx={{
+              //       color: "#64748B",
+              //       fontSize: { xs: "0.85rem", md: "0.9rem" },
+              //     }}
+              //   >
+              //     Delhi, 110020, India
+              //   </Typography>
+              // </ContactInfoItem>
 
               <ContactInfoItem
                 icon={<AccessTimeIcon />}
@@ -736,4 +736,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
 
