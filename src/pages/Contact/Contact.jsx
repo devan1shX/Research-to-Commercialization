@@ -349,8 +349,8 @@ const Contact = () => {
                   px: { xs: "0 10px", sm: "0 20px" },
                 }}
               >
-                Have questions about R2C.ai? Need support with your research? We'd
-                love to hear from you.
+                Have questions about R2C.ai? Need support with your research?
+                We'd love to hear from you.
               </Typography>
             </motion.div>
           </Box>
@@ -449,12 +449,12 @@ const Contact = () => {
                 </Typography>
               </ContactInfoItem>
 
-{/*               <ContactInfoItem
+              <ContactInfoItem
                 icon={<PhoneIcon />}
                 bgColor="#F3E5F5"
                 title="Phone"
-              > */}
-{/*                 <Typography
+              >
+                <Typography
                   sx={{
                     color: "#1E293B",
                     fontWeight: 500,
@@ -463,8 +463,8 @@ const Contact = () => {
                   }}
                 >
                   +91 97112 32008
-                </Typography> */}
-{/*                 <Typography
+                </Typography>
+                <Typography
                   sx={{
                     color: "#1E293B",
                     fontWeight: 500,
@@ -473,42 +473,42 @@ const Contact = () => {
                   }}
                 >
                   +91 88512 28350
-                </Typography> */}
-{/*                 // <Typography */}
-                //   sx={{
-                //     color: "#64748B",
-                //     fontSize: { xs: "0.85rem", md: "0.9rem" },
-                //   }}
-                // >
-                //   Mon-Fri, 10AM-7PM IST
-                // </Typography>
-              // </ContactInfoItem>
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "#64748B",
+                    fontSize: { xs: "0.85rem", md: "0.9rem" },
+                  }}
+                >
+                  Mon-Fri, 10AM-7PM IST
+                </Typography>
+              </ContactInfoItem>
 
-              // <ContactInfoItem
-              //   icon={<LocationOnIcon />}
-              //   bgColor="#E8F5E8"
-              //   title="Office"
-              // >
-              //   <Typography
-              //     sx={{
-              //       color: "#1E293B",
-              //       fontWeight: 500,
-              //       fontSize: { xs: "0.9rem", md: "1rem" },
-              //       mb: 0.5,
-              //     }}
-              //   >
-              //    Indraprastha Institute of Information Technology Delhi
-              //   </Typography>
-                
-              //   <Typography
-              //     sx={{
-              //       color: "#64748B",
-              //       fontSize: { xs: "0.85rem", md: "0.9rem" },
-              //     }}
-              //   >
-              //     Delhi, 110020, India
-              //   </Typography>
-              // </ContactInfoItem>
+              <ContactInfoItem
+                icon={<LocationOnIcon />}
+                bgColor="#E8F5E8"
+                title="Office"
+              >
+                <Typography
+                  sx={{
+                    color: "#1E293B",
+                    fontWeight: 500,
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    mb: 0.5,
+                  }}
+                >
+                  Indraprastha Institute of Information Technology Delhi
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: "#64748B",
+                    fontSize: { xs: "0.85rem", md: "0.9rem" },
+                  }}
+                >
+                  Delhi, 110020, India
+                </Typography>
+              </ContactInfoItem>
 
               <ContactInfoItem
                 icon={<AccessTimeIcon />}
@@ -736,6 +736,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
-
-
