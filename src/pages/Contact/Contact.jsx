@@ -449,11 +449,11 @@ const Contact = () => {
                 </Typography>
               </ContactInfoItem>
 
-              <ContactInfoItem
+{/*               <ContactInfoItem
                 icon={<PhoneIcon />}
                 bgColor="#F3E5F5"
                 title="Phone"
-              >
+              > */}
 {/*                 <Typography
                   sx={{
                     color: "#1E293B",
@@ -474,7 +474,7 @@ const Contact = () => {
                 >
                   +91 88512 28350
                 </Typography> */}
-                // <Typography
+{/*                 // <Typography */}
                 //   sx={{
                 //     color: "#64748B",
                 //     fontSize: { xs: "0.85rem", md: "0.9rem" },
@@ -482,7 +482,7 @@ const Contact = () => {
                 // >
                 //   Mon-Fri, 10AM-7PM IST
                 // </Typography>
-              </ContactInfoItem>
+              // </ContactInfoItem>
 
               // <ContactInfoItem
               //   icon={<LocationOnIcon />}
@@ -736,5 +736,6 @@ const Contact = () => {
 };
 
 export default Contact;
+
 
 
