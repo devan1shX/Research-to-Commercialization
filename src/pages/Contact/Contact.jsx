@@ -449,7 +449,7 @@ const Contact = () => {
                 </Typography>
               </ContactInfoItem>
 
-              <ContactInfoItem
+              {/* <ContactInfoItem
                 icon={<PhoneIcon />}
                 bgColor="#F3E5F5"
                 title="Phone"
@@ -482,9 +482,9 @@ const Contact = () => {
                 >
                   Mon-Fri, 10AM-7PM IST
                 </Typography>
-              </ContactInfoItem>
+              </ContactInfoItem> */}
 
-              <ContactInfoItem
+              {/* <ContactInfoItem
                 icon={<LocationOnIcon />}
                 bgColor="#E8F5E8"
                 title="Office"
@@ -508,7 +508,7 @@ const Contact = () => {
                 >
                   Delhi, 110020, India
                 </Typography>
-              </ContactInfoItem>
+              </ContactInfoItem> */}
 
               <ContactInfoItem
                 icon={<AccessTimeIcon />}
