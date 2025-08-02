@@ -26,7 +26,7 @@ export const homePageContent = {
         iconColor: '#3b82f6',
         bgColor: '#dbeafe',
         title: 'AI-Powered Research Analysis',
-        description: 'Our 27-question AI engine assesses the academic, technical, and commercial potential of your research—instantly and privately.'
+        description: 'Our AI engine assesses the academic, technical, and commercial potential of your research—instantly and privately.'
       },
       {
         iconName: 'Chat',
@@ -87,3 +87,4 @@ export const homePageContent = {
     ]
   }
 };
+
