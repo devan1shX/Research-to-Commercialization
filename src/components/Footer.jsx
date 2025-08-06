@@ -11,7 +11,7 @@ import {
   MenuBook as BookIcon,
   Instagram,
   Facebook,
-  Twitter,
+  X,
   LinkedIn,
   YouTube,
 } from '@mui/icons-material';
@@ -167,7 +167,7 @@ const Footer = () => {
                   },
                 }}
               >
-                <Twitter fontSize="small" />
+                <X fontSize="small" />
               </IconButton>
               <IconButton
                 href="https://linkedin.com"
@@ -228,3 +228,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
