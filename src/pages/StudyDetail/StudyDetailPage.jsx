@@ -27,6 +27,11 @@ const StudyDetailPage = () => {
         if (id && !fetchInitiated.current) {
             fetchInitiated.current = true; 
 
+            const savedChat = sessionStorage.getItem(`chatHistory-${id}`);
+            if (savedChat) {
+                setChatMessages(JSON.parse(savedChat));
+            }
+
             const fetchStudy = async () => {
                 try {
                     setLoading(true);
@@ -76,7 +81,11 @@ const StudyDetailPage = () => {
                 minute: "2-digit",
             }),
         };
-        setChatMessages((prev) => [...prev, newUserMessage]);
+        setChatMessages(prev => {
+            const updatedMessages = [...prev, newUserMessage];
+            sessionStorage.setItem(`chatHistory-${id}`, JSON.stringify(updatedMessages));
+            return updatedMessages;
+        });
 
         const promptForApi = chatInputValue;
         setChatInputValue("");
@@ -86,7 +95,7 @@ const StudyDetailPage = () => {
             const token = await currentUser.getIdToken();
 
             const response = await fetch(
-                "/api/studies/chat-with-paper", {
+                "http://localhost:5000/studies/chat-with-paper", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -95,7 +104,7 @@ const StudyDetailPage = () => {
                     body: JSON.stringify({
                         prompt: promptForApi,
                         studyId: id,
-                        chatHistory: [...chatMessages, newUserMessage],
+                        chatHistory: chatMessages,
                     }),
                 }
             );
@@ -115,7 +124,11 @@ const StudyDetailPage = () => {
                     minute: "2-digit",
                 }),
             };
-            setChatMessages((prev) => [...prev, botMessage]);
+            setChatMessages(prev => {
+                const updatedMessages = [...prev, botMessage];
+                sessionStorage.setItem(`chatHistory-${id}`, JSON.stringify(updatedMessages));
+                return updatedMessages;
+            });
         } catch (e) {
             const errorMessage = {
                 id: Date.now() + 1,
@@ -126,7 +139,11 @@ const StudyDetailPage = () => {
                     minute: "2-digit",
                 }),
             };
-            setChatMessages((prev) => [...prev, errorMessage]);
+            setChatMessages(prev => {
+                const updatedMessages = [...prev, errorMessage];
+                sessionStorage.setItem(`chatHistory-${id}`, JSON.stringify(updatedMessages));
+                return updatedMessages;
+            });
         } finally {
             setIsReplying(false);
         }
