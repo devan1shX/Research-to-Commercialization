@@ -21,6 +21,11 @@ import BulkDocumentUpload from "./BulkDocumentUpload";
 import StudiesTable from "./StudiesTable";
 import BulkStudyForm from "./BulkStudyForm";
 
+const CACHE_KEYS = {
+  STUDIES: 'bulk_create_studies_cache',
+  SELECTED_STUDY: 'bulk_create_selected_study_cache'
+};
+
 const BulkCreateStudy = () => {
   const navigate = useNavigate();
   const { currentUser, loadingAuth } = useAuth();
@@ -36,47 +41,130 @@ const BulkCreateStudy = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStartingAnalysis, setIsStartingAnalysis] = useState(false);
 
+  const saveToCache = useCallback((key, data) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.warn('Failed to save to cache:', error);
+    }
+  }, []);
+
+  const loadFromCache = useCallback((key) => {
+    try {
+      const cached = localStorage.getItem(key);
+      return cached ? JSON.parse(cached) : null;
+    } catch (error) {
+      console.warn('Failed to load from cache:', error);
+      return null;
+    }
+  }, []);
+
+  const clearCache = useCallback(() => {
+    try {
+      localStorage.removeItem(CACHE_KEYS.STUDIES);
+      localStorage.removeItem(CACHE_KEYS.SELECTED_STUDY);
+    } catch (error) {
+      console.warn('Failed to clear cache:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    const cachedStudies = loadFromCache(CACHE_KEYS.STUDIES);
+    const cachedSelectedStudy = loadFromCache(CACHE_KEYS.SELECTED_STUDY);
+    
+    if (cachedStudies && cachedStudies.length > 0) {
+      setStudies(cachedStudies);
+      if (cachedSelectedStudy) {
+        setSelectedStudyId(cachedSelectedStudy);
+      }
+    }
+  }, [loadFromCache]);
+
+  useEffect(() => {
+    if (studies.length > 0) {
+      saveToCache(CACHE_KEYS.STUDIES, studies);
+    }
+  }, [studies, saveToCache]);
+
+  useEffect(() => {
+    if (selectedStudyId) {
+      saveToCache(CACHE_KEYS.SELECTED_STUDY, selectedStudyId);
+    }
+  }, [selectedStudyId, saveToCache]);
+
   useEffect(() => {
     if (!loadingAuth && !currentUser) {
       navigate("/login", { state: { from: "/bulk-create-study" } });
     }
   }, [currentUser, loadingAuth, navigate]);
 
-  useEffect(() => {
+  const mergeCompletedJobs = useCallback(() => {
     const completedJobs = getCompletedJobs();
-    if (completedJobs && completedJobs.length > 0) {
-      const studiesFromJobs = completedJobs.map((job) => {
-        if (job.status === "completed") {
-          return {
-            id: job.analysisId,
-            analysisId: job.analysisId,
-            file: { name: job.originalName },
-            status: "analyzed",
-            title: job.data?.title || "",
-            abstract: job.data?.abstract || "",
-            brief_description: job.data?.brief_description || "",
-            genres: job.data?.genres || [],
-            questions: job.data?.questions || [],
-            patent_status: "",
-            documents: [],
-          };
-        } else {
-          return {
-            id: job.analysisId,
-            analysisId: job.analysisId,
-            file: { name: job.originalName },
-            status: "error",
-            title: `Failed: ${job.originalName}`,
-            abstract: `Error: ${job.error || "Unknown analysis failure."}`,
-            brief_description: "",
-            genres: [],
-            questions: [],
-          };
-        }
-      });
-      setStudies(studiesFromJobs);
-    }
-  }, []); 
+    if (!completedJobs || completedJobs.length === 0) return;
+
+    const newStudiesFromJobs = completedJobs.map((job) => {
+      if (job.status === "completed") {
+        return {
+          id: job.analysisId,
+          analysisId: job.analysisId,
+          file: { name: job.originalName },
+          status: "analyzed",
+          title: job.data?.title || "",
+          abstract: job.data?.abstract || "",
+          brief_description: job.data?.brief_description || "",
+          genres: job.data?.genres || [],
+          questions: job.data?.questions || [],
+          patent_status: "",
+          documents: [],
+          isSelected: true, 
+        };
+      } else {
+        return {
+          id: job.analysisId,
+          analysisId: job.analysisId,
+          file: { name: job.originalName },
+          status: "error",
+          title: `Failed: ${job.originalName}`,
+          abstract: `Error: ${job.error || "Unknown analysis failure."}`,
+          brief_description: "",
+          genres: [],
+          questions: [],
+          isSelected: true, 
+        };
+      }
+    });
+
+    setStudies(prevStudies => {
+      const existingIds = prevStudies.map(study => study.analysisId);
+      
+      const newStudies = newStudiesFromJobs.filter(
+        newStudy => !existingIds.includes(newStudy.analysisId)
+      );
+
+      if (newStudies.length > 0) {
+        return [...prevStudies, ...newStudies];
+      }
+      
+      return prevStudies;
+    });
+  }, [getCompletedJobs]);
+
+  useEffect(() => {
+    mergeCompletedJobs();
+  }, [mergeCompletedJobs]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        mergeCompletedJobs();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [mergeCompletedJobs]); 
 
   const handleFileChange = async (files) => {
     if (!files || files.length === 0) return;
@@ -126,6 +214,16 @@ const BulkCreateStudy = () => {
     setSelectedStudyId(studyId);
   };
 
+  const handleToggleStudySelection = (studyId) => {
+    setStudies((prev) =>
+      prev.map((study) =>
+        study.id === studyId 
+          ? { ...study, isSelected: !study.isSelected }
+          : study
+      )
+    );
+  };
+
   const handleChange = useCallback(
     (e) => {
       const { name, value } = e.target;
@@ -172,7 +270,14 @@ const BulkCreateStudy = () => {
     setSuccessMessage("");
     let allSuccessful = true;
     let successfulCount = 0;
-    const studiesToSubmit = studies.filter(s => s.status === "analyzed");
+    
+    const studiesToSubmit = studies.filter(s => s.status === "analyzed" && s.isSelected);
+
+    if (studiesToSubmit.length === 0) {
+      setApiError("No studies selected for creation. Please select at least one analyzed study.");
+      setIsSubmitting(false);
+      return;
+    }
 
     for (const study of studiesToSubmit) {
       const submissionFormData = new FormData();
@@ -225,6 +330,7 @@ const BulkCreateStudy = () => {
     if (allSuccessful) {
       addNotification("All studies were created successfully!", "success");
       clearJobs();
+      clearCache(); 
       setStudies([]); 
       navigate("/dashboard"); 
     } else {
@@ -267,6 +373,7 @@ const BulkCreateStudy = () => {
   }
 
   const selectedStudy = studies.find((s) => s.id === selectedStudyId);
+  const selectedStudiesCount = studies.filter(s => s.isSelected && s.status === "analyzed").length;
 
   return (
     <Box
@@ -330,6 +437,7 @@ const BulkCreateStudy = () => {
                 studies={studies}
                 onSelectStudy={handleSelectStudy}
                 selectedStudyId={selectedStudyId}
+                onToggleSelection={handleToggleStudySelection}
               />
               {selectedStudy && (
                 <BulkStudyForm
@@ -342,10 +450,15 @@ const BulkCreateStudy = () => {
                 />
               )}
               <Box sx={{ mt: 4, textAlign: "center", mb: 4 }}>
+                {selectedStudiesCount > 0 && (
+                  <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
+                    {selectedStudiesCount} study(ies) selected for creation
+                  </Typography>
+                )}
                 <Button
                   variant="contained"
                   onClick={handleSubmitAll}
-                  disabled={isSubmitting || isStartingAnalysis}
+                  disabled={isSubmitting || isStartingAnalysis || selectedStudiesCount === 0}
                   type="submit"
                   color="primary"
                   size="medium"
@@ -358,6 +471,10 @@ const BulkCreateStudy = () => {
                     color: "white",
                     textTransform: "none",
                     "&:hover": { bgcolor: "#1d4ed8" },
+                    "&:disabled": { 
+                      bgcolor: "#94a3b8",
+                      color: "#ffffff"
+                    },
                     transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
                     width: { xs: "100%", sm: "auto" },
                   }}
@@ -365,7 +482,7 @@ const BulkCreateStudy = () => {
                   {isSubmitting ? (
                     <CircularProgress size={24} />
                   ) : (
-                    "Create All Studies"
+                    `Create ${selectedStudiesCount > 0 ? `${selectedStudiesCount} ` : ''}Studies`
                   )}
                 </Button>
                 {apiError && (
