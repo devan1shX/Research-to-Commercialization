@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { homePageContent } from "../Home/homeContent";
+import { useAuth } from "../../AuthContext"; 
 
 const iconMap = {
   Bolt: Bolt,
@@ -75,6 +76,8 @@ const fadeInUpVariants = {
 };
 
 const About = () => {
+  const { currentUser, loadingAuth } = useAuth(); 
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -101,7 +104,7 @@ const About = () => {
       iconName: "People",
       title: "Community Driven",
       description:
-        "Join a growing ecosystem of innovators, thinkers, and changemakers. Whether you’re in a lab or a boardroom—you belong here.",
+        "Join a growing ecosystem of innovators, thinkers, and changemakers. Whether you're in a lab or a boardroom—you belong here.",
       iconColor: "#2563EB",
       bgColor: "#DBEAFE",
     },
@@ -109,7 +112,7 @@ const About = () => {
       iconName: "Book",
       title: "Knowledge Hub",
       description:
-        "Our repository isn’t just papers—it’s searchable, filterable, and commercial-ready research, with domain tags and TRLs.",
+        "Our repository isn't just papers—it's searchable, filterable, and commercial-ready research, with domain tags and TRLs.",
       iconColor: "#7C3AED",
       bgColor: "#EDE9FE",
     },
@@ -125,7 +128,7 @@ const About = () => {
       iconName: "Search",
       title: "Easy Discovery",
       description:
-        "Don’t scroll through clutter. Just tell us what you’re looking for—our system does the rest.",
+        "Don't scroll through clutter. Just tell us what you're looking for—our system does the rest.",
       iconColor: "#4F46E5",
       bgColor: "#E0E7FF",
     },
@@ -314,13 +317,13 @@ const About = () => {
                     work into real products.
                   </Typography>
                   <Typography component="div" sx={{ mb: 1 }}>
-                    Industries want new ideas but don’t know where to find them.
+                    Industries want new ideas but don't know where to find them.
                   </Typography>
                   <Typography component="div" sx={{ mb: 2 }}>
                     And traditional tech transfer is slow, outdated, and messy.
                   </Typography>
                   <Typography component="div" sx={{ mb: 2 }}>
-                    We’re here to fix that.
+                    We're here to fix that.
                   </Typography>
                   <Typography component="div">
                     With{" "}
@@ -417,7 +420,7 @@ const About = () => {
                         mb: 2,
                       }}
                     >
-                      We’re building a global network of{" "}
+                      We're building a global network of{" "}
                       <Box component="span" sx={{ fontWeight: 500 }}>
                         researchers, institutions, startups, and government
                         agencies.
@@ -638,11 +641,11 @@ const About = () => {
                 existed.{"\n"}
                 &nbsp;&nbsp;&nbsp;&nbsp;The research just sat there—never
                 reaching the people it was meant for.
-                {"\n"}That’s when we realized:{"\n"}
-                &nbsp;&nbsp;&nbsp;&nbsp;It’s not the lack of innovation that
+                {"\n"}That's when we realized:{"\n"}
+                &nbsp;&nbsp;&nbsp;&nbsp;It's not the lack of innovation that
                 holds us back—
                 <Box component="span" fontWeight="bold">
-                  it’s the lack of connection
+                  it's the lack of connection
                 </Box>
                 .{"\n"}We built R2C.ai to change that.
               </Typography>
@@ -816,7 +819,7 @@ const About = () => {
                   mb: { xs: 4, md: 6 },
                 }}
               >
-                Whether you’re a: <br />
+                Whether you're a: <br />
                 Researcher wanting to share and scale your work, or <br />
                 Client looking for relevant innovation <br />
               </Typography>
@@ -862,34 +865,37 @@ const About = () => {
             >
               {hero.primaryButtonText}
             </Button>
-            <Button
-              component={Link}
-              to={hero.secondaryButtonLink}
-              variant="outlined"
-              startIcon={<SecondaryButtonIcon />}
-              sx={{
-                px: { xs: 2.5, sm: 3.5 },
-                py: { xs: 1.25, sm: 1.5 },
-                fontSize: { xs: "0.9rem", sm: "1rem" },
-                textTransform: "none",
-                fontWeight: 600,
-                borderRadius: "12px",
-                borderColor: "#d1d5db",
-                color: "#374151",
-                borderWidth: 2,
-                "&:hover": {
-                  borderColor: "#9ca3af",
-                  bgcolor: "rgba(243, 244, 246, 0.5)",
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-                },
-                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                width: { xs: "100%", sm: "auto" },
-                maxWidth: { xs: "280px", sm: "none" },
-              }}
-            >
-              {hero.secondaryButtonText}
-            </Button>
+            {/* Conditionally render the secondary button only if user is not logged in and not loading */}
+            {!loadingAuth && !currentUser && (
+              <Button
+                component={Link}
+                to={hero.secondaryButtonLink}
+                variant="outlined"
+                startIcon={<SecondaryButtonIcon />}
+                sx={{
+                  px: { xs: 2.5, sm: 3.5 },
+                  py: { xs: 1.25, sm: 1.5 },
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
+                  textTransform: "none",
+                  fontWeight: 600,
+                  borderRadius: "12px",
+                  borderColor: "#d1d5db",
+                  color: "#374151",
+                  borderWidth: 2,
+                  "&:hover": {
+                    borderColor: "#9ca3af",
+                    bgcolor: "rgba(243, 244, 246, 0.5)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+                  },
+                  transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                  width: { xs: "100%", sm: "auto" },
+                  maxWidth: { xs: "280px", sm: "none" },
+                }}
+              >
+                {hero.secondaryButtonText}
+              </Button>
+            )}
           </Stack>
         </Container>
       </Box>
