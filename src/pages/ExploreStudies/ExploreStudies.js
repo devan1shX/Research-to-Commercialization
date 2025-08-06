@@ -527,16 +527,16 @@ const ExploreStudies = () => {
           </Box>
         </Box>
 
-        // <ActiveFilters
-        //   selectedFields={selectedGenres}
-        //   searchQuery={searchQuery}
-        //   selectedDateRange={selectedDateRange}
-        //   onClearField={handleRemoveSelectedGenre}
-        //   onClearSearch={handleClearSearch}
-        //   onClearDateRange={handleClearDateRange}
-        //   fields={allAvailableGenresForSelector}
-        //   dateRangeOptions={dateRangeOptions}
-        // />
+        {/* <ActiveFilters
+          selectedFields={selectedGenres}
+          searchQuery={searchQuery}
+          selectedDateRange={selectedDateRange}
+          onClearField={handleRemoveSelectedGenre}
+          onClearSearch={handleClearSearch}
+          onClearDateRange={handleClearDateRange}
+          fields={allAvailableGenresForSelector}
+          dateRangeOptions={dateRangeOptions}
+        /> */}
 
         <Box
           sx={{
@@ -556,4 +556,5 @@ const ExploreStudies = () => {
 };
 
 export default ExploreStudies;
+
 
