@@ -95,7 +95,7 @@ const StudyDetailPage = () => {
             const token = await currentUser.getIdToken();
 
             const response = await fetch(
-                "http://localhost:5000/studies/chat-with-paper", {
+                "/api/studies/chat-with-paper", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -240,3 +240,4 @@ const StudyDetailPage = () => {
 };
 
 export default StudyDetailPage;
+
