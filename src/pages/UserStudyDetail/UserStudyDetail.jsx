@@ -103,6 +103,10 @@ const UserStudyDetail = () => {
   };
 
   useEffect(() => {
+    const savedChat = sessionStorage.getItem(`chatHistory-${id}`);
+    if (savedChat) {
+      setChatMessages(JSON.parse(savedChat));
+    }
     fetchStudy();
   }, [id, currentUser]);
 
@@ -118,7 +122,15 @@ const UserStudyDetail = () => {
         minute: "2-digit",
       }),
     };
-    setChatMessages((prev) => [...prev, newUserMessage]);
+
+    setChatMessages((prev) => {
+      const updatedMessages = [...prev, newUserMessage];
+      sessionStorage.setItem(
+        `chatHistory-${id}`,
+        JSON.stringify(updatedMessages)
+      );
+      return updatedMessages;
+    });
 
     const promptForApi = chatInputValue;
     setChatInputValue("");
@@ -135,7 +147,7 @@ const UserStudyDetail = () => {
         body: JSON.stringify({
           prompt: promptForApi,
           studyId: id,
-          chatHistory: [...chatMessages, newUserMessage],
+          chatHistory: chatMessages,
         }),
       });
 
@@ -155,7 +167,14 @@ const UserStudyDetail = () => {
           minute: "2-digit",
         }),
       };
-      setChatMessages((prev) => [...prev, botMessage]);
+      setChatMessages((prev) => {
+        const updatedMessages = [...prev, botMessage];
+        sessionStorage.setItem(
+          `chatHistory-${id}`,
+          JSON.stringify(updatedMessages)
+        );
+        return updatedMessages;
+      });
     } catch (e) {
       const errorMessage = {
         id: Date.now() + 1,
@@ -166,7 +185,14 @@ const UserStudyDetail = () => {
           minute: "2-digit",
         }),
       };
-      setChatMessages((prev) => [...prev, errorMessage]);
+      setChatMessages((prev) => {
+        const updatedMessages = [...prev, errorMessage];
+        sessionStorage.setItem(
+          `chatHistory-${id}`,
+          JSON.stringify(updatedMessages)
+        );
+        return updatedMessages;
+      });
     } finally {
       setIsReplying(false);
     }
