@@ -6,6 +6,9 @@ import {
   Typography,
   Button,
   CircularProgress,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -29,6 +32,7 @@ const ExploreStudies = () => {
 
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDateRange, setSelectedDateRange] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -47,18 +51,24 @@ const ExploreStudies = () => {
     { value: "API", label: "API" },
   ];
 
+  const dateRangeOptions = [
+    { value: "last-7-days", label: "Last 7 days" },
+    { value: "last-30-days", label: "Last 30 days" },
+    { value: "last-6-months", label: "Last 6 months" },
+    { value: "last-year", label: "Last year" },
+  ];
+
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
 
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-      setCurrentPage(1); 
+      setCurrentPage(1);
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
-    
   }, [searchQuery]);
 
   const fetchStudies = useCallback(async () => {
@@ -72,11 +82,16 @@ const ExploreStudies = () => {
     selectedGenres.forEach((genreValue) => {
       params.append("genre", genreValue);
     });
+    if (selectedDateRange) {
+      params.append("dateRange", selectedDateRange);
+    }
     params.append("page", currentPage.toString());
     params.append("limit", ITEMS_PER_PAGE.toString());
 
     try {
-      const response = await fetch(`/api/studies?${params.toString()}`);
+      const response = await fetch(
+        `/api/studies?${params.toString()}`
+      );
       if (!response.ok) {
         const errData = await response
           .json()
@@ -98,7 +113,7 @@ const ExploreStudies = () => {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearchQuery, selectedGenres, currentPage]);
+  }, [debouncedSearchQuery, selectedGenres, selectedDateRange, currentPage]);
 
   useEffect(() => {
     fetchStudies();
@@ -112,6 +127,11 @@ const ExploreStudies = () => {
     setCurrentPage(1);
   };
 
+  const handleDateRangeChange = (event) => {
+    setSelectedDateRange(event.target.value);
+    setCurrentPage(1);
+  };
+
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -120,6 +140,11 @@ const ExploreStudies = () => {
     setSelectedGenres((prev) =>
       prev.filter((genre) => genre !== genreToRemove)
     );
+    setCurrentPage(1);
+  };
+
+  const handleClearDateRange = () => {
+    setSelectedDateRange("");
     setCurrentPage(1);
   };
 
@@ -143,8 +168,9 @@ const ExploreStudies = () => {
     }
   };
 
-  const fieldSelectorEffectiveSx = {
-    width: { xs: "100%", sm: "calc(50% - 12px)", md: "calc(33.333% - 16px)" },
+  const filterSelectorSx = {
+    width: { xs: "100%", md: "calc(33.333% - 16px)" },
+    flexShrink: 0,
   };
 
   const pageVariants = {
@@ -384,22 +410,119 @@ const ExploreStudies = () => {
             display: "flex",
             gap: 2,
             alignItems: "flex-start",
-            flexDirection: { xs: "column", sm: "row" },
+            flexDirection: { xs: "column", md: "row" },
+            flexWrap: "wrap",
             width: "100%",
             mb: 2,
           }}
         >
-          <FieldSelector
+          {/* <FieldSelector
             selectedFields={selectedGenres}
             onFieldChange={handleGenreChange}
             fields={allAvailableGenresForSelector}
-            sx={fieldSelectorEffectiveSx}
-          />
-          <Box sx={{ flex: 1, width: "100%", minWidth: 0 }}>
+            sx={filterSelectorSx}
+          /> */}
+
+          <FormControl
+            variant="outlined"
+            sx={{
+              ...filterSelectorSx,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+                backgroundColor: "white",
+                transition:
+                  "border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, height 0.2s ease-in-out",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  transition:
+                    "border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#2563EB",
+                },
+                "&.Mui-focused": {
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#2563EB",
+                    borderWidth: "2px",
+                  },
+                },
+              },
+            }}
+          >
+            <Select
+              value={selectedDateRange}
+              onChange={handleDateRangeChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Filter by Date" }}
+              renderValue={(selected) => {
+                if (!selected) {
+                  return (
+                    <Typography
+                      component="em"
+                      sx={{
+                        color: "#757575",
+                        fontFamily:
+                          '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        fontSize: "0.95rem",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Filter by Date
+                    </Typography>
+                  );
+                }
+                const option = dateRangeOptions.find(
+                  (opt) => opt.value === selected
+                );
+                return (
+                  <Typography
+                    sx={{
+                      fontFamily:
+                        '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: "0.95rem",
+                      color: "#333",
+                    }}
+                  >
+                    {option ? option.label : ""}
+                  </Typography>
+                );
+              }}
+              sx={{
+                borderRadius: "12px",
+                fontFamily:
+                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: "0.95rem",
+                "& .MuiSelect-icon": {
+                  color: "#666",
+                },
+              }}
+            >
+              {dateRangeOptions.map((option) => (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  sx={{
+                    fontFamily:
+                      '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <Box
+            sx={{
+              flex: 1,
+              width: "100%",
+              minWidth: { xs: "100%", md: "300px" },
+            }}
+          >
             <SearchBar
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
-              placeholder="Search studies by title..."
+              placeholder="Search by title or genre..."
             />
           </Box>
         </Box>
@@ -407,9 +530,12 @@ const ExploreStudies = () => {
         <ActiveFilters
           selectedFields={selectedGenres}
           searchQuery={searchQuery}
+          selectedDateRange={selectedDateRange}
           onClearField={handleRemoveSelectedGenre}
           onClearSearch={handleClearSearch}
+          onClearDateRange={handleClearDateRange}
           fields={allAvailableGenresForSelector}
+          dateRangeOptions={dateRangeOptions}
         />
 
         <Box
