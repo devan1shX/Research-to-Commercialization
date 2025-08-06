@@ -4,23 +4,26 @@ import { Box, Typography, Chip } from '@mui/material';
 const ActiveFilters = ({
   selectedFields,
   searchQuery,
+  selectedDateRange, 
   onClearField,
   onClearSearch,
+  onClearDateRange, 
   fields,
+  dateRangeOptions, 
 }) => {
-  if (selectedFields.length === 0 && !searchQuery) {
+  const hasActiveFilters = selectedFields.length > 0 || searchQuery || selectedDateRange;
+
+  if (!hasActiveFilters) {
     return null;
   }
 
-  const showActiveFiltersText = selectedFields.length > 0 || searchQuery;
+  const dateLabel = dateRangeOptions?.find(d => d.value === selectedDateRange)?.label;
 
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 2, alignItems: 'center' }}>
-      {showActiveFiltersText && (
-        <Typography variant="body2" sx={{ color: '#666', mr: 1 }}>
-          Active filters:
-        </Typography>
-      )}
+      <Typography variant="body2" sx={{ color: '#666', mr: 1 }}>
+        Active filters:
+      </Typography>
 
       {selectedFields.map((fieldValue) => {
         const field = fields.find(f => f.value === fieldValue);
@@ -37,12 +40,29 @@ const ActiveFilters = ({
                 color: '#2563EB',
                 '&:hover': {
                   color: '#1D4ED8',
-                }
+                },
               },
             }}
           />
         );
       })}
+
+      {selectedDateRange && dateLabel && (
+        <Chip
+          label={`Date: ${dateLabel}`}
+          onDelete={onClearDateRange}
+          sx={{
+            backgroundColor: 'rgba(22, 163, 74, 0.1)', 
+            color: '#16A34A',
+            '& .MuiChip-deleteIcon': {
+              color: '#16A34A',
+              '&:hover': {
+                color: '#15803D',
+              },
+            },
+          }}
+        />
+      )}
 
       {searchQuery && (
         <Chip
@@ -55,7 +75,7 @@ const ActiveFilters = ({
               color: '#475569',
               '&:hover': {
                 color: '#1E293B',
-              }
+              },
             },
           }}
         />
@@ -64,4 +84,5 @@ const ActiveFilters = ({
   );
 };
 
-export default ActiveFilters;
+export default ActiveFilters ;
+
