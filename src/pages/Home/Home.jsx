@@ -27,6 +27,7 @@ import {
 import { Link } from "react-router-dom";
 import { homePageContent } from "./homeContent";
 import { motion } from "framer-motion";
+import { useAuth } from "../../AuthContext"; 
 
 const pulse = keyframes`
   0%, 100% {
@@ -110,6 +111,7 @@ const scaleInVariants = {
 const Home = () => {
   const theme = useTheme();
   const { hero, whyChooseTTO, makingImpact, howItWorks } = homePageContent;
+  const { currentUser, loadingAuth } = useAuth(); 
 
   const HeroChipIcon = iconMap[hero.chipIconName] || Bolt;
   const HeroPrimaryButtonIcon =
@@ -265,34 +267,37 @@ const Home = () => {
                 >
                   {hero.primaryButtonText}
                 </Button>
-                <Button
-                  component={Link}
-                  to={hero.secondaryButtonLink}
-                  variant="outlined"
-                  startIcon={<HeroSecondaryButtonIcon />}
-                  sx={{
-                    px: { xs: 2.5, sm: 3.5 },
-                    py: { xs: 1.25, sm: 1.5 },
-                    fontSize: { xs: "0.9rem", sm: "1rem" },
-                    textTransform: "none",
-                    fontWeight: 600,
-                    borderRadius: "12px",
-                    borderColor: "#d1d5db",
-                    color: "#374151",
-                    borderWidth: 2,
-                    "&:hover": {
-                      borderColor: "#9ca3af",
-                      bgcolor: "rgba(243, 244, 246, 0.5)",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-                    },
-                    transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                    width: { xs: "100%", sm: "auto" },
-                    maxWidth: { xs: "280px", sm: "none" },
-                  }}
-                >
-                  {hero.secondaryButtonText}
-                </Button>
+                {/* Conditionally render the secondary button only if user is not logged in and not loading */}
+                {!loadingAuth && !currentUser && (
+                  <Button
+                    component={Link}
+                    to={hero.secondaryButtonLink}
+                    variant="outlined"
+                    startIcon={<HeroSecondaryButtonIcon />}
+                    sx={{
+                      px: { xs: 2.5, sm: 3.5 },
+                      py: { xs: 1.25, sm: 1.5 },
+                      fontSize: { xs: "0.9rem", sm: "1rem" },
+                      textTransform: "none",
+                      fontWeight: 600,
+                      borderRadius: "12px",
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                      borderWidth: 2,
+                      "&:hover": {
+                        borderColor: "#9ca3af",
+                        bgcolor: "rgba(243, 244, 246, 0.5)",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+                      },
+                      transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                      width: { xs: "100%", sm: "auto" },
+                      maxWidth: { xs: "280px", sm: "none" },
+                    }}
+                  >
+                    {hero.secondaryButtonText}
+                  </Button>
+                )}
               </Stack>
             </motion.div>
             <motion.div variants={fadeInUpVariants}>
