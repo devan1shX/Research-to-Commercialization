@@ -12,11 +12,31 @@ import {
   DialogContentText,
   DialogTitle,
   Stack,
+  IconButton,
+  Tooltip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import GridViewIcon from "@mui/icons-material/GridView";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import StudyCard from "../../components/StudyCard";
 import { useAuth } from "../../AuthContext";
@@ -38,6 +58,412 @@ const commonButtonSx = {
   boxShadow: "0 4px 6px rgba(37, 99, 235, 0.2)",
 };
 
+const TableRowActions = ({ study, onEdit, onDelete, onNavigate }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAction = (action, studyId) => {
+    handleClose();
+    action(studyId);
+  };
+
+  return (
+    <>
+      <IconButton
+        size="small"
+        onClick={handleClick}
+        sx={{
+          opacity: 0.7,
+          "&:hover": { opacity: 1 },
+        }}
+      >
+        <MoreVertIcon fontSize="small" />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        onClick={(e) => e.stopPropagation()}
+        PaperProps={{
+          elevation: 3,
+          sx: {
+            minWidth: 120,
+            "& .MuiMenuItem-root": {
+              fontSize: "0.875rem",
+              gap: 1,
+            },
+          },
+        }}
+      >
+        <MenuItem onClick={() => handleAction(onNavigate, study._id)}>
+          <VisibilityIcon fontSize="small" />
+          View
+        </MenuItem>
+        <MenuItem onClick={() => handleAction(onEdit, study._id)}>
+          <EditIcon fontSize="small" />
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleAction(onDelete, study._id)}
+          sx={{ color: "error.main" }}
+        >
+          <DeleteIcon fontSize="small" />
+          Delete
+        </MenuItem>
+      </Menu>
+    </>
+  );
+};
+
+const StudiesTable = ({ studies, onEdit, onDelete, onNavigate, loading }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error) {
+      return "N/A";
+    }
+  };
+
+  const getStudyGenres = (study) => {
+    if (
+      study.genres &&
+      Array.isArray(study.genres) &&
+      study.genres.length > 0
+    ) {
+      return study.genres.join(", ");
+    }
+    return (
+      study.genre || study.researchArea || study.category || "Not specified"
+    );
+  };
+
+  const getStudyDescription = (study) => {
+    return (
+      study.description ||
+      study.summary ||
+      study.overview ||
+      study.abstract ||
+      ""
+    );
+  };
+
+  const getStudyStatus = (study) => {
+    return study.status || study.approvalStatus || "Pending";
+  };
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "approved":
+        return "success";
+      case "pending":
+        return "warning";
+      case "active":
+        return "success";
+      case "completed":
+        return "primary";
+      case "draft":
+        return "default";
+      case "inactive":
+      case "rejected":
+        return "error";
+      default:
+        return "default";
+    }
+  };
+
+  if (isMobile) {
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {studies.map((study) => (
+          <Paper
+            key={study._id}
+            elevation={1}
+            sx={{
+              p: { xs: 2.5, sm: 3 },
+              borderRadius: 2,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              border: "1px solid rgba(0,0,0,0.08)",
+              "&:hover": {
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                transform: "translateY(-1px)",
+              },
+            }}
+            onClick={() => onNavigate(study._id)}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                mb: 2.5,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: { xs: "1rem", sm: "1.1rem" },
+                  color: "#1a1a1a",
+                  flex: 1,
+                  mr: 1,
+                  lineHeight: 1.3,
+                }}
+              >
+                {study.title || "Untitled Study"}
+              </Typography>
+              <TableRowActions
+                study={study}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onNavigate={onNavigate}
+              />
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.875rem", fontWeight: 500 }}
+                >
+                  Status:
+                </Typography>
+                <Chip
+                  label={getStudyStatus(study)}
+                  size="small"
+                  color={getStatusColor(getStudyStatus(study))}
+                  variant="outlined"
+                  sx={{ fontSize: "0.75rem" }}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 0.5,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.875rem", fontWeight: 500 }}
+                >
+                  Genre:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 400,
+                    fontSize: "0.875rem",
+                    color: "#374151",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {getStudyGenres(study)}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.875rem", fontWeight: 500 }}
+                >
+                  Created:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 400,
+                    fontSize: "0.875rem",
+                    color: "#374151",
+                  }}
+                >
+                  {formatDate(
+                    study.createdAt || study.dateCreated || study.created_at
+                  )}
+                </Typography>
+              </Box>
+
+              {getStudyDescription(study) && (
+                <Box sx={{ mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      fontSize: "0.875rem",
+                      fontWeight: 500,
+                      mb: 0.5,
+                    }}
+                  >
+                    Description:
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      fontSize: "0.875rem",
+                      lineHeight: 1.4,
+                      color: "#6B7280",
+                    }}
+                  >
+                    {getStudyDescription(study)}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Paper>
+        ))}
+      </Box>
+    );
+  }
+
+  return (
+    <TableContainer
+      component={Paper}
+      sx={{
+        borderRadius: 2,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        border: "1px solid rgba(0,0,0,0.08)",
+      }}
+    >
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#f8fafc" }}>
+            <TableCell sx={{ fontWeight: 600, color: "#374151" }}>
+              Title
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, color: "#374151" }}>
+              Status
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, color: "#374151" }}>
+              Genre
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, color: "#374151" }}>
+              Created
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, color: "#374151" }}>
+              Description
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, color: "#374151", width: 80 }}>
+              Actions
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {studies.map((study) => (
+            <TableRow
+              key={study._id}
+              onClick={() => onNavigate(study._id)}
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#f9fafb",
+                },
+                "&:last-child td, &:last-child th": { border: 0 },
+              }}
+            >
+              <TableCell>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 500,
+                    color: "#1a1a1a",
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  {study.title || "Untitled Study"}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Chip
+                  label={getStudyStatus(study)}
+                  size="small"
+                  color={getStatusColor(getStudyStatus(study))}
+                  variant="outlined"
+                />
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" color="text.secondary">
+                  {getStudyGenres(study)}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" color="text.secondary">
+                  {formatDate(
+                    study.createdAt || study.dateCreated || study.created_at
+                  )}
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ maxWidth: 200 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  {getStudyDescription(study) || "No description provided"}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <TableRowActions
+                  study={study}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  onNavigate={onNavigate}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
+
 const Dashboard = () => {
   const [myStudiesResponse, setMyStudiesResponse] = useState({
     studies: [],
@@ -48,6 +474,7 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("grid"); 
 
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
@@ -58,6 +485,9 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleNavigateToBulkCreate = () => navigate("/bulk-create-study");
 
   useEffect(() => {
@@ -222,6 +652,10 @@ const Dashboard = () => {
     setSearchQuery(event.target.value);
   };
 
+  const handleViewModeToggle = () => {
+    setViewMode((prev) => (prev === "grid" ? "table" : "grid"));
+  };
+
   if (loading && myStudiesResponse.studies.length === 0 && !error) {
     return (
       <Box
@@ -366,18 +800,57 @@ const Dashboard = () => {
               </Button>
             </Stack>
           </Box>
-          <Typography
-            variant="body1"
+          <Box
             sx={{
-              color: "#666",
-              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-              fontSize: "1.1rem",
-              maxWidth: "1200px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
               mt: 1,
+              flexWrap: "wrap",
+              gap: 2,
             }}
           >
-            View, create, edit, and manage your research studies.
-          </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "#666",
+                fontFamily:
+                  '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: "1.1rem",
+                maxWidth: "1200px",
+              }}
+            >
+              View, create, edit, and manage your research studies.
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Tooltip
+                title={`Switch to ${
+                  viewMode === "grid" ? "table" : "grid"
+                } view`}
+              >
+                <IconButton
+                  onClick={handleViewModeToggle}
+                  size="small"
+                  sx={{
+                    backgroundColor: "white",
+                    border: "1px solid rgba(0,0,0,0.12)",
+                    borderRadius: "8px",
+                    width: 36,
+                    height: 36,
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                    },
+                  }}
+                >
+                  {viewMode === "grid" ? (
+                    <ViewListIcon fontSize="small" />
+                  ) : (
+                    <GridViewIcon fontSize="small" />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Box>
         </Box>
 
         <Box
@@ -394,19 +867,29 @@ const Dashboard = () => {
             <CircularProgress sx={{ alignSelf: "center", mb: 2 }} />
           )}
 
-          <Box
-            sx={{ display: "flex", flexWrap: "wrap", gap: 3, width: "100%" }}
-          >
-            {myStudiesResponse.studies.map((study) => (
-              <StudyCard
-                key={study._id}
-                study={study}
-                onEdit={handleEditStudy}
-                onDelete={handleOpenDeleteDialog}
-                onNavigate={handleNavigateToStudy}
-              />
-            ))}
-          </Box>
+          {viewMode === "grid" ? (
+            <Box
+              sx={{ display: "flex", flexWrap: "wrap", gap: 3, width: "100%" }}
+            >
+              {myStudiesResponse.studies.map((study) => (
+                <StudyCard
+                  key={study._id}
+                  study={study}
+                  onEdit={handleEditStudy}
+                  onDelete={handleOpenDeleteDialog}
+                  onNavigate={handleNavigateToStudy}
+                />
+              ))}
+            </Box>
+          ) : (
+            <StudiesTable
+              studies={myStudiesResponse.studies}
+              onEdit={handleEditStudy}
+              onDelete={handleOpenDeleteDialog}
+              onNavigate={handleNavigateToStudy}
+              loading={loading}
+            />
+          )}
 
           {!loading && myStudiesResponse.studies.length === 0 && (
             <Box
