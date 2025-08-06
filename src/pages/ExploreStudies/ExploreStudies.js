@@ -52,6 +52,7 @@ const ExploreStudies = () => {
   ];
 
   const dateRangeOptions = [
+    { value: "", label: "Any Time (Clear Filter)" },
     { value: "last-7-days", label: "Last 7 days" },
     { value: "last-30-days", label: "Last 30 days" },
     { value: "last-6-months", label: "Last 6 months" },
@@ -417,11 +418,11 @@ const ExploreStudies = () => {
           }}
         >
           {/* <FieldSelector
-            selectedFields={selectedGenres}
-            onFieldChange={handleGenreChange}
-            fields={allAvailableGenresForSelector}
-            sx={filterSelectorSx}
-          /> */}
+            selectedFields={selectedGenres}
+            onFieldChange={handleGenreChange}
+            fields={allAvailableGenresForSelector}
+            sx={filterSelectorSx}
+          /> */}
 
           <FormControl
             variant="outlined"
@@ -498,7 +499,7 @@ const ExploreStudies = () => {
             >
               {dateRangeOptions.map((option) => (
                 <MenuItem
-                  key={option.value}
+                  key={option.value || "all-time"}
                   value={option.value}
                   sx={{
                     fontFamily:
@@ -528,15 +529,15 @@ const ExploreStudies = () => {
         </Box>
 
         {/* <ActiveFilters
-          selectedFields={selectedGenres}
-          searchQuery={searchQuery}
-          selectedDateRange={selectedDateRange}
-          onClearField={handleRemoveSelectedGenre}
-          onClearSearch={handleClearSearch}
-          onClearDateRange={handleClearDateRange}
-          fields={allAvailableGenresForSelector}
-          dateRangeOptions={dateRangeOptions}
-        /> */}
+          selectedFields={selectedGenres}
+          searchQuery={searchQuery}
+          selectedDateRange={selectedDateRange}
+          onClearField={handleRemoveSelectedGenre}
+          onClearSearch={handleClearSearch}
+          onClearDateRange={handleClearDateRange}
+          fields={allAvailableGenresForSelector}
+          dateRangeOptions={dateRangeOptions}
+        /> */}
 
         <Box
           sx={{
@@ -556,5 +557,3 @@ const ExploreStudies = () => {
 };
 
 export default ExploreStudies;
-
-
